@@ -23,6 +23,18 @@
             <h2>Witaj, <span id="user-email"></span></h2>
             <button id="logout-button">Wyloguj</button>
         </div>
+
+        <!-- Formularz do dodawania wyników -->
+        <h2>Dodaj Wynik</h2>
+        <form id="score-form">
+            <input type="text" id="game-name" placeholder="Nazwa gry" required>
+            <input type="number" id="score" placeholder="Wynik" required>
+            <button type="submit">Dodaj Wynik</button>
+        </form>
+        
+        <!-- Lista wyników -->
+        <h2>Wyniki</h2>
+        <ul id="scores-list"></ul>
     </div>
     
     <script type="module" src="src/js/app.js"></script>
