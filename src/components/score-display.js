@@ -7,8 +7,7 @@ export class ScoreDisplay {
 
     initializeElements() {
         this.scoreForm = document.getElementById('score-form');
-        this.scoresList = document. getElementById('scores-list');
-
+        this.scoresList = document.getElementById('scores-list');
         this.setupEventListeners();
     }
 
@@ -19,10 +18,13 @@ export class ScoreDisplay {
     async handleScoreSubmit(e) {
         e.preventDefault();
         const exerciseType = this.scoreForm['exercise-type'].value;
-        const weight = this.scoreForm['weight'].value;
-        const reps = this.scoreForm['reps'].value;
+        const weight = parseFloat(this.scoreForm['weight'].value);
+        const reps = parseInt(this.scoreForm['reps'].value);
 
         try {
+            if (!this.authService.getCurrentUser()) {
+                throw new Error('Musisz być zalogowany aby dodać wynik');
+            }
             await this.scoreService.addScore(exerciseType, weight, reps);
             this.scoreForm.reset();
         } catch (error) {
