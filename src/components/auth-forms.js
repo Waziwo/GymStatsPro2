@@ -147,65 +147,51 @@ export class AuthForms {
         const nickname = this.registerForm['register-nickname'].value;
     
         try {
-            console.log("Checking if nickname exists...");
             const nicknameExists = await this.userService.checkNicknameExists(nickname);
             
             if (nicknameExists) {
-                alert('Ten nickname jest już zajęty. Wybierz inny.');
+                this.app.notificationManager.show('Ten nickname jest już zajęty. Wybierz inny.', 'error');
                 return;
             }
     
             const userCredential = await this.authService.register(email, password);
-            
-            // Najpierw utworz użytkownika w Firestore
             await this.userService.createUser(userCredential.user.uid, email, nickname);
             
-            // Poczekaj chwilę przed przejściem do logowania
-            setTimeout(() => {
-                this.registerForm.reset();
-                alert('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.');
-                this.showLoginForm(e);
-            }, 1000);
-    
+            this.registerForm.reset();
+            this.app.notificationManager.show('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.', 'success');
+            this.showLoginForm(e);
         } catch (error) {
             console.error("Registration error:", error);
-            alert(error.message);
+            this.app.notificationManager.show(error.message, 'error');
         }
     }
-
+    
     async handleLogin(e) {
         e.preventDefault();
         const email = this.loginForm['login-email'].value;
         const password = this.loginForm['login-password'].value;
-
+    
         try {
             await this.authService.login(email, password);
             this.loginForm.reset();
+            this.app.notificationManager.show('Zalogowano pomyślnie!', 'success');
             if (this.authSection) {
                 this.authSection.classList.add('hidden');
             }
-            if (this.resetPasswordLink) {
-                this.resetPasswordLink.classList.add('hidden');
-            }
         } catch (error) {
-            alert('Błąd logowania: ' + error.message);
-            if (this.resetPasswordLink) {
-                this.resetPasswordLink.classList.remove('hidden');
-            }
+            this.app.notificationManager.show('Błąd logowania: ' + error.message, 'error');
         }
     }
-
+    
     async handleLogout() {
         try {
             await this.authService.logout();
+            this.app.notificationManager.show('Wylogowano pomyślnie!', 'info');
             if (this.authSection) {
                 this.authSection.classList.remove('hidden');
             }
-            if (this.resetPasswordLink) {
-                this.resetPasswordLink.classList.add('hidden');
-            }
         } catch (error) {
-            alert(error.message);
+            this.app.notificationManager.show(error.message, 'error');
         }
     }
 

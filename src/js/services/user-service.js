@@ -43,15 +43,10 @@ export class UserService {
 
     async getUserData(userId) {
         try {
-            console.log("Fetching user data for ID:", userId);
             const userDoc = await getDoc(doc(this.db, "users", userId));
-            console.log("User doc exists:", userDoc.exists());
             if (userDoc.exists()) {
-                const userData = userDoc.data();
-                console.log("Retrieved user data:", userData);
-                return userData;
+                return userDoc.data();
             }
-            console.log("No user data found");
             return null;
         } catch (error) {
             console.error("Error fetching user data:", error);

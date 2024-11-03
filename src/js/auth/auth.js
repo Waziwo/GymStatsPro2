@@ -8,8 +8,7 @@ export class AuthService {
     async register(email, password) {
         try {
             const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
-            console.log("User credential from register:", userCredential); // dodaj log
-            return userCredential; // upewnij się, że zwracasz userCredential
+            return userCredential;
         } catch (error) {
             console.error("Auth registration error:", error);
             throw error;

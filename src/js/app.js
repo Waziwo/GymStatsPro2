@@ -5,6 +5,7 @@ import { ScoreService } from "./scores/scores.js";
 import { UserService } from "./services/user-service.js";
 import { AuthForms } from "../components/auth-forms.js";
 import { ScoreDisplay } from "../components/score-display.js";
+import { NotificationManager } from './notifications.js';
 
 class App {
     constructor() {
@@ -15,6 +16,7 @@ class App {
         this.authService = new AuthService();
         this.scoreService = new ScoreService();
         this.userService = new UserService();
+        this.notificationManager = new NotificationManager();
 
         // Initialize components
         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService);
@@ -73,10 +75,7 @@ class App {
         this.authService.onAuthStateChanged(async (user) => {
             if (user) {
                 try {
-                    // Dodaj małe opóźnienie przed pobraniem danych
-                    await new Promise(resolve => setTimeout(resolve, 1000));
                     const userData = await this.userService.getUserData(user.uid);
-                    console.log("User data fetched:", userData);
                     
                     if (userData) {
                         this.landingPage.classList.add('hidden');
@@ -85,7 +84,6 @@ class App {
                         this.featuresSection.classList.add('hidden');
                         this.aboutSection.classList.add('hidden');
                         
-                        // Aktualizuj informacje o użytkowniku
                         const userNicknameElement = document.getElementById('user-nickname');
                         const userEmailElement = document.getElementById('user-email');
                         if (userNicknameElement) {
