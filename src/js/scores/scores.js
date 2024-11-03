@@ -28,16 +28,16 @@ export class ScoreService {
 
     async loadScores() {
         try {
-            const user = this.auth.currentUser;
+            const user = this.auth.currentUser ;
             if (!user) return [];
-
+    
             const q = query(
                 this.scoresCollection,
                 where("userId", "==", user.uid)
             );
             
             const scoresSnapshot = await getDocs(q);
-            return scoresSnapshot.docs.map((doc) => doc.data());
+            return scoresSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         } catch (error) {
             console.error('Błąd podczas ładowania wyników:', error);
             return [];

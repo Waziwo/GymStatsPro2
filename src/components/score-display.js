@@ -51,12 +51,33 @@ export class ScoreDisplay {
 
     displayScores(scores) {
         if (!this.scoresList) return;
-        
+    
+        // Grupa wyników według daty
+        const groupedScores = scores.reduce((acc, score) => {
+            const date = new Date(score.timestamp);
+            const dateString = date.toLocaleDateString(); // Użyj lokalnego formatu daty
+            const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Użyj lokalnego formatu czasu
+    
+            if (!acc[dateString]) {
+                acc[dateString] = [];
+            }
+            acc[dateString].push({ ...score, time: timeString });
+            return acc;
+        }, {});
+    
         this.scoresList.innerHTML = '';
-        scores.forEach(score => {
-            const li = document.createElement('li');
-            li.textContent = `${score.exerciseType}: ${score.weight}kg x ${score.reps} reps`;
-            this.scoresList.appendChild(li);
-        });
+    
+        // Wyświetl wyniki zgrupowane według daty
+        for (const [date, scores] of Object.entries(groupedScores)) {
+            const dateHeader = document.createElement('h3');
+            dateHeader.textContent = date;
+            this.scoresList.appendChild(dateHeader);
+    
+            scores.forEach(score => {
+                const li = document.createElement('li');
+                li.textContent = `${score.exerciseType}: ${score.weight}kg x ${score.reps} reps (dodano o ${score.time})`;
+                this.scoresList.appendChild(li);
+            });
+        }
     }
 }
