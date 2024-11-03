@@ -443,3 +443,7 @@ html {
     margin-top: 0.25rem;
     color: #666;
 }
+#user-nickname {
+    font-weight: bold;
+    margin-right: 1rem;
+}
