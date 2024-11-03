@@ -9,7 +9,11 @@ export class ScoreDisplay {
         this.scoreForm = document.getElementById('score-form');
         this.scoresList = document.getElementById('scores-list');
         
-        this.setupEventListeners();
+        if (this.scoreForm) {
+            this.setupEventListeners();
+        } else {
+            console.error('Score form not found in the DOM');
+        }
     }
 
     setupEventListeners() {
@@ -30,6 +34,7 @@ export class ScoreDisplay {
             this.scoreForm.reset();
             this.scoreService.loadScores();
         } catch (error) {
+            console.error('Error submitting score:', error);
             alert(error.message);
         }
     }

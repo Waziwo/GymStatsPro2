@@ -13,7 +13,7 @@ export class ScoreService {
             const auth = getAuth();
             const user = auth.currentUser;
             if (!user) return;
-
+    
             const q = query(
                 this.scoresCollection,
                 where("userId", "==", user.uid),
@@ -25,7 +25,7 @@ export class ScoreService {
             querySnapshot.forEach((doc) => {
                 const score = doc.data();
                 const li = document.createElement('li');
-                li.textContent = `Gra: ${score.gameName}, Wynik: ${score.score}`;
+                li.textContent = `Ćwiczenie: ${score.exerciseType}, Ciężar: ${score.weight} kg, Powtórzenia: ${score.reps}`;
                 this.scoresList.appendChild(li);
             });
         } catch (error) {
