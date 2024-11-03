@@ -31,4 +31,8 @@ export class ScoreDisplay {
             alert(error.message);
         }
     }
+
+    loadScores() {
+        this.scoreService.loadScores();
+    }
 }

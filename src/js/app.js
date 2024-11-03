@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { firebaseConfig } from "./config/firebase-config.js";
-import { AuthService } from "./auth/auth.js"; // Zmieniono z auth-service.js na auth.js
+import { AuthService } from "./auth/auth.js";
 import { ScoreService } from "./scores/scores.js";
 import { AuthForms } from "../components/auth-forms.js";
 import { ScoreDisplay } from "../components/score-display.js";
@@ -18,7 +18,7 @@ const scoreDisplay = new ScoreDisplay(scoreService, authService);
 
 // DOM elements
 const loginButton = document.getElementById('login-button');
-const landingPage = document.getElementById('landing-page');  // Usunięto spację
+const landingPage = document.getElementById('landing-page');
 const authSection = document.getElementById('auth-section');
 const userDashboard = document.getElementById('user-dashboard');
 
