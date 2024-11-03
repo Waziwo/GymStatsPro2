@@ -1,4 +1,4 @@
-import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 export class ScoreService {
@@ -41,6 +41,17 @@ export class ScoreService {
         } catch (error) {
             console.error('Błąd podczas ładowania wyników:', error);
             return [];
+        }
+    }
+    async deleteScore(scoreId) {
+        try {
+            const user = this.auth.currentUser;
+            if (!user) throw new Error('Użytkownik nie jest zalogowany');
+
+            const scoreRef = doc(this.db, 'scores', scoreId);
+            await deleteDoc(scoreRef);
+        } catch (error) {
+            throw error;
         }
     }
 }

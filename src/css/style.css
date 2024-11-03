@@ -100,3 +100,25 @@ input, select {
     padding: 0.5rem;
     border-radius: 3px;
 }
+
+.delete-button {
+    margin-left: 10px;
+    padding: 3px 8px;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #cc0000;
+}
+
+#scores-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    margin: 5px 0;
+}

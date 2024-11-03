@@ -49,43 +49,67 @@ export class ScoreDisplay {
         }
     }
 
+    async handleDeleteScore(scoreId) {
+        try {
+            if (confirm('Czy na pewno chcesz usunąć ten wynik?')) {
+                await this.scoreService.deleteScore(scoreId);
+                await this.loadScores(); // Odśwież listę po usunięciu
+            }
+        } catch (error) {
+            console.error('Error deleting score:', error);
+            alert('Wystąpił błąd podczas usuwania wyniku');
+        }
+    }
+
     displayScores(scores) {
         if (!this.scoresList) return;
-    
+
         // Grupa wyników według daty
         const groupedScores = scores.reduce((acc, score) => {
             const date = new Date(score.timestamp);
-            const dateString = date.toLocaleDateString(); // Użyj lokalnego formatu daty
-            const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Użyj lokalnego formatu czasu
-    
+            const dateString = date.toLocaleDateString();
+            const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
             if (!acc[dateString]) {
                 acc[dateString] = [];
             }
             acc[dateString].push({ ...score, time: timeString });
             return acc;
         }, {});
-    
+
         this.scoresList.innerHTML = '';
-    
+
         // Sortuj daty od najnowszej do najstarszej
         const sortedDates = Object.keys(groupedScores).sort((a, b) => {
             return new Date(b) - new Date(a);
         });
-    
+
         // Wyświetl wyniki zgrupowane według daty
         for (const date of sortedDates) {
             const dateHeader = document.createElement('h3');
             dateHeader.textContent = date;
             this.scoresList.appendChild(dateHeader);
-    
+
             // Sortuj wyniki według godziny (od najnowszej do najstarszej)
             const sortedScores = groupedScores[date].sort((a, b) => {
                 return b.timestamp - a.timestamp;
             });
-    
+
             sortedScores.forEach(score => {
                 const li = document.createElement('li');
-                li.textContent = `${score.exerciseType}: ${score.weight}kg x ${score.reps} reps (dodano o ${score.time})`;
+                
+                // Kontener na treść wyniku
+                const scoreContent = document.createElement('span');
+                scoreContent.textContent = `${score.exerciseType}: ${score.weight}kg x ${score.reps} reps (dodano o ${score.time})`;
+                li.appendChild(scoreContent);
+
+                // Przycisk usuwania
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Usuń';
+                deleteButton.classList.add('delete-button');
+                deleteButton.addEventListener('click', () => this.handleDeleteScore(score.id));
+                li.appendChild(deleteButton);
+
                 this.scoresList.appendChild(li);
             });
         }
