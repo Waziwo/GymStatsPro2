@@ -424,3 +424,22 @@ html {
     color: #666;
     margin-top: 0.25rem;
 }
+.nickname-requirements {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+#register-nickname:invalid {
+    border-color: var(--error-color);
+}
+
+#register-nickname:valid {
+    border-color: var(--success-color);
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.25rem;
+    color: #666;
+}

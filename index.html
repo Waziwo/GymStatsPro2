@@ -113,8 +113,14 @@
                         </div>
                         <div class="form-group">
                             <label for="register-nickname">Nickname</label>
-                            <input type="text" id="register-nickname" required minlength="3" maxlength="20" 
-                                   pattern="[a-zA-Z0-9_-]+" title="Dozwolone znaki: litery, cyfry, - i _">
+                            <input type="text" 
+                               id="register-nickname" 
+                               required 
+                               minlength="3" 
+                               maxlength="20" 
+                               pattern="[a-zA-Z0-9_-]*"
+                               title="Dozwolone znaki: litery, cyfry, - i _">
+                            <small class="nickname-requirements">Nickname musi mieć 3-20 znaków i może zawierać tylko litery, cyfry, - i _</small>
                         </div>
                         <div class="form-group">
                             <label for="register-password">Hasło</label>

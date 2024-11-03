@@ -144,7 +144,14 @@ export class AuthForms {
         const email = this.registerForm['register-email'].value;
         const password = this.registerForm['register-password'].value;
         const nickname = this.registerForm['register-nickname'].value;
-
+    
+        // Dodatkowa walidacja nicknamu
+        const nicknameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
+        if (!nicknameRegex.test(nickname)) {
+            alert('Nickname musi mieć od 3 do 20 znaków i może zawierać tylko litery, cyfry, - i _');
+            return;
+        }
+    
         try {
             // Sprawdź czy nickname jest dostępny
             const nicknameExists = await this.userService.checkNicknameExists(nickname);
@@ -152,7 +159,7 @@ export class AuthForms {
                 alert('Ten nickname jest już zajęty. Wybierz inny.');
                 return;
             }
-
+    
             // Zarejestruj użytkownika
             const userCredential = await this.authService.register(email, password);
             
