@@ -1,5 +1,8 @@
-// Inicjalizacja Firebase
-// Użyj danych konfiguracyjnych z Firebase konsoli
+// Importy Firebase (dla Firebase 9 i nowszych)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+// Konfiguracja Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDNtXbYetm8aLRmomgBlVP6HXNZyhttFfQ",
     authDomain: "strona-do-zapisywania-wynikow.firebaseapp.com",
@@ -8,40 +11,40 @@ const firebaseConfig = {
     messagingSenderId: "30761717995",
     appId: "1:30761717995:web:ac03840376114c5fbdeeae",
     measurementId: "G-4F2LGNY193"
-  };
-// Inicjalizacja Firebase
-firebase.initializeApp(firebaseConfig);
+};
 
-// Inicjalizacja Firestore
-const db = firebase.firestore();
+// Inicjalizacja Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // Kod aplikacji
 const form = document.getElementById('form');
 const resultsDiv = document.getElementById('results');
 
-form.addEventListener('submit', (e) => {
+form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const exercise = document.getElementById('exercise').value;
     const weight = document.getElementById('weight').value;
 
-    db.collection("wyniki").add({
+    // Dodanie nowego dokumentu do kolekcji „wyniki”
+    await addDoc(collection(db, "wyniki"), {
         exercise,
         weight: parseFloat(weight),
         timestamp: new Date()
-    }).then(() => {
-        displayResults();
-        form.reset();
     });
+    displayResults();
+    form.reset();
 });
 
-function displayResults() {
+async function displayResults() {
     resultsDiv.innerHTML = "";
-    db.collection("wyniki").orderBy("timestamp", "desc").get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            resultsDiv.innerHTML += `<p>${data.exercise}: ${data.weight} kg</p>`;
-        });
+    const q = query(collection(db, "wyniki"), orderBy("timestamp", "desc"));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        resultsDiv.innerHTML += `<p>${data.exercise}: ${data.weight} kg</p>`;
     });
 }
 
+// Wyświetlenie wyników przy uruchomieniu
 displayResults();
