@@ -1,13 +1,41 @@
-import { collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { collection, addDoc, query, where, getDocs, orderBy, getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 export class ScoreService {
-    constructor(db) {
-        this.db = db;
+    constructor() {
+        this.db = getFirestore();
+        this.scoresCollection = collection(this.db, 'scores');
+        this.scoresList = document.getElementById('scores-list');
+    }
+
+    async loadScores() {
+        try {
+            const auth = getAuth();
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const q = query(
+                this.scoresCollection,
+                where("userId", "==", user.uid),
+                orderBy("timestamp", "desc")
+            );
+            
+            const querySnapshot = await getDocs(q);
+            this.scoresList.innerHTML = '';
+            querySnapshot.forEach((doc) => {
+                const score = doc.data();
+                const li = document.createElement('li');
+                li.textContent = `Gra: ${score.gameName}, Wynik: ${score.score}`;
+                this.scoresList.appendChild(li);
+            });
+        } catch (error) {
+            console.error("Błąd podczas ładowania wyników:", error);
+        }
     }
 
     async addScore(userId, gameName, score) {
         try {
-            return await addDoc(collection(this.db, 'scores'), {
+            return await addDoc(this.scoresCollection, {
                 userId,
                 gameName,
                 score: parseInt(score),
@@ -21,8 +49,9 @@ export class ScoreService {
     async getUserScores(userId) {
         try {
             const scoresQuery = query(
-                collection(this.db, 'scores'), 
-                where('userId', '==', userId)
+                this.scoresCollection, 
+                where('userId', '==', userId),
+                orderBy("timestamp", "desc")
             );
             return await getDocs(scoresQuery);
         } catch (error) {

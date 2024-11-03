@@ -1,12 +1,30 @@
 import { 
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
-    signOut 
+    signOut,
+    onAuthStateChanged,
+    getAuth
 } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 export class AuthService {
-    constructor(auth) {
-        this.auth = auth;
+    constructor() {
+        this.auth = getAuth();
+        this.authStateChanged = new Set();
+    }
+
+    getCurrentUser() {
+        return new Promise((resolve) => {
+            const unsubscribe = onAuthStateChanged(this.auth, (user) => {
+                unsubscribe();
+                resolve(user);
+            });
+        });
+    }
+
+    onAuthStateChanged(callback) {
+        onAuthStateChanged(this.auth, (user) => {
+            callback(user);
+        });
     }
 
     async register(email, password) {

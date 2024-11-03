@@ -1,7 +1,31 @@
 export class AuthForms {
-    constructor(authService) {
+    constructor(authService, scoreService) {
         this.authService = authService;
+        this.scoreService = scoreService;
         this.initializeForms();
+        this.setupAuthStateListener();
+        this.initializeUserState();
+    }
+
+    async initializeUserState() {
+        const user = await this.authService.getCurrentUser();
+        if (user) {
+            this.showUserInfo(user.email);
+            this.scoreService.loadScores();
+        } else {
+            this.hideUserInfo();
+        }
+    }
+
+    setupAuthStateListener() {
+        this.authService.onAuthStateChanged((user) => {
+            if (user) {
+                this.showUserInfo(user.email);
+                this.scoreService.loadScores();
+            } else {
+                this.hideUserInfo();
+            }
+        });
     }
 
     initializeForms() {

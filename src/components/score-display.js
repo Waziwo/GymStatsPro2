@@ -19,37 +19,17 @@ export class ScoreDisplay {
     async handleScoreSubmit(e) {
         e.preventDefault();
         const gameName = this.scoreForm['game-name'].value;
-        const score = this.scoreForm['score'].value;
-        
-        try {
-            const user = this.authService.auth.currentUser;
-            if (user) {
-                await this.scoreService.addScore(user.uid, gameName, score);
-                this.scoreForm.reset();
-                this.displayScores();
-            } else {
-                throw new Error('User not logged in');
-            }
-        } catch (error) {
-            alert('Error adding score: ' + error.message);
-        }
-    }
+        const score = this. scoreForm['score'].value;
 
-    async displayScores() {
         try {
-            const user = this.authService.auth.currentUser;
-            if (user) {
-                const scoresSnapshot = await this.scoreService.getUserScores(user.uid);
-                this.scoresList.innerHTML = '';
-                scoresSnapshot.forEach(doc => {
-                    const scoreData = doc.data();
-                    const li = document.createElement('li');
-                    li.textContent = `${scoreData.gameName}: ${scoreData.score}`;
-                    this.scoresList.appendChild(li);
-                });
-            }
+            const user = await this.authService.getCurrentUser();
+            if (!user) return;
+
+            await this.scoreService.addScore(user.uid, gameName, score);
+            this.scoreForm.reset();
+            this.scoreService.loadScores();
         } catch (error) {
-            console.error('Error displaying scores:', error);
+            alert(error.message);
         }
     }
 }
