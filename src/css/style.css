@@ -1,47 +1,66 @@
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --background-color: #f5f6fa;
+    --text-color: #2c3e50;
+    --card-background: #ffffff;
+}
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', Arial, sans-serif;
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 header {
-    background-color: #333;
+    background-color: var(--primary-color);
     color: #fff;
     padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .logo {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 main {
     padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 h1, h2, h3 {
-    color: #333;
+    color: var(--primary-color);
 }
 
 button {
-    background-color: #333;
+    background-color: var(--secondary-color);
     color: #fff;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.7rem 1.5rem;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.1s;
+    border-radius: 5px;
+    font-weight: bold;
 }
 
 button:hover {
-    background-color: #555;
+    background-color: #27ae60;
+    transform: translateY(-2px);
 }
 
 .hidden {
@@ -51,30 +70,35 @@ button:hover {
 #landing-page {
     text-align: center;
     max-width: 800px;
-    margin: 0 auto;
+    margin: 2rem auto;
 }
 
 .feature-list {
     display: flex;
     justify-content: space-around;
-    margin-top: 2rem;
+    margin-top: 3rem;
 }
 
 .feature {
     flex-basis: 30%;
-    background-color: #fff;
-    padding: 1rem;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.feature:hover {
+    transform: translateY(-5px);
 }
 
 #auth-section, #user-dashboard {
     max-width: 400px;
-    margin: 0 auto;
-    background-color: #fff;
+    margin: 2rem auto;
+    background-color: var(--card-background);
     padding: 2rem;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 form {
@@ -84,9 +108,10 @@ form {
 
 input, select {
     margin-bottom: 1rem;
-    padding: 0.5rem;
+    padding: 0.7rem;
     border: 1px solid #ddd;
-    border-radius: 3px;
+    border-radius: 5px;
+    font-size: 1rem;
 }
 
 #scores-list {
@@ -95,16 +120,20 @@ input, select {
 }
 
 #scores-list li {
-    background-color: #f4f4f4;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem;
-    border-radius: 3px;
+    background-color: var(--card-background);
+    margin-bottom: 0.8rem;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .delete-button {
     margin-left: 10px;
-    padding: 3px 8px;
-    background-color: #ff4444;
+    padding: 5px 10px;
+    background-color: #e74c3c;
     color: white;
     border: none;
     border-radius: 3px;
@@ -112,13 +141,5 @@ input, select {
 }
 
 .delete-button:hover {
-    background-color: #cc0000;
-}
-
-#scores-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 0;
-    margin: 5px 0;
+    background-color: #c0392b;
 }
