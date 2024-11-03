@@ -21,8 +21,8 @@ class App {
     }
 
     initializeServices() {
-        this.authService = new AuthService(this.auth);
-        this.scoreService = new ScoreService(this.db);
+        this.authService = new AuthService();
+        this.scoreService = new ScoreService();
     }
 
     initializeComponents() {

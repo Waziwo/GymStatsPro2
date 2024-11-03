@@ -7,13 +7,9 @@ export class ScoreDisplay {
 
     initializeElements() {
         this.scoreForm = document.getElementById('score-form');
-        this.scoresList = document.getElementById('scores-list');
-        
-        if (this.scoreForm) {
-            this.setupEventListeners();
-        } else {
-            console.error('Score form not found in the DOM');
-        }
+        this.scoresList = document. getElementById('scores-list');
+
+        this.setupEventListeners();
     }
 
     setupEventListeners() {
@@ -25,16 +21,11 @@ export class ScoreDisplay {
         const exerciseType = this.scoreForm['exercise-type'].value;
         const weight = this.scoreForm['weight'].value;
         const reps = this.scoreForm['reps'].value;
-    
+
         try {
-            const user = await this.authService.getCurrentUser();
-            if (!user) return;
-    
-            await this.scoreService.addScore(user.uid, exerciseType, weight, reps);
+            await this.scoreService.addScore(exerciseType, weight, reps);
             this.scoreForm.reset();
-            this.scoreService.loadScores();
         } catch (error) {
-            console.error('Error submitting score:', error);
             alert(error.message);
         }
     }

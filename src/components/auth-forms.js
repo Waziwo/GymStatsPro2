@@ -24,6 +24,7 @@ export class AuthForms {
                 this.scoreService.loadScores();
             } else {
                 this.hideUserInfo();
+                this.scoreService.clearScores();
             }
         });
     }
@@ -88,6 +89,7 @@ export class AuthForms {
         this.scoreSection.style.display = 'block';
         this.loginForm.style.display = 'none';
         this.registerForm.style.display = 'none';
+        this.logoutButton.style.display = 'block';
     }
 
     hideUserInfo() {
@@ -95,5 +97,6 @@ export class AuthForms {
         this.scoreSection.style.display = 'none';
         this.loginForm.style.display = 'block';
         this.registerForm.style.display = 'block';
+        this.logoutButton.style.display = 'none';
     }
 }

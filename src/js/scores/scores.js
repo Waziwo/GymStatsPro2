@@ -1,62 +1,48 @@
-import { collection, addDoc, query, where, getDocs, orderBy, getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 export class ScoreService {
     constructor() {
         this.db = getFirestore();
         this.scoresCollection = collection(this.db, 'scores');
-        this.scoresList = document.getElementById('scores-list');
+    }
+
+    async addScore(exerciseType, weight, reps) {
+        try {
+            await addDoc(this.scoresCollection, {
+                exerciseType,
+                weight,
+                reps,
+                timestamp: Date.now(),
+            });
+        } catch (error) {
+            throw error;
+        }
     }
 
     async loadScores() {
         try {
-            const auth = getAuth();
-            const user = auth.currentUser;
-            if (!user) return;
-    
-            const q = query(
-                this.scoresCollection,
-                where("userId", "==", user.uid),
-                orderBy("timestamp", "desc")
-            );
-            
-            const querySnapshot = await getDocs(q);
+            const scoresSnapshot = await getDocs(this.scoresCollection);
+            const scores = scoresSnapshot.docs.map((doc) => doc.data());
+            this.displayScores(scores);
+        } catch (error) {
+            console.error('Błąd podczas ładowania wyników:', error);
+        }
+    }
+
+    displayScores(scores) {
+        const scoresList = document.getElementById('scores-list');
+        scoresList.innerHTML = '';
+
+        scores.forEach((score) => {
+            const scoreListItem = document.createElement('li');
+            scoreListItem.textContent = `${score.exerciseType}: ${score.weight} kg x ${score.reps} powtórzeń`;
+            scoresList.appendChild(scoreListItem);
+        });
+    }
+
+    clearScores() {
+        if (this.scoresList) {
             this.scoresList.innerHTML = '';
-            querySnapshot.forEach((doc) => {
-                const score = doc.data();
-                const li = document.createElement('li');
-                li.textContent = `Ćwiczenie: ${score.exerciseType}, Ciężar: ${score.weight} kg, Powtórzenia: ${score.reps}`;
-                this.scoresList.appendChild(li);
-            });
-        } catch (error) {
-            console.error("Błąd podczas ładowania wyników:", error);
-        }
-    }
-
-    async addScore(userId, exerciseType, weight, reps) {
-        try {
-            return await addDoc(this.scoresCollection, {
-                userId,
-                exerciseType,
-                weight: parseFloat(weight),
-                reps: parseInt(reps),
-                timestamp: new Date()
-            });
-        } catch (error) {
-            throw new Error(`Error adding score: ${error.message}`);
-        }
-    }
-
-    async getUserScores(userId) {
-        try {
-            const scoresQuery = query(
-                this.scoresCollection, 
-                where('userId', '==', userId),
-                orderBy("timestamp", "desc")
-            );
-            return await getDocs(scoresQuery);
-        } catch (error) {
-            throw new Error(`Error fetching scores: ${error.message}`);
         }
     }
 }

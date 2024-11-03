@@ -1,37 +1,15 @@
-import { 
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword, 
-    signOut,
-    onAuthStateChanged,
-    getAuth
-} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 export class AuthService {
     constructor() {
         this.auth = getAuth();
-        this.authStateChanged = new Set();
-    }
-
-    getCurrentUser() {
-        return new Promise((resolve) => {
-            const unsubscribe = onAuthStateChanged(this.auth, (user) => {
-                unsubscribe();
-                resolve(user);
-            });
-        });
-    }
-
-    onAuthStateChanged(callback) {
-        onAuthStateChanged(this.auth, (user) => {
-            callback(user);
-        });
     }
 
     async register(email, password) {
         try {
-            return await createUserWithEmailAndPassword(this.auth, email, password);
+            await createUserWithEmailAndPassword(this.auth, email, password);
         } catch (error) {
-            throw new Error(`Registration error: ${error.message}`);
+            throw error;
         }
     }
 
@@ -39,7 +17,7 @@ export class AuthService {
         try {
             return await signInWithEmailAndPassword(this.auth, email, password);
         } catch (error) {
-            throw new Error(`Login error: ${error.message}`);
+            throw error;
         }
     }
 
@@ -47,7 +25,15 @@ export class AuthService {
         try {
             await signOut(this.auth);
         } catch (error) {
-            throw new Error(`Logout error: ${error.message}`);
+            throw error;
         }
+    }
+
+    async getCurrentUser() {
+        return this.auth.currentUser;
+    }
+
+    onAuthStateChanged(callback) {
+        this.auth.onAuthStateChanged(callback);
     }
 }
