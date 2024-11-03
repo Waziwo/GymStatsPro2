@@ -99,7 +99,12 @@ export class AuthForms {
             if (user) {
                 try {
                     const userData = await this.userService.getUserData(user.uid);
-                    this.showUserInfo(user.email, userData);
+                    console.log("Fetched user data:", userData); // Dodaj ten log
+                    if (userData) {
+                        this.showUserInfo(user.email, userData);
+                    } else {
+                        console.error("No user data found for:", user.uid);
+                    }
                     this.hideLoginButton();
                 } catch (error) {
                     console.error('Error fetching user data:', error);
@@ -195,19 +200,31 @@ export class AuthForms {
     }
 
     showUserInfo(email, userData) {
-        console.log("Showing user info:", email, userData);  // Dodaj ten log
+        console.log("Showing user info with data:", email, userData);
         if (this.userInfo) {
             this.userInfo.classList.remove('hidden');
             const nicknameElement = document.getElementById('user-nickname');
             const emailElement = document.getElementById('user-email');
             
             if (nicknameElement) {
-                nicknameElement.textContent = userData?.nickname || 'Użytkownik';
+                if (userData && userData.nickname) {
+                    console.log("Setting nickname to:", userData.nickname);
+                    nicknameElement.textContent = userData.nickname;
+                } else {
+                    console.log("No nickname found in userData");
+                    nicknameElement.textContent = 'Użytkownik';
+                }
+            } else {
+                console.log("Nickname element not found in DOM");
             }
+    
             if (emailElement) {
                 emailElement.textContent = email;
             }
+        } else {
+            console.log("UserInfo element not found");
         }
+        
         if (this.landingPage) {
             this.landingPage.classList.add('hidden');
         }
