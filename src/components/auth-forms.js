@@ -30,16 +30,16 @@ export class AuthForms {
         if (this.showRegisterLink) {
             this.showRegisterLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.loginFormContainer.classList.add('hidden');
-                this.registerFormContainer.classList.remove('hidden');
+                if (this.loginFormContainer) this.loginFormContainer.classList.add('hidden');
+                if (this.registerFormContainer) this.registerFormContainer.classList.remove('hidden');
             });
         }
 
         if (this.showLoginLink) {
             this.showLoginLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.registerFormContainer.classList.add('hidden');
-                this.loginFormContainer.classList.remove('hidden');
+                if (this.registerFormContainer) this.registerFormContainer.classList.add('hidden');
+                if (this.loginFormContainer) this.loginFormContainer.classList.remove('hidden');
             });
         }
     }
@@ -75,8 +75,8 @@ export class AuthForms {
             await this.authService.register(email, password);
             this.registerForm.reset();
             alert('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.');
-            this.registerFormContainer.classList.add('hidden');
-            this.loginFormContainer.classList.remove('hidden');
+            if (this.registerFormContainer) this.registerFormContainer.classList.add('hidden');
+            if (this.loginFormContainer) this.loginFormContainer.classList.remove('hidden');
         } catch (error) {
             alert(error.message);
         }
