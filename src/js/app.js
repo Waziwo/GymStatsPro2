@@ -13,8 +13,8 @@ const authService = new AuthService();
 const scoreService = new ScoreService();
 
 // Initialize components
-const authForms = new AuthForms(authService, scoreService);
 const scoreDisplay = new ScoreDisplay(scoreService, authService);
+const authForms = new AuthForms(authService, scoreService);
 
 // DOM elements
 const loginButton = document.getElementById('login-button');

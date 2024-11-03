@@ -21,7 +21,6 @@ export class ScoreService {
                 reps,
                 timestamp: Date.now(),
             });
-            await this.loadScores(); // Odśwież listę po dodaniu
         } catch (error) {
             throw error;
         }
@@ -30,7 +29,7 @@ export class ScoreService {
     async loadScores() {
         try {
             const user = this.auth.currentUser;
-            if (!user) return;
+            if (!user) return [];
 
             const q = query(
                 this.scoresCollection,
@@ -38,32 +37,10 @@ export class ScoreService {
             );
             
             const scoresSnapshot = await getDocs(q);
-            const scores = scoresSnapshot.docs.map((doc) => doc.data());
-            this.displayScores(scores);
+            return scoresSnapshot.docs.map((doc) => doc.data());
         } catch (error) {
             console.error('Błąd podczas ładowania wyników:', error);
-        }
-    }
-
-    displayScores(scores) {
-        const scoresList = document.getElementById('scores-list');
-        scoresList.innerHTML = '';
-
-        // Sortuj wyniki według timestamp (od najnowszych)
-        scores.sort((a, b) => b.timestamp - a.timestamp);
-
-        scores.forEach((score) => {
-            const scoreListItem = document.createElement('li');
-            const date = new Date(score.timestamp);
-            scoreListItem.textContent = `${score.exerciseType}: ${score.weight} kg x ${score.reps} powtórzeń (${date.toLocaleDateString()})`;
-            scoresList.appendChild(scoreListItem);
-        });
-    }
-
-    clearScores() {
-        const scoresList = document.getElementById('scores-list');
-        if (scoresList) {
-            scoresList.innerHTML = '';
+            return [];
         }
     }
 }

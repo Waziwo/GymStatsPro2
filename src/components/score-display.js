@@ -27,12 +27,27 @@ export class ScoreDisplay {
             }
             await this.scoreService.addScore(exerciseType, weight, reps);
             this.scoreForm.reset();
+            this.loadScores(); // Odśwież listę wyników po dodaniu nowego
         } catch (error) {
             alert(error.message);
         }
     }
 
     loadScores() {
-        this.scoreService.loadScores();
+        this.scoreService.loadScores().then(scores => {
+            this.displayScores(scores);
+        }).catch(error => {
+            console.error('Error loading scores:', error);
+        });
+    }
+
+    displayScores(scores) {
+        const scoresList = document.getElementById('scores-list');
+        scoresList.innerHTML = '';
+        scores.forEach(score => {
+            const li = document.createElement('li');
+            li.textContent = `${score.exerciseType}: ${score.weight}kg x ${score.reps} reps`;
+            scoresList.appendChild(li);
+        });
     }
 }
