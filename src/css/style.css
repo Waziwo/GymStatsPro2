@@ -305,7 +305,7 @@ footer {
 }
 
 .about-container {
-    max-width: 1000px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 0 1rem;
 }
@@ -326,55 +326,17 @@ footer {
     margin-bottom: 2rem;
 }
 
-.about-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-}
-
-.stat-item {
-    text-align: center;
-    padding: 1.5rem;
-    background: #f8f9fa;
-    border-radius: 10px;
-    transition: transform 0.3s ease;
-}
-
-.stat-item:hover {
-    transform: translateY(-5px);
-}
-
-.stat-item i {
-    font-size: 2rem;
-    color: #3498db;
-    margin-bottom: 1rem;
-}
-
-.stat-number {
-    display: block;
-    font-size: 2rem;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
-}
-
-.stat-label {
-    color: #666;
-    font-size: 0.9rem;
-}
-
 /* Responsywność */
 @media (max-width: 768px) {
-    .features-container {
-        grid-template-columns: 1fr;
-    }
-
-    .about-stats {
-        grid-template-columns: 1fr;
-    }
-
     .section-title {
         font-size: 2rem;
+    }
+
+    .about-content h3 {
+        font-size: 1.5rem;
+    }
+
+    .about-content p {
+        font-size: 0.9rem;
     }
 }
