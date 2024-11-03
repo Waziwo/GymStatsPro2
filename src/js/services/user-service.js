@@ -9,22 +9,19 @@ export class UserService {
 
 
     async createUser(uid, email, nickname) {
-        console.log("Creating user with:", { uid, email, nickname }); // Dodaj ten log
         try {
             const nicknameExists = await this.checkNicknameExists(nickname);
-            console.log("Nickname exists check in createUser:", nicknameExists); // Dodaj ten log
-
+    
             if (nicknameExists) {
                 throw new Error('Ten nickname jest już zajęty');
             }
-
+    
             const userRef = doc(this.db, 'users', uid);
             await setDoc(userRef, {
                 email: email,
                 nickname: nickname,
                 createdAt: new Date().toISOString()
             });
-            console.log("User data saved successfully"); // Dodaj ten log
         } catch (error) {
             console.error("Error creating user:", error);
             throw error;

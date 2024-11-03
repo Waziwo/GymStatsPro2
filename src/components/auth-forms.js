@@ -1,8 +1,9 @@
 export class AuthForms {
-    constructor(authService, scoreService, userService) {
+    constructor(authService, scoreService, userService, notificationManager) {
         this.authService = authService;
         this.scoreService = scoreService;
         this.userService = userService;
+        this.notificationManager = notificationManager;
         this.initializeForms();
         this.setupAuthStateListener();
     }
@@ -131,15 +132,14 @@ export class AuthForms {
         const email = this.resetPasswordForm['reset-email'].value;
         try {
             await this.authService.resetPassword(email);
-            alert('Link do resetowania hasła został wysłany na podany adres email.');
+            this.notificationManager.show('Link do resetowania hasła został wysłany na podany adres email.', 'success');
             this.resetPasswordForm.reset();
             this.showLoginForm(e);
         } catch (error) {
-            alert('Wystąpił błąd podczas wysyłania linku do resetowania hasła: ' + error.message);
+            this.notificationManager.show('Wystąpił błąd podczas wysyłania linku do resetowania hasła: ' + error.message, 'error');
         }
     }
 
-    
     async handleRegister(e) {
         e.preventDefault();
         const email = this.registerForm['register-email'].value;
@@ -150,7 +150,7 @@ export class AuthForms {
             const nicknameExists = await this.userService.checkNicknameExists(nickname);
             
             if (nicknameExists) {
-                this.app.notificationManager.show('Ten nickname jest już zajęty. Wybierz inny.', 'error');
+                this.notificationManager.show('Ten nickname jest już zajęty. Wybierz inny.', 'error');
                 return;
             }
     
@@ -158,11 +158,11 @@ export class AuthForms {
             await this.userService.createUser(userCredential.user.uid, email, nickname);
             
             this.registerForm.reset();
-            this.app.notificationManager.show('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.', 'success');
+            this.notificationManager.show('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.', 'success');
             this.showLoginForm(e);
         } catch (error) {
             console.error("Registration error:", error);
-            this.app.notificationManager.show(error.message, 'error');
+            this.notificationManager.show(error.message, 'error');
         }
     }
     
@@ -174,24 +174,23 @@ export class AuthForms {
         try {
             await this.authService.login(email, password);
             this.loginForm.reset();
-            this.app.notificationManager.show('Zalogowano pomyślnie!', 'success');
+            this.notificationManager.show('Zalogowano pomyślnie!', 'success');
             if (this.authSection) {
                 this.authSection.classList.add('hidden');
             }
         } catch (error) {
-            this.app.notificationManager.show('Błąd logowania: ' + error.message, 'error');
-        }
+            this.notificationManager.show('Błąd logowania: ' + error.message, 'error'); }
     }
     
     async handleLogout() {
         try {
             await this.authService.logout();
-            this.app.notificationManager.show('Wylogowano pomyślnie!', 'info');
+            this.notificationManager.show('Wylogowano pomyślnie!', 'success');
             if (this.authSection) {
                 this.authSection.classList.remove('hidden');
             }
         } catch (error) {
-            this.app.notificationManager.show(error.message, 'error');
+            this.notificationManager.show('Błąd wylogowania: ' + error.message, 'error');
         }
     }
 

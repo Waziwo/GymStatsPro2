@@ -20,7 +20,7 @@ class App {
 
         // Initialize components
         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService);
-        this.authForms = new AuthForms(this.authService, this.scoreService, this.userService);
+        this.authForms = new AuthForms(this.authService, this.scoreService, this.userService, this.notificationManager);
 
         // DOM elements
         this.initializeElements();
