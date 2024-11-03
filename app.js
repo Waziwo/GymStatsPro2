@@ -1,5 +1,6 @@
-// Importy Firebase (dla Firebase 9 i nowszych)
+// Importy Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 // Konfiguracja Firebase
@@ -15,50 +16,52 @@ const firebaseConfig = {
 
 // Inicjalizacja Firebase
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Kod aplikacji
-const form = document.getElementById('form');
-const resultsDiv = document.getElementById('results');
-
-form.addEventListener('submit', async (e) => {
+// Obsługa formularza rejestracji
+const registerForm = document.getElementById('register-form');
+registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const exercise = document.getElementById('exercise').value;
-    const weight = document.getElementById('weight').value;
-
-    // Sprawdzenie, czy dane są poprawne
-    if (exercise.trim() === "" || isNaN(weight) || weight <= 0) {
-        alert("Proszę wprowadzić poprawne dane.");
-        return;
-    }
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
 
     try {
-        // Dodanie nowego dokumentu do kolekcji „wyniki”
-        await addDoc(collection(db, "wyniki"), {
-            exercise,
-            weight: parseFloat(weight),
-            timestamp: new Date()
-        });
-        displayResults();
-        form.reset();
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert('Rejestracja zakończona sukcesem!');
+        registerForm.reset();
     } catch (error) {
-        console.error("Błąd przy dodawaniu dokumentu: ", error);
+        alert(error.message);
     }
 });
+
+// Obsługa formularza logowania
+const loginForm = document.getElementById('login-form');
+loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert('Logowanie zakończone sukcesem!');
+        loginForm.reset();
+    } catch (error) {
+        alert(error.message);
+    }
+});
+
+// Kod aplikacji do wyświetlania wyników
+const resultsDiv = document.getElementById('results');
 
 async function displayResults() {
     resultsDiv.innerHTML = "";
     const q = query(collection(db, "wyniki"), orderBy("timestamp", "desc"));
-    
-    try {
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            resultsDiv.innerHTML += `<p>${data.exercise}: ${data.weight} kg</p>`;
-        });
-    } catch (error) {
-        console.error("Błąd przy pobieraniu wyników: ", error);
-    }
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        resultsDiv.innerHTML += `<p>${data.exercise}: ${data.weight} kg</p>`;
+    });
 }
 
 // Wyświetlenie wyników przy uruchomieniu

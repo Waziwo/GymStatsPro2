@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strona wyników siłowych</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Rejestracja i Logowanie</title>
+    <script type="module" src="script.js" defer></script>
 </head>
 <body>
-    <h1>Twoje wyniki siłowe</h1>
-    <form id="form">
-        <label>Ćwiczenie:</label>
-        <input type="text" id="exercise" required>
-        <label>Wynik (kg):</label>
-        <input type="number" id="weight" required>
-        <button type="submit">Zapisz wynik</button>
+    <h1>Rejestracja</h1>
+    <form id="register-form">
+        <input type="email" id="register-email" placeholder="Email" required>
+        <input type="password" id="register-password" placeholder="Hasło" required>
+        <button type="submit">Zarejestruj się</button>
     </form>
+
+    <h1>Logowanie</h1>
+    <form id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Hasło" required>
+        <button type="submit">Zaloguj się</button>
+    </form>
+
     <div id="results"></div>
-    <!-- Firebase SDK (wersja 9 i nowsze) -->
-    <script type="module" src="app.js"></script>
 </body>
 </html>
