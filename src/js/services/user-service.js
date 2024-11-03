@@ -36,14 +36,15 @@ export class UserService {
         }
     }
 
-    async getUserData(uid) {
+    async getUserData(userId) {
         try {
-            const userDoc = await getDoc(doc(this.db, 'users', uid));
+            const userDoc = await getDoc(doc(this.db, "users", userId));
             if (userDoc.exists()) {
                 return userDoc.data();
             }
             return null;
         } catch (error) {
+            console.error("Error fetching user data:", error);
             throw error;
         }
     }

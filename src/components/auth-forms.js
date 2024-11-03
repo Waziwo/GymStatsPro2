@@ -213,8 +213,15 @@ export class AuthForms {
     showUserInfo(email, userData) {
         if (this.userInfo) {
             this.userInfo.classList.remove('hidden');
-            // Zmiana: Używamy nickname'u zamiast adresu e-mail
-            this.userEmail.textContent = userData?.nickname || 'Użytkownik';
+            const nicknameElement = document.getElementById('user-nickname');
+            const emailElement = document.getElementById('user-email');
+            
+            if (nicknameElement) {
+                nicknameElement.textContent = userData?.nickname || 'Użytkownik';
+            }
+            if (emailElement) {
+                emailElement.textContent = email;
+            }
         }
         if (this.landingPage) {
             this.landingPage.classList.add('hidden');
