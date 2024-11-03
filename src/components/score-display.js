@@ -4,9 +4,11 @@ export class ScoreDisplay {
         this.authService = authService;
         this.scoreForm = null;
         this.scoresList = null;
-        this.initializeElements();
     }
-
+    init() {
+        this.initializeElements();
+        this.loadScores();  // Dodaj to wywołanie
+    }
     initializeElements() {
         this.scoreForm = document.getElementById('score-form');
         this.scoresList = document.getElementById('scores-list');
@@ -41,11 +43,25 @@ export class ScoreDisplay {
     }
 
     async loadScores() {
+        console.log("ScoreService: Rozpoczęto ładowanie wyników");
+        const user = this.auth.currentUser;
+        if (!user) {
+            console.log("ScoreService: Brak zalogowanego użytkownika");
+            return [];
+        }
+    
         try {
-            const scores = await this.scoreService.loadScores();
-            this.displayScores(scores);
+            const q = query(this.scoresCollection, where("userId", "==", user.uid));
+            const scoresSnapshot = await getDocs(q);
+            const scores = scoresSnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            console.log("ScoreService: Załadowane wyniki:", scores);
+            return scores;
         } catch (error) {
-            console.error('Error loading scores:', error);
+            console.error("ScoreService: Błąd podczas ładowania wyników:", error);
+            return [];
         }
     }
 
