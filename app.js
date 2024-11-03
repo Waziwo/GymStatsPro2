@@ -1,6 +1,5 @@
-// Importy Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 // Konfiguracja Firebase
@@ -16,43 +15,62 @@ const firebaseConfig = {
 
 // Inicjalizacja Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const auth = getAuth();
 const db = getFirestore(app);
 
-// Obsługa formularza rejestracji
-const registerForm = document.getElementById('register-form');
-registerForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('register-email').value;
-    const password = document.getElementById('register-password').value;
-
-    try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        alert('Rejestracja zakończona sukcesem!');
-        registerForm.reset();
-    } catch (error) {
-        alert(error.message);
-    }
-});
-
-// Obsługa formularza logowania
-const loginForm = document.getElementById('login-form');
-loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-
-    try {
-        await signInWithEmailAndPassword(auth, email, password);
-        alert('Logowanie zakończone sukcesem!');
-        loginForm.reset();
-    } catch (error) {
-        alert(error.message);
-    }
-});
-
-// Kod aplikacji do wyświetlania wyników
+// Kod aplikacji
+const form = document.getElementById('form');
 const resultsDiv = document.getElementById('results');
+const authForm = document.getElementById('authForm');
+const authTitle = document.getElementById('authTitle');
+const authButton = document.getElementById('authButton');
+const toggleAuth = document.getElementById('toggleAuth');
+
+// Uwierzytelnianie
+let isRegistering = false;
+
+authForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    if (isRegistering) {
+        await createUserWithEmailAndPassword(auth, email, password);
+    } else {
+        await signInWithEmailAndPassword(auth, email, password);
+    }
+});
+
+toggleAuth.addEventListener('click', () => {
+    isRegistering = !isRegistering;
+    authTitle.textContent = isRegistering ? "Zarejestruj się" : "Zaloguj się";
+    authButton.textContent = isRegistering ? "Zarejestruj się" : "Zaloguj się";
+    toggleAuth.textContent = isRegistering ? "Masz konto? Zaloguj się" : "Nie masz konta? Zarejestruj się";
+});
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        form.classList.remove('hidden');
+        displayResults();
+    } else {
+        form.classList.add('hidden');
+    }
+});
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const exercise = document.getElementById('exercise').value;
+    const weight = document.getElementById('weight').value;
+
+    // Dodanie nowego dokumentu do kolekcji „wyniki”
+    await addDoc(collection(db, "wyniki"), {
+        exercise,
+        weight: parseFloat(weight),
+        timestamp: new Date()
+    });
+    displayResults();
+    form.reset();
+});
 
 async function displayResults() {
     resultsDiv.innerHTML = "";
