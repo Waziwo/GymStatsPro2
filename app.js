@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 // Konfiguracja Firebase
@@ -7,7 +7,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyDNtXbYetm8aLRmomgBlVP6HXNZyhttFfQ",
     authDomain: "strona-do-zapisywania-wynikow.firebaseapp.com",
     projectId: "strona-do-zapisywania-wynikow",
-    storageBucket: "strona-do-zapisywania-wynikow.firebasestorage.app",
+    storageBucket: "strona-do-zapisywania-wynikow.appspot.com",
     messagingSenderId: "30761717995",
     appId: "1:30761717995:web:ac03840376114c5fbdeeae",
     measurementId: "G-4F2LGNY193"
@@ -18,7 +18,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Czekamy na załadowanie DOM
 document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('register-form');
     const loginForm = document.getElementById('login-form');
@@ -26,61 +25,57 @@ document.addEventListener('DOMContentLoaded', () => {
     const userEmailSpan = document.getElementById('user-email');
     const logoutButton = document.getElementById('logout-button');
 
-    // Sprawdzanie stanu uwierzytelnienia
-    auth.onAuthStateChanged((user) => {
+    onAuthStateChanged(auth, (user) => {
         if (user) {
-            if (userEmailSpan) userEmailSpan.textContent = user.email;
-            if (userInfo) userInfo.style.display = 'block';
-            if (loginForm) loginForm.style.display = 'none';
-            if (registerForm) registerForm.style.display = 'none';
+            userEmailSpan.textContent = user.email;
+            userInfo.style.display = 'block';
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'none';
         } else {
-            if (userInfo) userInfo.style.display = 'none';
-            if (loginForm) loginForm.style.display = 'block';
-            if (registerForm) registerForm.style.display = 'block';
+            userInfo.style.display = 'none';
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'block';
         }
     });
 
-    // Rejestracja
-    if (registerForm) {
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                alert("Rejestracja zakończona sukcesem!");
-                registerForm.reset();
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-    }
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            console.log("User registered successfully:", userCredential.user);
+            alert("Rejestracja zakończona sukcesem!");
+            registerForm.reset();
+        } catch (error) {
+            console.error("Registration error:", error);
+            alert(`Błąd rejestracji: ${error.message}`);
+        }
+    });
 
-    // Logowanie
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                alert("Zalogowano pomyślnie!");
-                loginForm.reset();
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-    }
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            console.log("User logged in successfully");
+            alert("Zalogowano pomyślnie!");
+            loginForm.reset();
+        } catch (error) {
+            console.error("Login error:", error);
+            alert(`Błąd logowania: ${error.message}`);
+        }
+    });
 
-    // Wylogowanie
-    if (logoutButton) {
-        logoutButton.addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-                alert("Wylogowano pomyślnie!");
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-    }
+    logoutButton.addEventListener('click', async () => {
+        try {
+            await signOut(auth);
+            console.log("User signed out successfully");
+            alert("Wylogowano pomyślnie!");
+        } catch (error) {
+            console.error("Logout error:", error);
+            alert(`Błąd wylogowania: ${error.message}`);
+        }
+    });
 });
