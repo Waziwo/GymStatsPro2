@@ -20,6 +20,7 @@ export class AuthForms {
         this.registerFormContainer = document.getElementById('register-form-container');
         this.resetPasswordLink = document.getElementById('reset-password-link');
         this.resetPasswordForm = document.getElementById('reset-password-form');
+        this.resetPasswordContainer = document.getElementById('reset-password-container');
         this.backToLoginLink = document.getElementById('back-to-login');
         this.landingPage = document.getElementById('landing-page');
         this.userDashboard = document.getElementById('user-dashboard');
@@ -40,7 +41,7 @@ export class AuthForms {
                 e.preventDefault();
                 if (this.loginFormContainer) this.loginFormContainer.classList.add('hidden');
                 if (this.registerFormContainer) this.registerFormContainer.classList.remove('hidden');
-                if (this.resetPasswordForm) this.resetPasswordForm.classList.add('hidden');
+                if (this.resetPasswordContainer) this.resetPasswordContainer.classList.add('hidden');
             });
         }
 
@@ -49,7 +50,7 @@ export class AuthForms {
                 e.preventDefault();
                 if (this.registerFormContainer) this.registerFormContainer.classList.add('hidden');
                 if (this.loginFormContainer) this.loginFormContainer.classList.remove('hidden');
-                if (this.resetPasswordForm) this.resetPasswordForm.classList.add('hidden');
+                if (this.resetPasswordContainer) this.resetPasswordContainer.classList.add('hidden');
             });
         }
     }
@@ -74,8 +75,8 @@ export class AuthForms {
                     if (this.registerFormContainer) {
                         this.registerFormContainer.classList.add('hidden');
                     }
-                    if (this.resetPasswordForm) {
-                        this.resetPasswordForm.classList.add('hidden');
+                    if (this.resetPasswordContainer) {
+                        this.resetPasswordContainer.classList.add('hidden');
                     }
                 }
             });
@@ -107,19 +108,24 @@ export class AuthForms {
         e.preventDefault();
         if (this.loginFormContainer) this.loginFormContainer.classList.add('hidden');
         if (this.registerFormContainer) this.registerFormContainer.classList.add('hidden');
-        if (this.resetPasswordForm) this.resetPasswordForm.classList.remove('hidden');
+        if (this.resetPasswordContainer) this.resetPasswordContainer.classList.remove('hidden');
     }
 
     showLoginForm(e) {
         e.preventDefault();
-        if (this.resetPasswordForm) this.resetPasswordForm.classList.add('hidden');
+        if (this.resetPasswordContainer) this.resetPasswordContainer.classList.add('hidden');
         if (this.registerFormContainer) this.registerFormContainer.classList.add('hidden');
         if (this.loginFormContainer) this.loginFormContainer.classList.remove('hidden');
     }
 
     async handleResetPassword(e) {
         e.preventDefault();
-        const email = this.resetPasswordForm['reset-email'].value;
+        const emailInput = this.resetPasswordForm.querySelector('#reset-email');
+        if (!emailInput) {
+            console.error('Element input email nie został znaleziony');
+            return;
+        }
+        const email = emailInput.value;
         try {
             await this.authService.resetPassword(email);
             alert('Link do resetowania hasła został wysłany na podany adres email.');
