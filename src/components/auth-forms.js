@@ -213,7 +213,8 @@ export class AuthForms {
     showUserInfo(email, userData) {
         if (this.userInfo) {
             this.userInfo.classList.remove('hidden');
-            this.userEmail.textContent = userData?.nickname || email;
+            // Zmiana: Używamy nickname'u zamiast adresu e-mail
+            this.userEmail.textContent = userData?.nickname || 'Użytkownik';
         }
         if (this.landingPage) {
             this.landingPage.classList.add('hidden');

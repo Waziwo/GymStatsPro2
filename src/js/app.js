@@ -86,15 +86,16 @@ class App {
                     navLinks.forEach(link => {
                         link.style.display = 'none';
                     });
-
+    
                     if (this.scoreDisplay) {
                         this.scoreDisplay.loadScores();
                     }
-
+    
                     // Aktualizuj informacje o użytkowniku
                     const userInfoElement = document.getElementById('user-info');
                     if (userInfoElement) {
-                        userInfoElement.textContent = `Witaj, ${userData?.nickname || user.email}!`;
+                        // Zmiana: Używamy nickname'u zamiast adresu e-mail
+                        userInfoElement.textContent = `Witaj, ${userData?.nickname || 'Użytkowniku'}!`;
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);
