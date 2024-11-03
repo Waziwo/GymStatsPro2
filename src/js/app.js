@@ -5,50 +5,66 @@ import { ScoreService } from "./scores/scores.js";
 import { AuthForms } from "../components/auth-forms.js";
 import { ScoreDisplay } from "../components/score-display.js";
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+class App {
+    constructor() {
+        // Initialize Firebase
+        this.app = initializeApp(firebaseConfig);
 
-// Initialize services
-const authService = new AuthService();
-const scoreService = new ScoreService();
+        // Initialize services
+        this.authService = new AuthService();
+        this.scoreService = new ScoreService();
 
-// Initialize components
-const scoreDisplay = new ScoreDisplay(scoreService, authService);
-const authForms = new AuthForms(authService, scoreService);
+        // Initialize components
+        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService);
+        this.authForms = new AuthForms(this.authService, this.scoreService);
 
-// DOM elements
-const loginButton = document.getElementById('login-button');
-const landingPage = document.getElementById('landing-page');
-const authSection = document.getElementById('auth-section');
-const userDashboard = document.getElementById('user-dashboard');
+        // DOM elements
+        this.loginButton = document.getElementById('login-button');
+        this.landingPage = document.getElementById('landing-page');
+        this.authSection = document.getElementById('auth-section');
+        this.userDashboard = document.getElementById('user-dashboard');
 
-// Event listeners
-loginButton.addEventListener('click', () => {
-    landingPage.classList.add('hidden');
-    authSection.classList.remove('hidden');
-});
-
-// Przycisk do przełączania między formularzami
-document.getElementById('show-register').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('login-form-container').classList.add('hidden');
-    document.getElementById('register-form-container').classList.remove('hidden');
-});
-
-document.getElementById('show-login').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('register-form-container').classList.add('hidden');
-    document.getElementById('login-form-container').classList.remove('hidden');
-});
-
-authService.onAuthStateChanged((user) => {
-    if (user) {
-        landingPage.classList.add('hidden');
-        authSection.classList.add('hidden');
-        userDashboard.classList.remove('hidden');
-        scoreDisplay.loadScores();
-    } else {
-        userDashboard.classList.add('hidden');
-        landingPage.classList.remove('hidden');
+        this.setupEventListeners();
+        this.setupAuthStateListener();
     }
+
+    setupEventListeners() {
+        this.loginButton.addEventListener('click', () => {
+            this.landingPage.classList.add('hidden');
+            this.authSection.classList.remove('hidden');
+        });
+
+        document.getElementById('show-register').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('login-form-container').classList.add('hidden');
+            document.getElementById('register-form-container').classList.remove('hidden');
+        });
+
+        document.getElementById('show-login').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('register-form-container').classList.add('hidden');
+            document.getElementById('login-form-container').classList.remove('hidden');
+        });
+    }
+
+    setupAuthStateListener() {
+        this.authService.onAuthStateChanged((user) => {
+            if (user) {
+                this.landingPage.classList.add('hidden');
+                this.authSection.classList.add('hidden');
+                this.userDashboard.classList.remove('hidden');
+                if (this.scoreDisplay) {
+                    this.scoreDisplay.loadScores();
+                }
+            } else {
+                this.userDashboard.classList.add('hidden');
+                this.landingPage.classList.remove('hidden');
+            }
+        });
+    }
+}
+
+// Initialize the application
+window.addEventListener('DOMContentLoaded', () => {
+    new App();
 });

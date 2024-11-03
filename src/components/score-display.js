@@ -2,52 +2,61 @@ export class ScoreDisplay {
     constructor(scoreService, authService) {
         this.scoreService = scoreService;
         this.authService = authService;
+        this.scoreForm = null;
+        this.scoresList = null;
         this.initializeElements();
     }
 
     initializeElements() {
         this.scoreForm = document.getElementById('score-form');
         this.scoresList = document.getElementById('scores-list');
-        this.setupEventListeners();
+        if (this.scoreForm) {
+            this.setupEventListeners();
+        }
     }
 
     setupEventListeners() {
-        this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
+        this.scoreForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await this.handleScoreSubmit(e);
+        });
     }
 
     async handleScoreSubmit(e) {
-        e.preventDefault();
         const exerciseType = this.scoreForm['exercise-type'].value;
         const weight = parseFloat(this.scoreForm['weight'].value);
         const reps = parseInt(this.scoreForm['reps'].value);
 
         try {
-            if (!this.authService.getCurrentUser()) {
+            const user = await this.authService.getCurrentUser();
+            if (!user) {
                 throw new Error('Musisz być zalogowany aby dodać wynik');
             }
             await this.scoreService.addScore(exerciseType, weight, reps);
             this.scoreForm.reset();
-            this.loadScores(); // Odśwież listę wyników po dodaniu nowego
+            await this.loadScores();
         } catch (error) {
             alert(error.message);
         }
     }
 
-    loadScores() {
-        this.scoreService.loadScores().then(scores => {
+    async loadScores() {
+        try {
+            const scores = await this.scoreService.loadScores();
             this.displayScores(scores);
-        }).catch(error => {
+        } catch (error) {
             console.error('Error loading scores:', error);
-        });
+        }
     }
 
     displayScores(scores) {
-        const scoresList = document.getElementById('scores-list');
-        scoresList.innerHTML = '';
+        if (!this.scoresList) return;
+        
+        this.scoresList.innerHTML = '';
         scores.forEach(score => {
             const li = document.createElement('li');
             li.textContent = `${score.exerciseType}: ${score.weight}kg x ${score.reps} reps`;
-            scoresList.appendChild(li);
+            this.scoresList.appendChild(li);
         });
     }
 }
