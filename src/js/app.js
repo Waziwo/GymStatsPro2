@@ -72,34 +72,28 @@ class App {
     setupAuthStateListener() {
         this.authService.onAuthStateChanged(async (user) => {
             if (user) {
-                // Użytkownik zalogowany
                 try {
+                    // Dodaj małe opóźnienie przed pobraniem danych
+                    await new Promise(resolve => setTimeout(resolve, 1000));
                     const userData = await this.userService.getUserData(user.uid);
-                    console.log("User data fetched:", userData);  // Dodaj ten log
-                    this.landingPage.classList.add('hidden');
-                    this.authSection.classList.add('hidden');
-                    this.userDashboard.classList.remove('hidden');
-                    this.featuresSection.classList.add('hidden');
-                    this.aboutSection.classList.add('hidden');
+                    console.log("User data fetched:", userData);
                     
-                    // Ukryj przyciski nawigacyjne dla sekcji Funkcje i O nas
-                    const navLinks = document.querySelectorAll('.nav-link');
-                    navLinks.forEach(link => {
-                        link.style.display = 'none';
-                    });
-    
-                    if (this.scoreDisplay) {
-                        this.scoreDisplay.loadScores();
-                    }
-    
-                    // Aktualizuj informacje o użytkowniku
-                    const userNicknameElement = document.getElementById('user-nickname');
-                    const userEmailElement = document.getElementById('user-email');
-                    if (userNicknameElement) {
-                        userNicknameElement.textContent = userData?.nickname || 'Użytkownik';
-                    }
-                    if (userEmailElement) {
-                        userEmailElement.textContent = user.email;
+                    if (userData) {
+                        this.landingPage.classList.add('hidden');
+                        this.authSection.classList.add('hidden');
+                        this.userDashboard.classList.remove('hidden');
+                        this.featuresSection.classList.add('hidden');
+                        this.aboutSection.classList.add('hidden');
+                        
+                        // Aktualizuj informacje o użytkowniku
+                        const userNicknameElement = document.getElementById('user-nickname');
+                        const userEmailElement = document.getElementById('user-email');
+                        if (userNicknameElement) {
+                            userNicknameElement.textContent = userData.nickname;
+                        }
+                        if (userEmailElement) {
+                            userEmailElement.textContent = user.email;
+                        }
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);

@@ -146,36 +146,29 @@ export class AuthForms {
         const password = this.registerForm['register-password'].value;
         const nickname = this.registerForm['register-nickname'].value;
     
-        console.log("Attempting registration with:", { email, nickname });
-    
         try {
             console.log("Checking if nickname exists...");
             const nicknameExists = await this.userService.checkNicknameExists(nickname);
-            console.log("Nickname exists:", nicknameExists);
-    
+            
             if (nicknameExists) {
                 alert('Ten nickname jest już zajęty. Wybierz inny.');
                 return;
             }
     
-            console.log("Registering user...");
             const userCredential = await this.authService.register(email, password);
-            console.log("Registration response:", userCredential); // dodaj log
-    
-            if (!userCredential || !userCredential.user) {
-                throw new Error('Błąd podczas rejestracji - brak danych użytkownika');
-            }
-    
-            console.log("Creating user in Firestore...");
+            
+            // Najpierw utworz użytkownika w Firestore
             await this.userService.createUser(userCredential.user.uid, email, nickname);
-            console.log("User created in Firestore");
+            
+            // Poczekaj chwilę przed przejściem do logowania
+            setTimeout(() => {
+                this.registerForm.reset();
+                alert('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.');
+                this.showLoginForm(e);
+            }, 1000);
     
-            this.registerForm.reset();
-            alert('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.');
-            this.showLoginForm(e);
         } catch (error) {
             console.error("Registration error:", error);
-            console.error("Error details:", error.code, error.message);
             alert(error.message);
         }
     }
