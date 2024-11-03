@@ -211,6 +211,7 @@ export class AuthForms {
     }
 
     showUserInfo(email, userData) {
+        console.log("Showing user info:", email, userData);  // Dodaj ten log
         if (this.userInfo) {
             this.userInfo.classList.remove('hidden');
             const nicknameElement = document.getElementById('user-nickname');

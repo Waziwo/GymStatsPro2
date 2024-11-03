@@ -75,6 +75,7 @@ class App {
                 // Użytkownik zalogowany
                 try {
                     const userData = await this.userService.getUserData(user.uid);
+                    console.log("User data fetched:", userData);  // Dodaj ten log
                     this.landingPage.classList.add('hidden');
                     this.authSection.classList.add('hidden');
                     this.userDashboard.classList.remove('hidden');
@@ -92,10 +93,13 @@ class App {
                     }
     
                     // Aktualizuj informacje o użytkowniku
-                    const userInfoElement = document.getElementById('user-info');
-                    if (userInfoElement) {
-                        // Zmiana: Używamy nickname'u zamiast adresu e-mail
-                        userInfoElement.textContent = `Witaj, ${userData?.nickname || 'Użytkowniku'}!`;
+                    const userNicknameElement = document.getElementById('user-nickname');
+                    const userEmailElement = document.getElementById('user-email');
+                    if (userNicknameElement) {
+                        userNicknameElement.textContent = userData?.nickname || 'Użytkownik';
+                    }
+                    if (userEmailElement) {
+                        userEmailElement.textContent = user.email;
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);
