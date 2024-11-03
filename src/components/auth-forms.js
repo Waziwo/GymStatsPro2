@@ -139,37 +139,35 @@ export class AuthForms {
         }
     }
 
+    
     async handleRegister(e) {
         e.preventDefault();
         const email = this.registerForm['register-email'].value;
         const password = this.registerForm['register-password'].value;
         const nickname = this.registerForm['register-nickname'].value;
-    
-        // Dodatkowa walidacja nicknamu
-        const nicknameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
-        if (!nicknameRegex.test(nickname)) {
-            alert('Nickname musi mieć od 3 do 20 znaków i może zawierać tylko litery, cyfry, - i _');
-            return;
-        }
-    
+
+        console.log("Attempting registration with:", { email, nickname }); // Dodaj ten log
+
         try {
-            // Sprawdź czy nickname jest dostępny
             const nicknameExists = await this.userService.checkNicknameExists(nickname);
+            console.log("Nickname exists check:", nicknameExists); // Dodaj ten log
+
             if (nicknameExists) {
                 alert('Ten nickname jest już zajęty. Wybierz inny.');
                 return;
             }
-    
-            // Zarejestruj użytkownika
+
             const userCredential = await this.authService.register(email, password);
-            
-            // Dodaj informacje o użytkowniku do Firestore
+            console.log("User registered:", userCredential.user.uid); // Dodaj ten log
+
             await this.userService.createUser(userCredential.user.uid, email, nickname);
-            
+            console.log("User data saved to Firestore"); // Dodaj ten log
+
             this.registerForm.reset();
             alert('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.');
             this.showLoginForm(e);
         } catch (error) {
+            console.error("Registration error:", error); // Zmień alert na console.error
             alert(error.message);
         }
     }
