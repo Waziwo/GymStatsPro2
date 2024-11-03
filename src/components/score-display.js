@@ -67,13 +67,23 @@ export class ScoreDisplay {
     
         this.scoresList.innerHTML = '';
     
+        // Sortuj daty od najnowszej do najstarszej
+        const sortedDates = Object.keys(groupedScores).sort((a, b) => {
+            return new Date(b) - new Date(a);
+        });
+    
         // Wyświetl wyniki zgrupowane według daty
-        for (const [date, scores] of Object.entries(groupedScores)) {
+        for (const date of sortedDates) {
             const dateHeader = document.createElement('h3');
             dateHeader.textContent = date;
             this.scoresList.appendChild(dateHeader);
     
-            scores.forEach(score => {
+            // Sortuj wyniki według godziny (od najnowszej do najstarszej)
+            const sortedScores = groupedScores[date].sort((a, b) => {
+                return b.timestamp - a.timestamp;
+            });
+    
+            sortedScores.forEach(score => {
                 const li = document.createElement('li');
                 li.textContent = `${score.exerciseType}: ${score.weight}kg x ${score.reps} reps (dodano o ${score.time})`;
                 this.scoresList.appendChild(li);
