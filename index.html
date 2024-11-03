@@ -3,33 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strona wyników siłowych</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <title>Rejestracja i Logowanie</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Dodaj swój plik CSS -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script type="module" src="app.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Twoje wyniki siłowe</h1>
-        <div id="auth">
-            <h2 id="authTitle">Zaloguj się lub zarejestruj</h2>
-            <form id="authForm">
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="password" id="password" placeholder="Hasło" required>
-                <button type="submit" id="authButton">Zaloguj się</button>
-                <p id="toggleAuth">Nie masz konta? Zarejestruj się</p>
-            </form>
-        </div>
-        <form id="form" class="hidden">
-            <label>Ćwiczenie:</label>
-            <input type="text" id="exercise" required>
-            <label>Wynik (kg):</label>
-            <input type="number" id="weight" required>
-            <button type="submit">Zapisz wynik</button>
+        <h1>Rejestracja i Logowanie</h1>
+        <form id="register-form">
+            <input type="email" id="register-email" placeholder="Email" required>
+            <input type="password" id="register-password" placeholder="Hasło" required>
+            <button type="submit">Zarejestruj</button>
         </form>
-        <div id="results"></div>
+        <form id="login-form">
+            <input type="email" id="login-email" placeholder="Email" required>
+            <input type="password" id="login-password" placeholder="Hasło" required>
+            <button type="submit">Zaloguj</button>
+        </form>
+        <div id="user-info" style="display:none;">
+            <h2>Witaj, <span id="user-email"></span></h2>
+            <button id="logout-button">Wyloguj</button>
+        </div>
     </div>
-    <script type="module" src="app.js"></script>
+    <script src="app.js" type="module"></script>
 </body>
 </html>

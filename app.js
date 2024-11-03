@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 // Konfiguracja Firebase
@@ -13,74 +13,46 @@ const firebaseConfig = {
     measurementId: "G-4F2LGNY193"
 };
 
-// Inicjalizacja Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Kod aplikacji
-const form = document.getElementById('form');
-const resultsDiv = document.getElementById('results');
-const authForm = document.getElementById('authForm');
-const authTitle = document.getElementById('authTitle');
-const authButton = document.getElementById('authButton');
-const toggleAuth = document.getElementById('toggleAuth');
+const registerForm = document.getElementById('register-form');
+const loginForm = document.getElementById('login-form');
+const userInfo = document.getElementById('user-info');
+const userEmailSpan = document.getElementById('user-email');
+const logoutButton = document.getElementById('logout-button');
 
-// Uwierzytelnianie
-let isRegistering = false;
-
-authForm.addEventListener('submit', async (e) => {
+registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    if (isRegistering) {
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    try {
         await createUserWithEmailAndPassword(auth, email, password);
-    } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        alert("Rejestracja zakończona sukcesem!");
+        registerForm.reset();
+    } catch (error) {
+        alert(error.message);
     }
 });
 
-toggleAuth.addEventListener('click', () => {
-    isRegistering = !isRegistering;
-    authTitle.textContent = isRegistering ? "Zarejestruj się" : "Zaloguj się";
-    authButton.textContent = isRegistering ? "Zarejestruj się" : "Zaloguj się";
-    toggleAuth.textContent = isRegistering ? "Masz konto? Zaloguj się" : "Nie masz konta? Zarejestruj się";
-});
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        form.classList.remove('hidden');
-        displayResults();
-    } else {
-        form.classList.add('hidden');
-    }
-});
-
-form.addEventListener('submit', async (e) => {
+loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const exercise = document.getElementById('exercise').value;
-    const weight = document.getElementById('weight').value;
-
-    // Dodanie nowego dokumentu do kolekcji „wyniki”
-    await addDoc(collection(db, "wyniki"), {
-        exercise,
-        weight: parseFloat(weight),
-        timestamp: new Date()
-    });
-    displayResults();
-    form.reset();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        userEmailSpan.textContent = email;
+        userInfo.style.display = 'block';
+        alert("Zalogowano pomyślnie!");
+        loginForm.reset();
+    } catch (error) {
+        alert(error.message);
+    }
 });
 
-async function displayResults() {
-    resultsDiv.innerHTML = "";
-    const q = query(collection(db, "wyniki"), orderBy("timestamp", "desc"));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        resultsDiv.innerHTML += `<p>${data.exercise}: ${data.weight} kg</p>`;
-    });
-}
-
-// Wyświetlenie wyników przy uruchomieniu
-displayResults();
+logoutButton.addEventListener('click', async () => {
+    await signOut(auth);
+    userInfo.style.display = 'none';
+    alert("Wylogowano pomyślnie!");
+});
