@@ -410,3 +410,17 @@ html {
 .auth-container a:hover {
     text-decoration: underline;
 }
+/* w style.css */
+#register-nickname:invalid {
+    border-color: var(--error-color);
+}
+
+#register-nickname:valid {
+    border-color: var(--success-color);
+}
+
+.nickname-requirements {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 0.25rem;
+}

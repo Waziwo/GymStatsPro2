@@ -1,7 +1,8 @@
 export class AuthForms {
-    constructor(authService, scoreService) {
+    constructor(authService, scoreService, userService) {
         this.authService = authService;
         this.scoreService = scoreService;
+        this.userService = userService;
         this.initializeForms();
         this.setupAuthStateListener();
     }
@@ -93,10 +94,17 @@ export class AuthForms {
     }
 
     setupAuthStateListener() {
-        this.authService.onAuthStateChanged((user) => {
+        this.authService.onAuthStateChanged(async (user) => {
             if (user) {
-                this.showUserInfo(user.email);
-                this.hideLoginButton();
+                try {
+                    const userData = await this.userService.getUserData(user.uid);
+                    this.showUserInfo(user.email, userData);
+                    this.hideLoginButton();
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    this.showUserInfo(user.email);
+                    this.hideLoginButton();
+                }
             } else {
                 this.hideUserInfo();
                 this.showLoginButton();
@@ -120,12 +128,7 @@ export class AuthForms {
 
     async handleResetPassword(e) {
         e.preventDefault();
-        const emailInput = this.resetPasswordForm.querySelector('#reset-email');
-        if (!emailInput) {
-            console.error('Element input email nie został znaleziony');
-            return;
-        }
-        const email = emailInput.value;
+        const email = this.resetPasswordForm['reset-email'].value;
         try {
             await this.authService.resetPassword(email);
             alert('Link do resetowania hasła został wysłany na podany adres email.');
@@ -140,9 +143,22 @@ export class AuthForms {
         e.preventDefault();
         const email = this.registerForm['register-email'].value;
         const password = this.registerForm['register-password'].value;
+        const nickname = this.registerForm['register-nickname'].value;
 
         try {
-            await this.authService.register(email, password);
+            // Sprawdź czy nickname jest dostępny
+            const nicknameExists = await this.userService.checkNicknameExists(nickname);
+            if (nicknameExists) {
+                alert('Ten nickname jest już zajęty. Wybierz inny.');
+                return;
+            }
+
+            // Zarejestruj użytkownika
+            const userCredential = await this.authService.register(email, password);
+            
+            // Dodaj informacje o użytkowniku do Firestore
+            await this.userService.createUser(userCredential.user.uid, email, nickname);
+            
             this.registerForm.reset();
             alert('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.');
             this.showLoginForm(e);
@@ -176,37 +192,63 @@ export class AuthForms {
     async handleLogout() {
         try {
             await this.authService.logout();
+            if (this.authSection) {
+                this.authSection.classList.remove('hidden');
+            }
+            if (this.resetPasswordLink) {
+                this.resetPasswordLink.classList.add('hidden');
+            }
         } catch (error) {
             alert(error.message);
         }
     }
 
-    showUserInfo(email) {
-        if (this.userInfo) this.userInfo.classList.remove('hidden');
-        if (this.userEmail) this.userEmail.textContent = email;
-        if (this.scoreSection) this.scoreSection.classList.remove('hidden');
-        if (this.landingPage) this.landingPage.classList.add('hidden');
-        if (this.userDashboard) this.userDashboard.classList.remove('hidden');
-        if (this.authSection) this.authSection.classList.add('hidden');
-        if (this.featuresSection) this.featuresSection.classList.add('hidden');
-        if (this.aboutSection) this.aboutSection.classList.add('hidden');
+    showUserInfo(email, userData) {
+        if (this.userInfo) {
+            this.userInfo.classList.remove('hidden');
+            this.userEmail.textContent = userData?.nickname || email;
+        }
+        if (this.landingPage) {
+            this.landingPage.classList.add('hidden');
+        }
+        if (this.userDashboard) {
+            this.userDashboard.classList.remove('hidden');
+        }
+        if (this.featuresSection) {
+            this.featuresSection.classList.add('hidden');
+        }
+        if (this.aboutSection) {
+            this.aboutSection.classList.add('hidden');
+        }
     }
 
     hideUserInfo() {
-        if (this.userInfo) this.userInfo.classList.add('hidden');
-        if (this.scoreSection) this.scoreSection.classList.add('hidden');
-        if (this.landingPage) this.landingPage.classList.remove('hidden');
-        if (this.userDashboard) this.userDashboard.classList.add('hidden');
-        if (this.authSection) this.authSection.classList.add('hidden');
-        if (this.featuresSection) this.featuresSection.classList.remove('hidden');
-        if (this.aboutSection) this.aboutSection.classList.remove('hidden');
-    }
-
-    hideLoginButton() {
-        if (this.loginButton) this.loginButton.style.display = 'none';
+        if (this.userInfo) {
+            this.userInfo.classList.add('hidden');
+        }
+        if (this.landingPage) {
+            this.landingPage.classList.remove('hidden');
+        }
+        if (this.userDashboard) {
+            this.userDashboard.classList.add('hidden');
+        }
+        if (this.featuresSection) {
+            this.featuresSection.classList.remove('hidden');
+        }
+        if (this.aboutSection) {
+            this.aboutSection.classList.remove('hidden');
+        }
     }
 
     showLoginButton() {
-        if (this.loginButton) this.loginButton.style.display = 'block';
+        if (this.loginButton) {
+            this.loginButton.classList.remove('hidden');
+        }
+    }
+
+    hideLoginButton() {
+        if (this.loginButton) {
+            this.loginButton.classList.add('hidden');
+        }
     }
 }
