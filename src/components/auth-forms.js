@@ -8,6 +8,9 @@ export class AuthForms {
         this.registerForm = document.getElementById('register-form');
         this.loginForm = document.getElementById('login-form');
         this.logoutButton = document.getElementById('logout-button');
+        this.userInfo = document.getElementById('user-info');
+        this.userEmail = document.getElementById('user-email');
+        this.scoreSection = document.getElementById('score-section');
 
         this.setupEventListeners();
     }
@@ -26,7 +29,7 @@ export class AuthForms {
         try {
             await this.authService.register(email, password);
             alert('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.');
-            this.registerForm.reset(); // Wyczyść formularz rejestracji
+            this.registerForm.reset();
         } catch (error) {
             alert(error.message);
         }
@@ -38,19 +41,35 @@ export class AuthForms {
         const password = this.loginForm['login-password'].value;
 
         try {
-            await this.authService.login(email, password);
-            document.getElementById('user-email').textContent = email;
-            document.getElementById('user-info').style.display = 'block';
-            document.getElementById('score-section').style.display = 'block'; // Pokaż sekcję wyników
-            this.loginForm.reset(); // Wyczyść formularz logowania
+            const userCredential = await this.authService.login(email, password);
+            this.showUserInfo(userCredential.user.email);
+            this.loginForm.reset();
         } catch (error) {
             alert(error.message);
         }
     }
 
     async handleLogout() {
-        await this.authService.logout();
-        document.getElementById('user-info').style.display = 'none';
-        document.getElementById('score-section').style.display = 'none'; // Ukryj sekcję wyników
+        try {
+            await this.authService.logout();
+            this.hideUserInfo();
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    showUserInfo(email) {
+        this.userEmail.textContent = email;
+        this.userInfo.style.display = 'block';
+        this.scoreSection.style.display = 'block';
+        this.loginForm.style.display = 'none';
+        this.registerForm.style.display = 'none';
+    }
+
+    hideUserInfo() {
+        this.userInfo.style.display = 'none';
+        this.scoreSection.style.display = 'none';
+        this.loginForm.style.display = 'block';
+        this.registerForm.style.display = 'block';
     }
 }

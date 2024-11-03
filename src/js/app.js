@@ -27,7 +27,7 @@ class App {
 
     initializeComponents() {
         this.authForms = new AuthForms(this.authService);
-        this.scoreDisplay = new ScoreDisplay(this.scoreService);
+        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService);
     }
 }
 
