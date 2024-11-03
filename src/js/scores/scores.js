@@ -33,12 +33,13 @@ export class ScoreService {
         }
     }
 
-    async addScore(userId, gameName, score) {
+    async addScore(userId, exerciseType, weight, reps) {
         try {
             return await addDoc(this.scoresCollection, {
                 userId,
-                gameName,
-                score: parseInt(score),
+                exerciseType,
+                weight: parseFloat(weight),
+                reps: parseInt(reps),
                 timestamp: new Date()
             });
         } catch (error) {

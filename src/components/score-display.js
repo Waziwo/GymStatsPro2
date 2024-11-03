@@ -18,14 +18,15 @@ export class ScoreDisplay {
 
     async handleScoreSubmit(e) {
         e.preventDefault();
-        const gameName = this.scoreForm['game-name'].value;
-        const score = this. scoreForm['score'].value;
-
+        const exerciseType = this.scoreForm['exercise-type'].value;
+        const weight = this.scoreForm['weight'].value;
+        const reps = this.scoreForm['reps'].value;
+    
         try {
             const user = await this.authService.getCurrentUser();
             if (!user) return;
-
-            await this.scoreService.addScore(user.uid, gameName, score);
+    
+            await this.scoreService.addScore(user.uid, exerciseType, weight, reps);
             this.scoreForm.reset();
             this.scoreService.loadScores();
         } catch (error) {
