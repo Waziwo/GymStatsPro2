@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-// Konfiguracja Firebas
+// Konfiguracja Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDNtXbYetm8aLRmomgBlVP6HXNZyhttFfQ",
     authDomain: "strona-do-zapisywania-wynikow.firebaseapp.com",
@@ -26,24 +26,39 @@ form.addEventListener('submit', async (e) => {
     const exercise = document.getElementById('exercise').value;
     const weight = document.getElementById('weight').value;
 
-    // Dodanie nowego dokumentu do kolekcji „wyniki”
-    await addDoc(collection(db, "wyniki"), {
-        exercise,
-        weight: parseFloat(weight),
-        timestamp: new Date()
-    });
-    displayResults();
-    form.reset();
+    // Sprawdzenie, czy dane są poprawne
+    if (exercise.trim() === "" || isNaN(weight) || weight <= 0) {
+        alert("Proszę wprowadzić poprawne dane.");
+        return;
+    }
+
+    try {
+        // Dodanie nowego dokumentu do kolekcji „wyniki”
+        await addDoc(collection(db, "wyniki"), {
+            exercise,
+            weight: parseFloat(weight),
+            timestamp: new Date()
+        });
+        displayResults();
+        form.reset();
+    } catch (error) {
+        console.error("Błąd przy dodawaniu dokumentu: ", error);
+    }
 });
 
 async function displayResults() {
     resultsDiv.innerHTML = "";
     const q = query(collection(db, "wyniki"), orderBy("timestamp", "desc"));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        resultsDiv.innerHTML += `<p>${data.exercise}: ${data.weight} kg</p>`;
-    });
+    
+    try {
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            resultsDiv.innerHTML += `<p>${data.exercise}: ${data.weight} kg</p>`;
+        });
+    } catch (error) {
+        console.error("Błąd przy pobieraniu wyników: ", error);
+    }
 }
 
 // Wyświetlenie wyników przy uruchomieniu
