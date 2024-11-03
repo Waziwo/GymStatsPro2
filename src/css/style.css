@@ -366,3 +366,47 @@ html {
         font-size: 0.9rem;
     }
 }
+#reset-password-link {
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+#reset-password-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+#reset-password-link a:hover {
+    text-decoration: underline;
+}
+
+#reset-password-form {
+    margin-top: 20px;
+}
+
+#back-to-login {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+#back-to-login:hover {
+    text-decoration: underline;
+}
+
+.auth-container form {
+    margin-bottom: 1rem;
+}
+
+.auth-container p {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.auth-container a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.auth-container a:hover {
+    text-decoration: underline;
+}

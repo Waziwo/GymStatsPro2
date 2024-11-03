@@ -101,8 +101,9 @@
                         <button type="submit" class="btn-primary">Zaloguj się</button>
                     </form>
                     <p>Nie masz konta? <a href="#" id="show-register">Zarejestruj się</a></p>
+                    <p class="hidden" id="reset-password-link"><a href="#">Zapomniałeś hasła?</a></p>
                 </div>
-
+        
                 <div id="register-form-container" class="hidden">
                     <h2>Zarejestruj się</h2>
                     <form id="register-form">
@@ -117,6 +118,18 @@
                         <button type="submit" class="btn-primary">Zarejestruj się</button>
                     </form>
                     <p>Masz już konto? <a href="#" id="show-login">Zaloguj się</a></p>
+                </div>
+        
+                <div id="reset-password-form" class="hidden">
+                    <h2>Resetuj hasło</h2>
+                    <form>
+                        <div class="form-group">
+                            <label for="reset-email">Email</label>
+                            <input type="email" id="reset-email" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Wyślij link do resetowania</button>
+                    </form>
+                    <p><a href="#" id="back-to-login">Powrót do logowania</a></p>
                 </div>
             </div>
         </section>

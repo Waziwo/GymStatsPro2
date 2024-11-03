@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 export class AuthService {
     constructor() {
@@ -35,5 +35,13 @@ export class AuthService {
 
     onAuthStateChanged(callback) {
         this.auth.onAuthStateChanged(callback);
+    }
+
+    async resetPassword(email) {
+        try {
+            await sendPasswordResetEmail(this.auth, email);
+        } catch (error) {
+            throw error;
+        }
     }
 }
