@@ -3,91 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GymStats</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>GymStats Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="src/css/style.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">GymStats</div>
-            <div class="auth-buttons">
-                <button id="login-button">Zaloguj się</button>
+    <header class="nav-header">
+        <nav class="nav-container">
+            <div class="logo">
+                <i class="fas fa-dumbbell"></i>
+                <span>GymStats Pro</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Funkcje</a>
+                <a href="#about" class="nav-link">O nas</a>
+                <button id="login-button" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Zaloguj się
+                </button>
             </div>
         </nav>
     </header>
 
     <main>
-        <section id="landing-page">
-            <h1>Witaj w GymStats!</h1>
-            <p>Śledź swoje postępy w treningu siłowym. Zapisuj wyniki, analizuj postępy i osiągaj swoje cele!</p>
-            <div class="feature-list">
-                <div class="feature">
-                    <i class="fas fa-save"></i>
-                    <h3>Zapisuj wyniki</h3>
-                    <p>Łatwo dodawaj swoje wyniki dla różnych ćwiczeń.</p>
+        <section id="hero" class="hero-section">
+            <div class="hero-content">
+                <h1>Transformuj swój trening z GymStats Pro</h1>
+                <p class="hero-subtitle">Zaawansowane śledzenie postępów, personalizowane statystyki i inteligentne analizy treningowe</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary btn-large">
+                        <i class="fas fa-rocket"></i>
+                        Rozpocznij za darmo
+                    </button>
+                    <button class="btn-secondary btn-large">
+                        <i class="fas fa-play"></i>
+                        Zobacz demo
+                    </button>
                 </div>
-                <div class="feature">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>Śledź postępy</h3>
-                    <p>Przeglądaj historię swoich wyników i obserwuj swój rozwój.</p>
+            </div>
+            <div class="hero-image">
+                <img src="assets/hero-image.png" alt="GymStats Pro Dashboard">
+            </div>
+        </section>
+
+        <section id="features" class="features-section">
+            <h2>Dlaczego GymStats Pro?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Zaawansowane statystyki</h3>
+                    <p>Szczegółowe wykresy i analizy postępów dla każdego ćwiczenia</p>
                 </div>
-                <div class="feature">
-                    <i class="fas fa-lock"></i>
-                    <h3>Bezpieczne konto</h3>
-                    <p>Twoje dane są bezpieczne i dostępne tylko dla Ciebie.</p>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Dostęp mobilny</h3>
+                    <p>Zapisuj wyniki treningów w dowolnym miejscu i czasie</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI Trainer</h3>
+                    <p>Inteligentne sugestie treningowe oparte na Twoich postępach</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Społeczność</h3>
+                    <p>Połącz się z innymi sportowcami i dziel się osiągnięciami</p>
                 </div>
             </div>
         </section>
 
-        <section id="auth-section" class="hidden">
-            <div id="login-form-container">
-                <h2>Zaloguj się</h2>
-                <form id="login-form">
-                    <input type="email" id="login-email" placeholder="Email" required>
-                    <input type="password" id="login-password" placeholder="Hasło" required>
-                    <button type="submit">Zaloguj</button>
-                </form>
-                <p>Nie masz konta? <a href="#" id="show-register">Zarejestruj się</a></p>
-            </div>
-            <div id="register-form-container" class="hidden">
-                <h2>Zarejestruj się</h2>
-                <form id="register-form">
-                    <input type="email" id="register-email" placeholder="Email" required>
-                    <input type="password" id="register-password" placeholder="Hasło" required>
-                    <button type="submit">Zarejestruj</button>
-                </form>
-                <p>Masz już konto? <a href="#" id="show-login">Zaloguj się</a></p>
+        <section id="auth-section" class="auth-container hidden">
+            <div class="auth-card">
+                <div id="login-form-container">
+                    <h2>Witaj ponownie!</h2>
+                    <p class="auth-subtitle">Zaloguj się do swojego konta</p>
+                    <form id="login-form" class="auth-form">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Hasło</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn-primary btn-full">Zaloguj się</button>
+                        <div class="auth-divider">
+                            <span>lub</span>
+                        </div>
+                        <button type="button" class="btn-social">
+                            <i class="fab fa-google"></i>
+                            Kontynuuj z Google
+                        </button>
+                    </form>
+                    <p class="auth-switch">Nie masz konta? <a href="#" id="show-register">Zarejestruj się</a></p>
+                </div>
             </div>
         </section>
 
-        <section id="user-dashboard" class="hidden">
-            <div id="user-info">
-                <p>Zalogowany jako: <span id="user-email"></span></p>
-                <button id="logout-button">Wyloguj</button>
+        <section id="user-dashboard" class="dashboard-container hidden">
+            <div class="dashboard-sidebar">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <img src="assets/default-avatar.png" alt="Avatar">
+                    </div>
+                    <div class="user-info">
+                        <span id="user-email"></span>
+                        <span class="user-plan">Plan Pro</span>
+                    </div>
+                </div>
+                <nav class="dashboard-nav">
+                    <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
+                    <a href="#"><i class="fas fa-dumbbell"></i> Treningi</a>
+                    <a href="#"><i class="fas fa-chart-bar"></i> Statystyki</a>
+                    <a href="#"><i class="fas fa-cog"></i> Ustawienia</a>
+                </nav>
+                <button id="logout-button" class="btn-secondary">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Wyloguj
+                </button>
             </div>
-            <div id="score-section">
-                <h2>Dodaj nowy wynik</h2>
-                <form id="score-form">
-                    <select id="exercise-type" required>
-                        <option value="">Wybierz ćwiczenie</option>
-                        <option value="bench-press">Wyciskanie sztangi</option>
-                        <option value="squat">Przysiad</option>
-                        <option value="deadlift">Martwy ciąg</option>
-                    </select>
-                    <input type="number" id="weight" placeholder="Ciężar (kg)" required>
-                    <input type="number" id="reps" placeholder="Liczba powtórzeń" required>
-                    <button type="submit">Zapisz wynik</button>
-                </form>
-                <h2>Twoje wyniki</h2>
-                <ul id="scores-list"></ul>
+
+            <div class="dashboard-main">
+                <div class="dashboard-header">
+                    <h2>Twój Dashboard</h2>
+                    <div class="quick-actions">
+                        <button class="btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Nowy trening
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">12</span>
+                            <span class="stat-label">Treningi w tym miesiącu</span>
+                        </div>
+                    </div>
+                    <!-- Dodaj więcej kart statystyk -->
+                </div>
+
+                <div class="recent-workouts">
+                    <h3>Ostatnie treningi</h3>
+                    <div class="workout-list">
+                        <!-- Tu będą wyświetlane ostatnie treningi -->
+                    </div>
+                </div>
             </div>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2024 GymStats. Wszelkie prawa zastrzeżone.</p>
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h 4>O nas</h4>
+                <p>GymStats Pro to aplikacja do śledzenia postępów treningowych, stworzona przez pasjonatów fitness.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Kontakt</h4>
+                <p><a href="mailto:contact@gymstats.pro">contact@gymstats.pro</a></p>
+            </div>
+            <div class="footer-section">
+                <h4>Social media</h4>
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>&copy; 2024 GymStats Pro. Wszelkie prawa zastrzeżone.</p>
+        </div>
     </footer>
 
     <script type="module" src="src/js/app.js"></script>
