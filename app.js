@@ -1,16 +1,21 @@
 // Inicjalizacja Firebase
 // Użyj danych konfiguracyjnych z Firebase konsoli
 const firebaseConfig = {
-    apiKey: "TWÓJ_API_KEY",
-    authDomain: "TWÓJ_AUTH_DOMAIN",
-    projectId: "TWÓJ_PROJECT_ID",
-    storageBucket: "TWÓJ_STORAGE_BUCKET",
-    messagingSenderId: "TWÓJ_MESSAGING_SENDER_ID",
-    appId: "TWÓJ_APP_ID"
-};
+    apiKey: "AIzaSyDNtXbYetm8aLRmomgBlVP6HXNZyhttFfQ",
+    authDomain: "strona-do-zapisywania-wynikow.firebaseapp.com",
+    projectId: "strona-do-zapisywania-wynikow",
+    storageBucket: "strona-do-zapisywania-wynikow.firebasestorage.app",
+    messagingSenderId: "30761717995",
+    appId: "1:30761717995:web:ac03840376114c5fbdeeae",
+    measurementId: "G-4F2LGNY193"
+  };
+// Inicjalizacja Firebase
 firebase.initializeApp(firebaseConfig);
 
+// Inicjalizacja Firestore
 const db = firebase.firestore();
+
+// Kod aplikacji
 const form = document.getElementById('form');
 const resultsDiv = document.getElementById('results');
 
@@ -25,6 +30,7 @@ form.addEventListener('submit', (e) => {
         timestamp: new Date()
     }).then(() => {
         displayResults();
+        form.reset();
     });
 });
 
