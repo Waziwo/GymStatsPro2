@@ -7,7 +7,6 @@ export class AuthForms {
     }
 
     initializeForms() {
-        // Pobieranie elementów DOM
         this.registerForm = document.getElementById('register-form');
         this.loginForm = document.getElementById('login-form');
         this.logoutButton = document.getElementById('logout-button');
@@ -22,6 +21,8 @@ export class AuthForms {
         this.landingPage = document.getElementById('landing-page');
         this.userDashboard = document.getElementById('user-dashboard');
         this.authSection = document.getElementById('auth-section');
+        this.featuresSection = document.getElementById('features');
+        this.aboutSection = document.getElementById('about');
 
         if (this.showRegisterLink && this.showLoginLink) {
             this.setupFormToggle();
@@ -132,6 +133,8 @@ export class AuthForms {
         if (this.landingPage) this.landingPage.classList.add('hidden');
         if (this.userDashboard) this.userDashboard.classList.remove('hidden');
         if (this.authSection) this.authSection.classList.add('hidden');
+        if (this.featuresSection) this.featuresSection.classList.add('hidden');
+        if (this.aboutSection) this.aboutSection.classList.add('hidden');
     }
 
     hideUserInfo() {
@@ -140,6 +143,8 @@ export class AuthForms {
         if (this.landingPage) this.landingPage.classList.remove('hidden');
         if (this.userDashboard) this.userDashboard.classList.add('hidden');
         if (this.authSection) this.authSection.classList.add('hidden');
+        if (this.featuresSection) this.featuresSection.classList.remove('hidden');
+        if (this.aboutSection) this.aboutSection.classList.remove('hidden');
     }
 
     hideLoginButton() {

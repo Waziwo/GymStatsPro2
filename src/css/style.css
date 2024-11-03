@@ -340,3 +340,29 @@ footer {
         font-size: 0.9rem;
     }
 }
+/* Dodaj do style.css */
+
+html {
+    scroll-behavior: smooth;
+}
+
+.nav-link {
+    transition: opacity 0.3s ease;
+}
+
+/* Styl dla aktywnego linku w nawigacji */
+.nav-link.active {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Poprawki dla responsywności */
+@media (max-width: 768px) {
+    .nav-links {
+        gap: 1rem;
+    }
+
+    .nav-link {
+        font-size: 0.9rem;
+    }
+}

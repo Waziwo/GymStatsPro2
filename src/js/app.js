@@ -19,57 +19,85 @@ class App {
         this.authForms = new AuthForms(this.authService, this.scoreService);
 
         // DOM elements
-        this.loginButton = document.getElementById('login-button');
-        this.landingPage = document.getElementById('landing-page');
-        this.authSection = document.getElementById('auth-section');
-        this.userDashboard = document.getElementById('user-dashboard');
-
+        this.initializeElements();
         this.setupEventListeners();
         this.setupAuthStateListener();
     }
 
+    initializeElements() {
+        this.loginButton = document.getElementById('login-button');
+        this.landingPage = document.getElementById('landing-page');
+        this.authSection = document.getElementById('auth-section');
+        this.userDashboard = document.getElementById('user-dashboard');
+        this.featuresSection = document.getElementById('features');
+        this.aboutSection = document.getElementById('about');
+        this.getStartedBtn = document.getElementById('get-started-btn');
+    }
+
     setupEventListeners() {
         if (this.loginButton) {
-            this.loginButton.addEventListener('click', () => {
+            this .loginButton.addEventListener('click', () => {
                 this.landingPage.classList.add('hidden');
                 this.authSection.classList.remove('hidden');
+                this.featuresSection.classList.add('hidden');
+                this.aboutSection.classList.add('hidden');
             });
         }
 
-        const showRegister = document.getElementById('show-register');
-        const showLogin = document.getElementById('show-login');
-        const loginFormContainer = document.getElementById('login-form-container');
-        const registerFormContainer = document.getElementById('register-form-container');
+        if (this.getStartedBtn) {
+            this.getStartedBtn.addEventListener('click', () => {
+                this.landingPage.classList.add('hidden');
+                this.authSection.classList.remove('hidden');
+                this.featuresSection.classList.add('hidden');
+                this.aboutSection.classList.add('hidden');
+            });
+        }
 
-        if (showRegister) {
-            showRegister.addEventListener('click', (e) => {
+        // Dodanie obsługi linków nawigacyjnych
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
                 e.preventDefault();
-                loginFormContainer.classList.add('hidden');
-                registerFormContainer.classList.remove('hidden');
+                const targetId = link.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
             });
-        }
-
-        if (showLogin) {
-            showLogin.addEventListener('click', (e) => {
-                e.preventDefault();
-                registerFormContainer.classList.add('hidden');
-                loginFormContainer.classList.remove('hidden');
-            });
-        }
+        });
     }
 
     setupAuthStateListener() {
         this.authService.onAuthStateChanged((user) => {
             if (user) {
+                // Użytkownik zalogowany
                 this.landingPage.classList.add('hidden');
                 this.authSection.classList.add('hidden');
                 this.userDashboard.classList.remove('hidden');
+                this.featuresSection.classList.add('hidden');
+                this.aboutSection.classList.add('hidden');
+                
+                // Ukryj przyciski nawigacyjne dla sekcji Funkcje i O nas
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.style.display = 'none';
+                });
+
                 if (this.scoreDisplay) {
                     this.scoreDisplay.loadScores();
                 }
             } else {
+                // Użytkownik wylogowany
                 this.userDashboard.classList.add('hidden');
                 this.landingPage.classList.remove('hidden');
+                this.featuresSection.classList.remove('hidden');
+                this.aboutSection.classList.remove('hidden');
+                
+                // Pokaż przyciski nawigacyjne
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.style.display = 'block';
+                });
             }
         });
     }
