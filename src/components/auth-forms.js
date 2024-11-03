@@ -160,7 +160,11 @@ export class AuthForms {
     
             console.log("Registering user...");
             const userCredential = await this.authService.register(email, password);
-            console.log("User registered:", userCredential.user.uid);
+            console.log("Registration response:", userCredential); // dodaj log
+    
+            if (!userCredential || !userCredential.user) {
+                throw new Error('Błąd podczas rejestracji - brak danych użytkownika');
+            }
     
             console.log("Creating user in Firestore...");
             await this.userService.createUser(userCredential.user.uid, email, nickname);
