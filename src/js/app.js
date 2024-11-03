@@ -29,22 +29,33 @@ class App {
     }
 
     setupEventListeners() {
-        this.loginButton.addEventListener('click', () => {
-            this.landingPage.classList.add('hidden');
-            this.authSection.classList.remove('hidden');
-        });
+        if (this.loginButton) {
+            this.loginButton.addEventListener('click', () => {
+                this.landingPage.classList.add('hidden');
+                this.authSection.classList.remove('hidden');
+            });
+        }
 
-        document.getElementById('show-register').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('login-form-container').classList.add('hidden');
-            document.getElementById('register-form-container').classList.remove('hidden');
-        });
+        const showRegister = document.getElementById('show-register');
+        const showLogin = document.getElementById('show-login');
+        const loginFormContainer = document.getElementById('login-form-container');
+        const registerFormContainer = document.getElementById('register-form-container');
 
-        document.getElementById('show-login').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('register-form-container').classList.add('hidden');
-            document.getElementById('login-form-container').classList.remove('hidden');
-        });
+        if (showRegister) {
+            showRegister.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginFormContainer.classList.add('hidden');
+                registerFormContainer.classList.remove('hidden');
+            });
+        }
+
+        if (showLogin) {
+            showLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                registerFormContainer.classList.add('hidden');
+                loginFormContainer.classList.remove('hidden');
+            });
+        }
     }
 
     setupAuthStateListener() {
@@ -64,7 +75,7 @@ class App {
     }
 }
 
-// Initialize the application
-window.addEventListener('DOMContentLoaded', () => {
+// Initialize the application when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
     new App();
 });
