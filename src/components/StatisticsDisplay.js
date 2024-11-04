@@ -1,8 +1,11 @@
-import Chart from 'https://cdn.jsdelivr.net/npm/chart.js/auto';
-
 export class StatisticsDisplay {
     constructor(scoreService) {
         this.scoreService = scoreService;
+        this.charts = {
+            progressChart: null,
+            distributionChart: null,
+            maxWeightChart: null
+        };
     }
 
     async init() {
@@ -19,7 +22,10 @@ export class StatisticsDisplay {
 
     displayAverages(scores) {
         const averagesContainer = document.getElementById('averages');
-        if (!averagesContainer) return;
+        if (!averagesContainer) {
+            console.warn('Element "averages" nie został znaleziony');
+            return;
+        }
 
         const stats = this.calculateAverages(scores);
         averagesContainer.innerHTML = `
@@ -57,86 +63,37 @@ export class StatisticsDisplay {
 
     createProgressChart(scores) {
         const ctx = document.getElementById('progressChart');
-        if (!ctx || !scores.length) return;
-
-        // Grupowanie wyników według ćwiczenia i daty
-        const groupedScores = {};
-        scores.forEach(score => {
-            if (!groupedScores[score.exerciseType]) {
-                groupedScores[score.exerciseType] = [];
-            }
-            groupedScores[score.exerciseType].push({
-                x: new Date(score.timestamp),
-                y: score.weight
-            });
-        });
-
-        // Tworzenie datasets dla każdego typu ćwiczenia
-        const datasets = Object.entries(groupedScores).map(([exercise, data]) => ({
-            label: exercise,
-            data: data.sort((a, b) => a.x - b.x),
-            fill: false,
-            borderColor: this.getRandomColor(),
-            tension: 0.1
-        }));
+        if (!ctx || !scores.length) {
+            console.warn('Element "progressChart" nie został znaleziony lub brak danych');
+            return;
+        }
 
         if (this.charts.progressChart) {
             this.charts.progressChart.destroy();
         }
 
+        const groupedScores = this.groupScoresByExercise(scores);
+        const datasets = this.createDatasets(groupedScores);
+
         this.charts.progressChart = new Chart(ctx, {
             type: 'line',
-            data: {
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'day',
-                            displayFormats: {
-                                day: 'dd/MM/yyyy'
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: 'Data'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Ciężar (kg)'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Postęp w czasie'
-                    }
-                }
-            }
+            data: { datasets },
+            options: this.getProgressChartOptions()
         });
     }
 
     createExerciseDistributionChart(scores) {
         const ctx = document.getElementById('exerciseDistributionChart');
-        if (!ctx || !scores.length) return;
-
-        const exerciseCounts = scores.reduce((acc, score) => {
-            acc[score.exerciseType] = (acc[score.exerciseType] || 0) + 1;
-            return acc;
-        }, {});
+        if (!ctx || !scores.length) {
+            console.warn('Element "exerciseDistributionChart" nie został znaleziony lub brak danych');
+            return;
+        }
 
         if (this.charts.distributionChart) {
             this.charts.distributionChart.destroy();
         }
+
+        const exerciseCounts = this.countExercises(scores);
 
         this.charts.distributionChart = new Chart(ctx, {
             type: 'pie',
@@ -147,35 +104,22 @@ export class StatisticsDisplay {
                     backgroundColor: Object.keys(exerciseCounts).map(() => this.getRandomColor())
                 }]
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Rozkład ćwiczeń'
-                    }
-                }
-            }
+            options: this.getDistributionChartOptions()
         });
     }
 
     createMaxWeightChart(scores) {
         const ctx = document.getElementById('maxWeightChart');
-        if (!ctx || !scores.length) return;
-
-        const maxWeights = {};
-        scores.forEach(score => {
-            if (!maxWeights[score.exerciseType] || score.weight > maxWeights[score.exerciseType]) {
-                maxWeights[score.exerciseType] = score.weight;
-            }
-        });
+        if (!ctx || !scores.length) {
+            console.warn('Element "maxWeightChart" nie został znaleziony lub brak danych');
+            return;
+        }
 
         if (this.charts.maxWeightChart) {
             this.charts.maxWeightChart.destroy();
         }
+
+        const maxWeights = this.findMaxWeights(scores);
 
         this.charts.maxWeightChart = new Chart(ctx, {
             type: 'bar',
@@ -187,32 +131,126 @@ export class StatisticsDisplay {
                     backgroundColor: Object.keys(maxWeights).map(() => this.getRandomColor())
                 }]
             },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Ciężar (kg)'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Maksymalne ciężary'
-                    }
-                }
-            }
+            options: this.getMaxWeightChartOptions()
         });
     }
 
+    groupScoresByExercise(scores) {
+        return scores.reduce((acc, score) => {
+            if (!acc[score.exerciseType]) {
+                acc[score.exerciseType] = [];
+            }
+            acc[score.exerciseType].push({
+                x: new Date(score.timestamp),
+                y: score.weight
+            });
+            return acc;
+        }, {});
+    }
+
+    createDatasets(groupedScores) {
+        return Object.entries(groupedScores).map(([exercise, data]) => ({
+            label: exercise,
+            data: data.sort((a, b) => a.x - b.x),
+            fill: false,
+            borderColor: this.getRandomColor(),
+            tension: 0.1
+        }));
+    }
+
+    countExercises(scores) {
+        return scores.reduce((acc, score) => {
+            acc[score.exerciseType] = (acc[score.exerciseType] || 0) + 1;
+            return acc;
+        }, {});
+    }
+
+    findMaxWeights(scores) {
+        return scores.reduce((acc, score) => {
+            if (!acc[score.exerciseType] || score.weight > acc[score.exerciseType]) {
+                acc[score.exerciseType] = score.weight;
+            }
+            return acc;
+        }, {});
+    }
+
+    getProgressChartOptions() {
+        return {
+            responsive: true,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'dd/MM/yyyy'
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Data'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Ciężar (kg)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Postęp w czasie'
+                }
+            }
+        };
+    }
+
+    getDistributionChartOptions() {
+        return {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Rozkład ćwiczeń'
+                }
+            }
+        };
+    }
+
+    getMaxWeightChartOptions() {
+        return {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Ciężar (kg)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Maksymalne ciężary'
+                }
+            }
+        };
+    }
+
     getRandomColor() {
-        const letters = '0123456789ABCDEF';
+        const letters = '0123456789ABC DEF';
         let color = '#';
         for (let i = 0; i < 6; i++) {
             color += letters[Math.floor(Math.random() * 16)];

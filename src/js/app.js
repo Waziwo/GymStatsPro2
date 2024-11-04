@@ -13,19 +13,43 @@ import { initNavigation } from './navigation.js';
 
 class App {
     constructor() {
-        // Initialize Firebase
-        this.app = initializeApp(firebaseConfig);
-        const auth = getAuth(this.app);
+        try {
+            // Initialize Firebase (if not already initialized)
+            if (!window.firebaseApp) {
+                this.app = initializeApp(firebaseConfig);
+            } else {
+                this.app = window.firebaseApp;
+            }
+            
+            const auth = getAuth(this.app);
 
-        // Initialize services
+            // Initialize services
+            this.initializeServices();
+            
+            // Initialize components
+            this.initializeComponents();
+
+            // Setup event listeners and auth state
+            this.initializeElements();
+            this.setupEventListeners();
+            this.setupAuthStateListener();
+
+        } catch (error) {
+            console.error("Błąd podczas inicjalizacji aplikacji:", error);
+            // Here you can add code to display an error message to the user
+        }
+    }
+
+    initializeServices() {
         this.authService = new AuthService();
         this.scoreService = new ScoreService();
         this.userService = new UserService();
         this.notificationManager = new NotificationManager();
         this.activityLogger = new ActivityLogger();
-        this.statisticsDisplay = new StatisticsDisplay(this.scoreService);
+    }
 
-        // Initialize components
+    initializeComponents() {
+        this.statisticsDisplay = new StatisticsDisplay(this.scoreService);
         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService);
         this.authForms = new AuthForms(
             this.authService, 
@@ -34,13 +58,7 @@ class App {
             this.notificationManager,
             this.activityLogger
         );
-
-        // DOM elements
-        this.initializeElements();
-        this.setupEventListeners();
-        this.setupAuthStateListener();
     }
-    
 
     initializeElements() {
         this.loginButton = document.getElementById('login-button');
@@ -55,32 +73,36 @@ class App {
 
     setupEventListeners() {
         if (this.loginButton) {
-            this.loginButton.addEventListener('click', () => {
-                this.landingPage.classList.add('hidden');
-                this.authSection.classList.remove('hidden');
-                this.featuresSection.classList.add('hidden');
-                this.aboutSection.classList.add('hidden');
-            });
+            this.loginButton.addEventListener('click', () => this.showAuthSection());
         }
 
         if (this.getStartedBtn) {
-            this.getStartedBtn.addEventListener('click', () => {
-                this.landingPage.classList.add('hidden');
-                this.authSection.classList.remove('hidden');
-                this.featuresSection.classList.add('hidden');
-                this.aboutSection.classList.add('hidden');
-            });
+            this.getStartedBtn.addEventListener('click', () => this.showAuthSection());
         }
 
         if (this.dashboardLink) {
             this.dashboardLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.landingPage.classList.add('hidden');
-                this.userDashboard.classList.remove('hidden');
+                this.showDashboard();
             });
         }
 
-        // Dodanie obsługi linków nawigacyjnych
+        this.setupNavLinks();
+    }
+
+    showAuthSection() {
+        this.landingPage.classList.add('hidden');
+        this.authSection.classList.remove('hidden');
+        this.featuresSection.classList.add('hidden');
+        this.aboutSection.classList.add('hidden');
+    }
+
+    showDashboard() {
+        this.landingPage.classList.add('hidden');
+        this.userDashboard.classList.remove('hidden');
+    }
+
+    setupNavLinks() {
         const navLinks = document.querySelectorAll('.nav-link');
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -104,22 +126,27 @@ class App {
                         this.updateNavigation(true);
                         this.statisticsDisplay.init();
                         
-                        const userNicknameElement = document.getElementById('user-nickname');
-                        const userEmailElement = document.getElementById('user-email');
-                        if (userNicknameElement) {
-                            userNicknameElement.textContent = userData.nickname;
-                        }
-                        if (userEmailElement) {
-                            userEmailElement.textContent = user.email;
-                        }
+                        this.updateUserInfo(userData, user.email);
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);
+                    this.notificationManager.show('Wystąpił błąd podczas pobierania danych użytkownika', 'error');
                 }
             } else {
                 this.updateNavigation(false);
             }
         });
+    }
+
+    updateUserInfo(userData, email) {
+        const userNicknameElement = document.getElementById('user-nickname');
+        const userEmailElement = document.getElementById('user-email');
+        if (userNicknameElement) {
+            userNicknameElement.textContent = userData.nickname;
+        }
+        if (userEmailElement) {
+            userEmailElement.textContent = email;
+        }
     }
 
     updateNavigation(isLoggedIn) {
@@ -138,43 +165,19 @@ class App {
             this.featuresSection.classList.remove('hidden');
             this.aboutSection.classList.remove('hidden');
             
-            // Pokaż przyciski nawigacyjne
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                link.style.display = 'block';
-            });
+            this.showNavLinks();
         }
+    }
+
+    showNavLinks() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.style.display = 'block';
+        });
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const hamburgerMenu = document.querySelector('.hamburger-menu');
-    const navLinks = document.querySelector('.nav-links');
-
-    hamburgerMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-        hamburgerMenu.classList.toggle('active');
-        navLinks.classList.toggle('active');
-    });
-
-    // Zamykaj menu po kliknięciu w link
-    document.querySelectorAll('.nav-link, .btn-primary').forEach(item => {
-        item.addEventListener('click', () => {
-            hamburgerMenu.classList.remove('active');
-            navLinks.classList.remove('active');
-        });
-    });
-
-    // Zamykaj menu po kliknięciu poza nim
-    document.addEventListener('click', (event) => {
-        if (!event.target.closest('.nav-container')) {
-            hamburgerMenu.classList.remove('active');
-            navLinks.classList.remove('active');
-        }
-    });
-});
-
-// Initialize the application when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
     new App();
+    initNavigation();
 });
