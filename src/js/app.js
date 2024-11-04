@@ -10,6 +10,7 @@ import { NotificationManager } from './notifications.js';
 import { ActivityLogger } from './utils/activity-logger.js';
 import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
 import { initNavigation } from './utils/navigation.js';
+import { DashboardNavigation } from './dashboard-navigation.js';
 
 class App {
     constructor() {
@@ -180,4 +181,5 @@ class App {
 document.addEventListener('DOMContentLoaded', () => {
     new App();
     initNavigation();
+    const dashboardNav = new DashboardNavigation();
 });

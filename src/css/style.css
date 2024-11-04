@@ -244,6 +244,7 @@ main {
     text-decoration: none;
     border-radius: 8px;
     transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
 .dashboard-nav a:hover,
@@ -257,11 +258,15 @@ main {
 }
 
 .dashboard-sections {
+    display: none; /* Domyślnie ukryj wszystkie sekcje */
     flex: 1;
     background: var(--card-background);
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.dashboard-section.active {
+    display: block; /* Pokazuj tylko aktywną sekcję */
 }
 /* Nowe style dla historii aktywności */
 .user-activities {
