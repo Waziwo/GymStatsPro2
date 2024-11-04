@@ -16,6 +16,10 @@ export class AuthForms {
         this.navLinks = document.querySelectorAll('.nav-link'); // Użyj querySelectorAll zamiast querySelector
         this.setupMobileMenu();
         this.activityLogger = activityLogger;
+        console.log("Inicjalizacja formularzy logowania");
+        console.log("Login button:", this.loginButton);
+        console.log("Auth section:", this.authSection);
+        console.log("Login form container:", this.loginFormContainer);
     }
     setupMobileMenu() {
         if (this.hamburgerMenu && this.navLinks) {
@@ -169,18 +173,21 @@ export class AuthForms {
         e.preventDefault();
         const email = this.loginForm['login-email'].value;
         const password = this.loginForm['login-password'].value;
-    
+        
+        console.log("Próba logowania z email:", email);
+        
         try {
+            console.log("Wywołanie authService.login");
             await this.authService.login(email, password);
+            console.log("Logowanie udane");
             this.loginForm.reset();
             this.notificationManager.show('Zalogowano pomyślnie!', 'success');
-            this.activityLogger.logActivity('login', { email: email });
             if (this.authSection) {
                 this.authSection.classList.add('hidden');
             }
         } catch (error) {
+            console.error("Błąd logowania:", error);
             this.notificationManager.show('Błąd logowania: ' + error.message, 'error');
-            this.activityLogger.logActivity('login_error', { error: error.message });
         }
     }
     
