@@ -12,7 +12,8 @@ export class AuthForms {
         console.log("Rozpoczęcie konfiguracji nasłuchiwania stanu autoryzacji");
         this.setupAuthStateListener();
         this.hamburgerMenu = document.querySelector('.hamburger-menu');
-        this.navLinks = document.querySelector('.nav-links');
+        // Zmień tę linię:
+        this.navLinks = document.querySelectorAll('.nav-link'); // Użyj querySelectorAll zamiast querySelector
         this.setupMobileMenu();
     }
     setupMobileMenu() {
@@ -244,7 +245,6 @@ export class AuthForms {
             console.log("Element userInfo nie został znaleziony");
         }
         
-        // Ukryj stronę główną i sekcje
         if (this.landingPage) {
             console.log("Ukrywanie strony głównej");
             this.landingPage.classList.add('hidden');
@@ -254,8 +254,8 @@ export class AuthForms {
             this.userDashboard.classList.remove('hidden');
         }
         
-        // Ukryj linki nawigacyjne
-        if (this.navLinks) {
+        // Dodaj sprawdzenie czy this.navLinks istnieje
+        if (this.navLinks && this.navLinks.length > 0) {
             this.navLinks.forEach(link => {
                 if (link.getAttribute('href') === '#features' || link.getAttribute('href') === '#about') {
                     link.classList.add('hidden');
@@ -263,7 +263,6 @@ export class AuthForms {
             });
         }
         
-        // Ukryj sekcje
         if (this.featuresSection) {
             console.log("Ukrywanie sekcji funkcji");
             this.featuresSection.classList.add('hidden');
