@@ -1,5 +1,3 @@
-import Chart from 'chart.js/auto';
-
 export class StatisticsDisplay {
     constructor(scoreService) {
         this.scoreService = scoreService;
