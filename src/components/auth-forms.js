@@ -227,44 +227,29 @@ export class AuthForms {
     }
 
     showUserInfo(email, userData) {
-        console.log("Próba wyświetlenia informacji o użytkowniku:", email, userData);
         if (this.userInfo) {
-            console.log("Element userInfo znaleziony");
             this.userInfo.classList.remove('hidden');
             const nicknameElement = document.getElementById('user-nickname');
             const emailElement = document.getElementById('user-email');
             
             if (nicknameElement) {
-                if (userData && userData.nickname) {
-                    console.log("Ustawianie nicknamu:", userData.nickname);
-                    nicknameElement.textContent = userData.nickname;
-                } else {
-                    console.log("Brak nicknamu w userData");
-                    nicknameElement.textContent = 'Użytkownik';
-                }
-            } else {
-                console.log("Element nickname nie znaleziony w DOM");
+                nicknameElement.textContent = userData?.nickname || 'Użytkownik';
             }
-    
             if (emailElement) {
                 emailElement.textContent = email;
             }
-        } else {
-            console.log("Element userInfo nie został znaleziony");
         }
         
+        // Pokazuj/ukrywaj sekcje w zależności od stanu
         if (this.landingPage) {
-            console.log("Ukrywanie strony głównej");
             this.landingPage.classList.add('hidden');
         }
         if (this.userDashboard) {
-            console.log("Pokazywanie panelu użytkownika");
             this.userDashboard.classList.remove('hidden');
-            // Dodaj wyświetlanie historii aktywności
-            this.displayUserActivities();
         }
         
-        if (this.navLinks && this.navLinks.length > 0) {
+        // Zawsze ukrywaj linki Features i About gdy użytkownik jest zalogowany
+        if (this.navLinks) {
             this.navLinks.forEach(link => {
                 if (link.getAttribute('href') === '#features' || link.getAttribute('href') === '#about') {
                     link.classList.add('hidden');
@@ -273,11 +258,9 @@ export class AuthForms {
         }
         
         if (this.featuresSection) {
-            console.log("Ukrywanie sekcji funkcji");
             this.featuresSection.classList.add('hidden');
         }
         if (this.aboutSection) {
-            console.log("Ukrywanie sekcji o nas");
             this.aboutSection.classList.add('hidden');
         }
     }
@@ -307,21 +290,19 @@ export class AuthForms {
     }
     
     hideUserInfo() {
-        console.log("Próba ukrycia informacji o użytkowniku");
         if (this.userInfo) {
-            console.log("Ukrywanie elementu userInfo");
             this.userInfo.classList.add('hidden');
         }
+        
+        // Pokazuj sekcje gdy użytkownik jest wylogowany
         if (this.landingPage) {
-            console.log("Pokazywanie strony głównej");
             this.landingPage.classList.remove('hidden');
         }
         if (this.userDashboard) {
-            console.log("Ukrywanie panelu użytkownika");
             this.userDashboard.classList.add('hidden');
         }
         
-        // Pokaż linki nawigacyjne
+        // Pokazuj linki Features i About gdy użytkownik jest wylogowany
         if (this.navLinks) {
             this.navLinks.forEach(link => {
                 if (link.getAttribute('href') === '#features' || link.getAttribute('href') === '#about') {
@@ -330,13 +311,10 @@ export class AuthForms {
             });
         }
         
-        // Pokaż sekcje
         if (this.featuresSection) {
-            console.log("Pokazywanie sekcji funkcji");
             this.featuresSection.classList.remove('hidden');
         }
         if (this.aboutSection) {
-            console.log("Pokazywanie sekcji o nas");
             this.aboutSection.classList.remove('hidden');
         }
     }
