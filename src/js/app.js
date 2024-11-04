@@ -47,6 +47,7 @@ class App {
         this.featuresSection = document.getElementById('features');
         this.aboutSection = document.getElementById('about');
         this.getStartedBtn = document.getElementById('get-started-btn');
+        this.dashboardLink = document.getElementById('dashboard-link');
     }
 
     setupEventListeners() {
@@ -65,6 +66,14 @@ class App {
                 this.authSection.classList.remove('hidden');
                 this.featuresSection.classList.add('hidden');
                 this.aboutSection.classList.add('hidden');
+            });
+        }
+
+        if (this.dashboardLink) {
+            this.dashboardLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.landingPage.classList.add('hidden');
+                this.userDashboard.classList.remove('hidden');
             });
         }
 
@@ -89,11 +98,7 @@ class App {
                     const userData = await this.userService.getUserData(user.uid);
                     
                     if (userData) {
-                        this.landingPage.classList.add('hidden');
-                        this.authSection.classList.add('hidden');
-                        this.userDashboard.classList.remove('hidden');
-                        this.featuresSection.classList.add('hidden');
-                        this.aboutSection.classList.add('hidden');
+                        this.updateNavigation(true);
                         this.statisticsDisplay.init();
                         
                         const userNicknameElement = document.getElementById('user-nickname');
@@ -109,19 +114,33 @@ class App {
                     console.error('Error fetching user data:', error);
                 }
             } else {
-                // Użytkownik wylogowany
-                this.userDashboard.classList.add('hidden');
-                this.landingPage.classList.remove('hidden');
-                this.featuresSection.classList.remove('hidden');
-                this.aboutSection.classList.remove('hidden');
-                
-                // Pokaż przyciski nawigacyjne
-                const navLinks = document.querySelectorAll('.nav-link');
-                navLinks.forEach(link => {
-                    link.style.display = 'block';
-                });
+                this.updateNavigation(false);
             }
         });
+    }
+
+    updateNavigation(isLoggedIn) {
+        if (isLoggedIn) {
+            this.loginButton.classList.add('hidden');
+            this.dashboardLink.classList.remove('hidden');
+            this.landingPage.classList.add('hidden');
+            this.userDashboard.classList.remove('hidden');
+            this.featuresSection.classList.add('hidden');
+            this.aboutSection.classList.add('hidden');
+        } else {
+            this.loginButton.classList.remove('hidden');
+            this.dashboardLink.classList.add('hidden');
+            this.userDashboard.classList.add('hidden');
+            this.landingPage.classList.remove('hidden');
+            this.featuresSection.classList.remove('hidden');
+            this.aboutSection.classList.remove('hidden');
+            
+            // Pokaż przyciski nawigacyjne
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.style.display = 'block';
+            });
+        }
     }
 }
 

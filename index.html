@@ -13,10 +13,10 @@
 <body>
     <header class="nav-header">
         <nav class="nav-container">
-            <div class="logo">
+            <a href="#" class="logo" id="logo-link">
                 <i class="fas fa-dumbbell"></i>
                 <span>GymStats Pro</span>
-            </div>
+            </a>
             <button class="hamburger-menu" aria-label="Menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -29,9 +29,14 @@
                     <i class="fas fa-sign-in-alt"></i>
                     Zaloguj się
                 </button>
+                <a href="#" id="dashboard-link" class="btn-primary hidden">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
             </div>
         </nav>
     </header>
+
 
     <main>
         <section id="landing-page">
@@ -303,8 +308,34 @@
     <script type="module" src="src/js/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const logoLink = document.getElementById('logo-link');
+            const dashboardLink = document.getElementById('dashboard-link');
+            const loginButton = document.getElementById('login-button');
+            const landingPage = document.getElementById('landing-page');
+            const userDashboard = document.getElementById('user-dashboard');
             const navLinks = document.querySelectorAll('.dashboard-nav a');
             const sections = document.querySelectorAll('.dashboard-section');
+
+            logoLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (userDashboard.classList.contains('hidden')) {
+                    // Użytkownik nie jest zalogowany, pokaż stronę główną
+                    landingPage.classList.remove('hidden');
+                    userDashboard.classList.add('hidden');
+                } else {
+                    // Użytkownik jest zalogowany, pokaż stronę główną, ale zachowaj przycisk Dashboard
+                    landingPage.classList.remove('hidden');
+                    userDashboard.classList.add('hidden');
+                    loginButton.classList.add('hidden');
+                    dashboardLink.classList.remove('hidden');
+                }
+            });
+
+            dashboardLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                landingPage.classList.add('hidden');
+                userDashboard.classList.remove('hidden');
+            });
 
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
@@ -322,35 +353,30 @@
                     });
                 });
             });
-        });
 
-        document.addEventListener('DOMContentLoaded', () => {
             const hamburgerMenu = document.querySelector('.hamburger-menu');
-            const navLinks = document.querySelector('.nav-links');
+            const navLinksContainer = document.querySelector('.nav-links');
 
             hamburgerMenu.addEventListener('click', (e) => {
                 e.stopPropagation();
                 hamburgerMenu.classList.toggle('active');
-                navLinks.classList.toggle('active');
+                navLinksContainer.classList.toggle('active');
             });
 
-            // Zamykaj menu po kliknięciu w link
             document.querySelectorAll('.nav-link, .btn-primary').forEach(item => {
                 item.addEventListener('click', () => {
                     hamburgerMenu.classList.remove('active');
-                    navLinks.classList.remove('active');
+                    navLinksContainer.classList.remove('active');
                 });
             });
 
-            // Zamykaj menu po kliknięciu poza nim
             document.addEventListener('click', (event) => {
                 if (!event.target.closest('.nav-container')) {
                     hamburgerMenu.classList.remove('active');
-                    navLinks.classList.remove('active');
+                    navLinksContainer.classList.remove('active');
                 }
             });
         });
     </script>
 </body>
 </html>
-                            
