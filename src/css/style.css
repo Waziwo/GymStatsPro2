@@ -214,6 +214,10 @@ main {
     color: #666;
     font-size: 0.9rem;
 }
+.hidden {
+    display: none !important;
+}
+
 .dashboard-content {
     display: flex;
     gap: 2rem;
@@ -258,15 +262,21 @@ main {
 }
 
 .dashboard-sections {
-    display: none; /* Domyślnie ukryj wszystkie sekcje */
+    display: flex; /* Zmień na flex */
     flex: 1;
     background: var(--card-background);
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+
+.dashboard-section {
+    display: none;
+    width: 100%;
+}
+
 .dashboard-section.active {
-    display: block; /* Pokazuj tylko aktywną sekcję */
+    display: block;
 }
 /* Nowe style dla historii aktywności */
 .user-activities {
