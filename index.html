@@ -306,6 +306,15 @@
         <p>&copy; 2024 GymStats Pro. Wszelkie prawa zastrzeżone.</p>
     </footer>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { firebaseConfig } from "./src/js/config/firebase-config.js";
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+    </script>
     <script type="module" src="src/js/app.js"></script>
     <script>
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";

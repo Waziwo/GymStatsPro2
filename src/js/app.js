@@ -1,4 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { firebaseConfig } from "./config/firebase-config.js";
 import { AuthService } from "./auth/auth.js";
 import { ScoreService } from "./scores/scores.js";
@@ -14,6 +15,7 @@ class App {
     constructor() {
         // Initialize Firebase
         this.app = initializeApp(firebaseConfig);
+        const auth = getAuth(this.app);
 
         // Initialize services
         this.authService = new AuthService();
@@ -145,11 +147,6 @@ class App {
     }
 }
 
-// Initialize the application when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    new App();
-});
-
 document.addEventListener('DOMContentLoaded', () => {
     const hamburgerMenu = document.querySelector('.hamburger-menu');
     const navLinks = document.querySelector('.nav-links');
@@ -175,4 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
             navLinks.classList.remove('active');
         }
     });
+});
+
+// Initialize the application when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new App();
 });

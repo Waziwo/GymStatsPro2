@@ -1,9 +1,12 @@
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
 export class ScoreDisplay {
     constructor(scoreService, authService) {
         this.scoreService = scoreService;
         this.authService = authService;
         this.scoreForm = null;
         this.scoresList = null;
+        this.auth = getAuth();
     }
     init() {
         this.initializeElements();

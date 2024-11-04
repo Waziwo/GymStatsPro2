@@ -1,3 +1,4 @@
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { ScoreDisplay } from '../components/score-display.js';
 
 export class AuthForms {
@@ -7,15 +8,16 @@ export class AuthForms {
         this.scoreService = scoreService;
         this.userService = userService;
         this.notificationManager = notificationManager;
+        this.activityLogger = activityLogger;
+        this.auth = getAuth();
+        
         console.log("Rozpoczęcie inicjalizacji formularzy");
         this.initializeForms();
         console.log("Rozpoczęcie konfiguracji nasłuchiwania stanu autoryzacji");
         this.setupAuthStateListener();
         this.hamburgerMenu = document.querySelector('.hamburger-menu');
-        // Zmień tę linię:
-        this.navLinks = document.querySelectorAll('.nav-link'); // Użyj querySelectorAll zamiast querySelector
+        this.navLinks = document.querySelectorAll('.nav-link');
         this.setupMobileMenu();
-        this.activityLogger = activityLogger;
         console.log("Inicjalizacja formularzy logowania");
         console.log("Login button:", this.loginButton);
         console.log("Auth section:", this.authSection);
