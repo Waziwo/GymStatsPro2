@@ -1,6 +1,6 @@
 import { ScoreDisplay } from '../components/score-display.js';
 
-class AuthForms {
+export class AuthForms {
     constructor(authService, scoreService, userService, notificationManager, activityLogger) {
         console.log("Inicjalizacja AuthForms");
         this.authService = authService;
