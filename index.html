@@ -38,6 +38,7 @@
         </nav>
     </header>
 
+
     <main>
         <section id="landing-page">
             <div class="hero-content">
@@ -130,168 +131,368 @@
                                maxlength="20" 
                                pattern="[a-zA-Z0-9_-]*"
                                title="Dozwolone znaki: litery, cyfry, - i _">
-                               <small class="nickname-requirements">Nickname musi mieć 3-20 znaków i może zawierać tylko litery, cyfry, - i _</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="register-password">Hasło</label>
-                                <input type="password" id="register-password" required minlength="6">
-                            </div>
-                            <button type="submit" class="btn-primary">Zarejestruj się</button>
-                        </form>
-                        <p>Masz już konto? <a href="#" id="show-login">Zaloguj się</a></p>
-                    </div>
-            
-                    <div id="reset-password-container" class="hidden">
-                        <h2>Resetuj hasło</h2>
-                        <form id="reset-password-form">
-                            <div class="form-group">
-                                <label for="reset-email">Email</label>
-                                <input type="email" id="reset-email" required>
-                            </div>
-                            <button type="submit" class="btn-primary">Wyślij link do resetowania</button>
-                        </form>
-                        <p><a href="#" id="back-to-login">Powrót do logowania</a></p>
-                    </div>
+                            <small class="nickname-requirements">Nickname musi mieć 3-20 znaków i może zawierać tylko litery, cyfry, - i _</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Hasło</label>
+                            <input type="password" id="register-password" required minlength="6">
+                        </div>
+                        <button type="submit" class="btn-primary">Zarejestruj się</button>
+                    </form>
+                    <p>Masz już konto? <a href="#" id="show-login">Zaloguj się</a></p>
                 </div>
-            </section>
-    
-            <section id="user-dashboard" class="hidden">
-                <div class="dashboard-header">
-                    <div class="user-info">
-                        <span id="user-nickname"></span>
-                        <span id="user-email"></span>
-                        <button id="logout-button" class="btn-secondary">
-                            <i class="fas fa-sign-out-alt"></i>
-                            Wyloguj
-                        </button>
-                    </div>
+        
+                <div id="reset-password-container" class="hidden">
+                    <h2>Resetuj hasło</h2>
+                    <form id="reset-password-form">
+                        <div class="form-group">
+                            <label for="reset-email">Email</label>
+                            <input type="email" id="reset-email" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Wyślij link do resetowania</button>
+                    </form>
+                    <p><a href="#" id="back-to-login">Powrót do logowania</a></p>
                 </div>
-    
-                <div class="dashboard-content">
-                    <nav class="dashboard-nav">
-                        <ul>
-                            <li><a href="#overview" class="active"><i class="fas fa-home"></i> Przegląd</a></li>
-                            <li><a href="#add-score"><i class="fas fa-plus-circle"></i> Dodaj wynik</a></li>
-                            <li><a href="#scores-list"><i class="fas fa-list"></i> Lista wyników</a></li>
-                            <li><a href="#statistics"><i class="fas fa-chart-bar"></i> Statystyki</a></li>
-                            <li><a href="#activity"><i class="fas fa-history"></i> Historia aktywności</a></li>
-                        </ul>
-                    </nav>
-    
-                    <div class="dashboard-sections">
-                        <div id="overview" class="dashboard-section active">
-                            <h2>Przegląd</h2>
-                            <div class="quick-stats">
-                                <div class="stat-card">
-                                    <h3>Ostatni trening</h3>
-                                    <p id="last-workout-date">-</p>
-                                </div>
-                                <div class="stat-card">
-                                    <h3>Liczba treningów</h3>
-                                    <p id="total-workouts">-</p>
-                                </div>
-                                <div class="stat-card">
-                                    <h3>Ulubione ćwiczenie</h3>
-                                    <p id="favorite-exercise">-</p>
-                                </div>
+            </div>
+        </section>
+
+        <section id="user-dashboard" class="hidden">
+            <div class="dashboard-header">
+                <div class="user-info">
+                    <span id="user-nickname"></span>
+                    <span id="user-email"></span>
+                    <button id="logout-button" class="btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Wyloguj
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <nav class="dashboard-nav">
+                    <ul>
+                        <li><a href="#overview" class="active"><i class="fas fa-home"></i> Przegląd</a></li>
+                        <li><a href="#add-score"><i class="fas fa-plus-circle"></i> Dodaj wynik</a></li>
+                        <li><a href="#scores-list"><i class="fas fa-list"></i> Lista wyników</a></li>
+                        <li><a href="#statistics"><i class="fas fa-chart-bar"></i> Statystyki</a></li>
+                        <li><a href="#activity"><i class="fas fa-history"></i> Historia aktywności</a></li>
+                    </ul>
+                </nav>
+
+                <div class="dashboard-sections">
+                    <div id="overview" class="dashboard-section active">
+                        <h2>Przegląd</h2>
+                        <div class="quick-stats">
+                            <div class="stat-card">
+                                <h3>Ostatni trening</h3>
+                                <p id="last-workout-date">-</p>
                             </div>
-                            <div class="quick-add">
-                                <h3>Szybkie dodawanie wyniku</h3>
-                                <form id="quick-score-form">
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="quick-exercise">Ćwiczenie</label>
-                                            <select id="quick-exercise" required>
-                                                <option value="">Wybierz ćwiczenie</option>
-                                                <option value="bench-press">Wyciskanie sztan owego</option>
-                                                <option value="pull-ups">Podciąganie na drążku</option>
-                                                <option value="squats">Przysiady</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="quick-weight">Waga</label>
-                                            <input type="number" id="quick-weight" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="quick-reps">Powtórzenia</label>
-                                            <input type="number" id="quick-reps" required>
-                                        </div>
-                                    </div>
-                                    <button type="submit" class="btn-primary">Dodaj wynik</button>
-                                </form>
+                            <div class="stat-card">
+                                <h3>Liczba treningów</h3>
+                                <p id="total-workouts">-</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Ulubione ćwiczenie</h3>
+                                <p id="favorite-exercise">-</p>
                             </div>
                         </div>
-    
-                        <div id="add-score" class="dashboard-section hidden">
-                            <h2>Dodaj wynik</h2>
-                            <form id="add-score-form">
+                        <div class="quick-add">
+                            <h3>Szybkie dodawanie wyniku</h3>
+                            <form id="quick-score-form">
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <label for="exercise">Ćwiczenie</label>
-                                        <select id="exercise" required>
+                                        <label for="quick-exercise">Ćwiczenie</label>
+                                        <select id="quick-exercise" required>
                                             <option value="">Wybierz ćwiczenie</option>
-                                            <option value="bench-press">Wyciskanie sztanowego</option>
-                                            <option value="pull-ups">Podciąganie na drążku</option>
-                                            <option value="squats">Przysiady</option>
+                                            <option value="bench-press">Wyciskanie sztangi</option>
+                                            <option value="squat">Przysiad</option>
+                                            <option value="deadlift">Martwy ciąg</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="weight">Waga</label>
-                                        <input type="number" id="weight" required>
+                                        <label for="quick-weight">Ciężar (kg)</label>
+                                        <input type="number" id="quick-weight" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="reps">Powtórzenia</label>
-                                        <input type="number" id="reps" required>
+                                        <label for="quick-reps">Powtórzenia</label>
+                                        <input type="number" id="quick-reps" required>
                                     </div>
                                 </div>
                                 <button type="submit" class="btn-primary">Dodaj wynik</button>
                             </form>
                         </div>
-    
-                        <div id="scores-list" class="dashboard-section hidden">
-                            <h2>Lista wyników</h2>
-                            <table id="scores-table">
-                                <thead>
-                                    <tr>
-                                        <th>Data</th>
-                                        <th>Ćwiczenie</th>
-                                        <th>Waga</th>
-                                        <th>Powtórzenia</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="scores-list-body">
-                                    <!-- Wyniki będą wyświetlane tutaj -->
-                                </tbody>
-                            </table>
+                    </div>
+
+                    <div id="add-score" class="dashboard-section">
+                        <h2>Dodaj nowy wynik</h2>
+                        <form id="score-form">
+                            <div class="form-group">
+                                <label for="exercise-type">Ćwiczenie</label>
+                                <select id="exercise-type" required>
+                                    <option value="">Wybierz ćwiczenie</option>
+                                    <option value="bench-press">Wyciskanie sztangi</option>
+                                    <option value="squat">Przysiad</option>
+                                    <option value="deadlift">Martwy ciąg</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="weight">Ciężar (kg)</label>
+                                <input type="number" id="weight" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reps">Powtórzenia</label>
+                                <input type="number" id="reps" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Zapisz wynik</button>
+                        </form>
+                    </div>
+
+                    <div id="scores-list" class="dashboard-section">
+                        <h2>Twoje wyniki</h2>
+                        <div class="filtering-section">
+                            <form id="filter-form">
+                                <select id="filter-exercise">
+                                    <option value="">Wszystkie ćwiczenia</option>
+                                    <option value="bench-press">Wyciskanie sztangi</option>
+                                    <option value="squat">Przysiad</option>
+                                    <option value="deadlift">Martwy ciąg</option>
+                                </select>
+                                <input id="filter-date-from" type="date" placeholder="Od">
+                                <input id="filter-date-to" type="date" placeholder="Do">
+                                <button type="submit">Filtruj</button>
+                            </form>
+                            <select id="sort-select">
+                                <option value="date-desc">Data (najnowsze)</option>
+                                <option value="date-asc">Data (najstarsze)</option>
+                                <option value="weight-desc">Ciężar (największy)</option>
+                                <option value="weight-asc">Ciężar (najmniejszy)</option>
+                            </select>
                         </div>
-    
-                        <div id="statistics" class="dashboard-section hidden">
-                            <h2>Statystyki</h2>
-                            <div class="stats-container">
-                                <div class="stat-card">
-                                    <h3>Średnia waga</h3>
-                                    <p id="average-weight">-</p>
-                                </div>
-                                <div class="stat-card">
-                                    <h3>Średnie powtórzenia</h3>
-                                    <p id="average-reps">-</p>
-                                </div>
-                                <div class="stat-card">
-                                    <h3>Najlepsze ćwiczenie</h3>
-                                    <p id="best-exercise">-</p>
-                                </div>
+                        <ul id="scores-list"></ul>
+                    </div>
+
+                    <div id="statistics" class="dashboard-section">
+                        <h2>Twoje statystyki</h2>
+                        <div id="averages"></div>
+                        <div class="charts-container">
+                            <div class="chart-wrapper">
+                                <h3>Postęp w czasie</h3>
+                                <canvas id="progressChart"></canvas>
+                            </div>
+                            <div class="chart-wrapper">
+                                <h3>Rozkład ćwiczeń</h3>
+                                <canvas id="exerciseDistributionChart"></canvas>
+                            </div>
+                            <div class="chart-wrapper">
+                                <h3>Maksymalne ciężary</h3>
+                                <canvas id="maxWeightChart"></canvas>
                             </div>
                         </div>
-    
-                        <div id="activity" class="dashboard-section hidden">
-                            <h2>Historia aktywności</h2>
-                            <ul id="activity-list">
-                                <!-- Historia aktywności będzie wyświetlana tutaj -->
-                            </ul>
-                        </div>
+                        <button id="export-statistics" class="btn-primary">
+                            <i class="fas fa-download"></i> Eksportuj Statystyki
+                        </button>
+                    </div>
+
+                    <div id="activity" class="dashboard-section">
+                        <h2>Historia aktywności</h2>
+                        <ul id="activity-list"></ul>
                     </div>
                 </div>
-            </section>
-        </main>
-    </body>
-    </html>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 GymStats Pro. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+
+    <script type="module" src="src/js/app.js"></script>
+    <script>
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const auth = getAuth();
+            
+            // Pobieranie wszystkich potrzebnych elementów
+            const logoLink = document.getElementById('logo-link');
+            const dashboardLink = document.getElementById('dashboard-link');
+            const loginButton = document.getElementById('login-button');
+            const landingPage = document.getElementById('landing-page');
+            const userDashboard = document.getElementById('user-dashboard');
+            const navLinks = document.querySelectorAll('.dashboard-nav a');
+            const sections = document.querySelectorAll('.dashboard-section');
+            const featuresSection = document.getElementById('features');
+            const aboutSection = document.getElementById('about');
+            const navLinksContainer = document.querySelector('.nav-links');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const authSection = document.getElementById('auth-section');
+
+            // Funkcja do płynnego przewijania do sekcji
+            const scrollToSection = (sectionId) => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+
+            // Funkcja sprawdzająca stan autoryzacji
+            const checkAuthState = () => {
+                return auth.currentUser !== null;
+            };
+
+            // Funkcja zarządzająca widocznością sekcji
+            const manageSectionsVisibility = isLoggedIn => {
+                if (isLoggedIn) {
+                    // Stan zalogowany
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        if (link.getAttribute('href') === '#features' || link.getAttribute('href') === '#about') {
+                            link.classList.add('hidden');
+                        }
+                    });
+                    loginButton.classList.add('hidden');
+                    dashboardLink.classList.remove('hidden');
+                    featuresSection.classList.add('hidden');
+                    aboutSection.classList.add('hidden');
+                    authSection.classList.add('hidden');
+                } else {
+                    // Stan wylogowany
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        if (link.getAttribute('href') === '#features' || link.getAttribute('href') === '#about') {
+                            link.classList.remove('hidden');
+                        }
+                    });
+                    loginButton.classList.remove('hidden');
+                    dashboardLink.classList.add('hidden');
+                    featuresSection.classList.remove('hidden');
+                    aboutSection.classList.remove('hidden');
+                }
+            };
+
+            // Obsługa kliknięcia w logo
+            logoLink.addEventListener('click', e => {
+                e.preventDefault();
+                const isLoggedIn = checkAuthState();
+
+                if (isLoggedIn) {
+                    // Jeśli zalogowany, pokaż dashboard
+                    landingPage.classList.add('hidden');
+                    userDashboard.classList.remove('hidden');
+                    authSection.classList.add('hidden');
+                    featuresSection.classList.add('hidden');
+                    aboutSection.classList.add('hidden');
+                } else {
+                    // Jeśli niezalogowany, pokaż stronę główną
+                    landingPage.classList.remove('hidden');
+                    userDashboard.classList.add('hidden');
+                    authSection.classList.add('hidden');
+                    featuresSection.classList.remove('hidden');
+                    aboutSection.classList.remove('hidden');
+                }
+                manageSectionsVisibility(isLoggedIn);
+
+                // Przewiń na górę strony
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            })
+
+        // Obsługa kliknięcia w link do dashboardu
+        dashboardLink.addEventListener('click', e => {
+            e.preventDefault();
+            landingPage.classList.add('hidden');
+            userDashboard.classList.remove('hidden');
+            authSection.classList.add('hidden');
+            manageSectionsVisibility(true);
+        });
+
+        // Obsługa nawigacji w dashboardzie
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+
+                navLinks.forEach(link => link.classList.remove('active'));
+                this.classList.add('active');
+
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === targetId) {
+                        section.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Obsługa menu hamburgerowego
+        hamburgerMenu.addEventListener('click', e => {
+            e.stopPropagation();
+            hamburgerMenu.classList.toggle('active');
+            navLinksContainer.classList.toggle('active');
+        });
+
+        // Zamykanie menu po kliknięciu w link
+        document.querySelectorAll('.nav-link, .btn-primary').forEach(item => {
+            item.addEventListener('click', () => {
+                hamburgerMenu.classList.remove('active');
+                navLinksContainer.classList.remove('active');
+            });
+        });
+
+        // Zamykanie menu po kliknięciu poza menu
+        document.addEventListener('click', event => {
+            if (!event.target.closest('.nav-container')) {
+                hamburgerMenu.classList.remove('active');
+                navLinksContainer.classList.remove('active');
+            }
+        });
+
+        // Obsługa przycisków w sekcjach
+        const getStartedBtn = document.getElementById('get-started-btn');
+        if (getStartedBtn) {
+            getStartedBtn.addEventListener('click', () => {
+                const isLoggedIn = checkAuthState();
+                if (!isLoggedIn) {
+                    authSection.classList.remove('hidden');
+                    landingPage.classList.add('hidden');
+                    featuresSection.classList.add('hidden');
+                    aboutSection.classList.add('hidden');
+                }
+            });
+        }
+
+        // Obsługa kliknięć w linki nawigacyjne
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const isLoggedIn = checkAuthState();
+
+                if (!isLoggedIn) {
+                    scrollToSection(targetId);
+                }
+            });
+        });
+
+        // Nasłuchiwanie zmian stanu autoryzacji
+        onAuthStateChanged(auth, user => {
+            const isLoggedIn = user !== null;
+            manageSectionsVisibility(isLoggedIn);
+            
+            if (isLoggedIn) {
+                landingPage.classList.add('hidden');
+                userDashboard.classList.remove('hidden');
+                authSection.classList.add('hidden');
+            } else {
+                landingPage.classList.remove('hidden');
+                userDashboard.classList.add('hidden');
+            }
+        });
+
+        // Inicjalizacja stanu początkowego
+        const initialAuthState = checkAuthState();
+        manageSectionsVisibility(initialAuthState);
+    });
+    </script>
+</body>
+</html>
