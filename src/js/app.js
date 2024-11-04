@@ -122,7 +122,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const hamburgerMenu = document.querySelector('.hamburger-menu');
     const navLinks = document.querySelector('.nav-links');
 
-    hamburgerMenu.addEventListener('click', () => {
+    hamburgerMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hamburgerMenu.classList.toggle('active');
         navLinks.classList.toggle('active');
+    });
+
+    // Zamykaj menu po kliknięciu w link
+    document.querySelectorAll('.nav-link, .btn-primary').forEach(item => {
+        item.addEventListener('click', () => {
+            hamburgerMenu.classList.remove('active');
+            navLinks.classList.remove('active');
+        });
+    });
+
+    // Zamykaj menu po kliknięciu poza nim
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.nav-container')) {
+            hamburgerMenu.classList.remove('active');
+            navLinks.classList.remove('active');
+        }
     });
 });
