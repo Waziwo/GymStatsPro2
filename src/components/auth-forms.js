@@ -1,3 +1,5 @@
+import { ScoreDisplay } from '../components/score-display.js';
+
 export class AuthForms {
     constructor(authService, scoreService, userService, notificationManager) {
         this.authService = authService;
@@ -202,72 +204,135 @@ export class AuthForms {
     }
 
     showUserInfo(email, userData) {
-        console.log("Showing user info with data:", email, userData);
+        console.log("Próba wyświetlenia informacji o użytkowniku:", email, userData);
         if (this.userInfo) {
+            console.log("Element userInfo znaleziony");
             this.userInfo.classList.remove('hidden');
             const nicknameElement = document.getElementById('user-nickname');
             const emailElement = document.getElementById('user-email');
             
             if (nicknameElement) {
                 if (userData && userData.nickname) {
-                    console.log("Setting nickname to:", userData.nickname);
+                    console.log("Ustawianie nicknamu:", userData.nickname);
                     nicknameElement.textContent = userData.nickname;
                 } else {
-                    console.log("No nickname found in userData");
+                    console.log("Brak nicknamu w userData");
                     nicknameElement.textContent = 'Użytkownik';
                 }
             } else {
-                console.log("Nickname element not found in DOM");
+                console.log("Element nickname nie znaleziony w DOM");
             }
     
             if (emailElement) {
                 emailElement.textContent = email;
             }
         } else {
-            console.log("UserInfo element not found");
+            console.log("Element userInfo nie został znaleziony");
         }
         
         if (this.landingPage) {
+            console.log("Ukrywanie strony głównej");
             this.landingPage.classList.add('hidden');
         }
         if (this.userDashboard) {
+            console.log("Pokazywanie panelu użytkownika");
             this.userDashboard.classList.remove('hidden');
         }
         if (this.featuresSection) {
+            console.log("Ukrywanie sekcji funkcji");
             this.featuresSection.classList.add('hidden');
         }
         if (this.aboutSection) {
+            console.log("Ukrywanie sekcji o nas");
             this.aboutSection.classList.add('hidden');
         }
     }
-
+    
+    constructor(authService, scoreService, userService, notificationManager) {
+        console.log("Inicjalizacja AuthForms");
+        this.authService = authService;
+        this.scoreService = scoreService;
+        this.userService = userService;
+        this.notificationManager = notificationManager;
+        console.log("Rozpoczęcie inicjalizacji formularzy");
+        this.initializeForms();
+        console.log("Rozpoczęcie konfiguracji nasłuchiwania stanu autoryzacji");
+        this.setupAuthStateListener();
+    }
+    
+    setupAuthStateListener() {
+        console.log("Ustawianie nasłuchiwania na zmiany stanu autoryzacji");
+        this.authService.onAuthStateChanged(async (user) => {
+            console.log("Stan autoryzacji zmieniony:", user);
+            if (user) {
+                try {
+                    console.log("Próba pobrania danych użytkownika:", user.uid);
+                    const userData = await this.userService.getUserData(user.uid);
+                    console.log("Pobrane dane użytkownika:", userData);
+                    this.showUserInfo(user.email, userData);
+                    this.hideLoginButton();
+                    
+                    console.log("Inicjalizacja wyświetlania wyników");
+                    if (!this.scoreDisplay) {
+                        console.log("Tworzenie nowej instancji ScoreDisplay");
+                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService);
+                    }
+                    this.scoreDisplay.init();
+                } catch (error) {
+                    console.error('Błąd podczas pobierania danych użytkownika:', error);
+                    this.showUserInfo(user.email);
+                    this.hideLoginButton();
+                }
+            } else {
+                console.log("Użytkownik wylogowany - resetowanie widoku");
+                this.hideUserInfo();
+                this.showLoginButton();
+                this.scoreDisplay = null;
+            }
+        });
+    }
+    
     hideUserInfo() {
+        console.log("Próba ukrycia informacji o użytkowniku");
         if (this.userInfo) {
+            console.log("Ukrywanie elementu userInfo");
             this.userInfo.classList.add('hidden');
         }
         if (this.landingPage) {
+            console.log("Pokazywanie strony głównej");
             this.landingPage.classList.remove('hidden');
         }
         if (this.userDashboard) {
+            console.log("Ukrywanie panelu użytkownika");
             this.userDashboard.classList.add('hidden');
         }
         if (this.featuresSection) {
+            console.log("Pokazywanie sekcji funkcji");
             this.featuresSection.classList.remove('hidden');
         }
         if (this.aboutSection) {
+            console.log("Pokazywanie sekcji o nas");
             this.aboutSection.classList.remove('hidden');
         }
     }
-
+    
     showLoginButton() {
+        console.log("Próba pokazania przycisku logowania");
         if (this.loginButton) {
+            console.log("Pokazywanie przycisku logowania");
             this.loginButton.classList.remove('hidden');
+        } else {
+            console.log("Nie znaleziono przycisku logowania");
         }
     }
-
+    
     hideLoginButton() {
+        console.log("Próba ukrycia przycisku logowania");
         if (this.loginButton) {
+            console.log("Ukrywanie przycisku logowania");
             this.loginButton.classList.add('hidden');
+        } else {
+            console.log("Nie znaleziono przycisku logowania");
         }
     }
 }
