@@ -34,6 +34,7 @@ export class AuthForms {
         this.authSection = document.getElementById('auth-section');
         this.featuresSection = document.getElementById('features');
         this.aboutSection = document.getElementById('about');
+        this.navLinks = document.querySelectorAll('.nav-link');
 
         if (this.showRegisterLink && this.showLoginLink) {
             this.setupFormToggle();
@@ -233,6 +234,7 @@ export class AuthForms {
             console.log("Element userInfo nie został znaleziony");
         }
         
+        // Ukryj stronę główną i sekcje
         if (this.landingPage) {
             console.log("Ukrywanie strony głównej");
             this.landingPage.classList.add('hidden');
@@ -241,6 +243,17 @@ export class AuthForms {
             console.log("Pokazywanie panelu użytkownika");
             this.userDashboard.classList.remove('hidden');
         }
+        
+        // Ukryj linki nawigacyjne
+        if (this.navLinks) {
+            this.navLinks.forEach(link => {
+                if (link.getAttribute('href') === '#features' || link.getAttribute('href') === '#about') {
+                    link.classList.add('hidden');
+                }
+            });
+        }
+        
+        // Ukryj sekcje
         if (this.featuresSection) {
             console.log("Ukrywanie sekcji funkcji");
             this.featuresSection.classList.add('hidden');
@@ -248,6 +261,41 @@ export class AuthForms {
         if (this.aboutSection) {
             console.log("Ukrywanie sekcji o nas");
             this.aboutSection.classList.add('hidden');
+        }
+    }
+    
+    hideUserInfo() {
+        console.log("Próba ukrycia informacji o użytkowniku");
+        if (this.userInfo) {
+            console.log("Ukrywanie elementu userInfo");
+            this.userInfo.classList.add('hidden');
+        }
+        if (this.landingPage) {
+            console.log("Pokazywanie strony głównej");
+            this.landingPage.classList.remove('hidden');
+        }
+        if (this.userDashboard) {
+            console.log("Ukrywanie panelu użytkownika");
+            this.userDashboard.classList.add('hidden');
+        }
+        
+        // Pokaż linki nawigacyjne
+        if (this.navLinks) {
+            this.navLinks.forEach(link => {
+                if (link.getAttribute('href') === '#features' || link.getAttribute('href') === '#about') {
+                    link.classList.remove('hidden');
+                }
+            });
+        }
+        
+        // Pokaż sekcje
+        if (this.featuresSection) {
+            console.log("Pokazywanie sekcji funkcji");
+            this.featuresSection.classList.remove('hidden');
+        }
+        if (this.aboutSection) {
+            console.log("Pokazywanie sekcji o nas");
+            this.aboutSection.classList.remove('hidden');
         }
     }
     
@@ -281,30 +329,6 @@ export class AuthForms {
                 this.scoreDisplay = null;
             }
         });
-    }
-    
-    hideUserInfo() {
-        console.log("Próba ukrycia informacji o użytkowniku");
-        if (this.userInfo) {
-            console.log("Ukrywanie elementu userInfo");
-            this.userInfo.classList.add('hidden');
-        }
-        if (this.landingPage) {
-            console.log("Pokazywanie strony głównej");
-            this.landingPage.classList.remove('hidden');
-        }
-        if (this.userDashboard) {
-            console.log("Ukrywanie panelu użytkownika");
-            this.userDashboard.classList.add('hidden');
-        }
-        if (this.featuresSection) {
-            console.log("Pokazywanie sekcji funkcji");
-            this.featuresSection.classList.remove('hidden');
-        }
-        if (this.aboutSection) {
-            console.log("Pokazywanie sekcji o nas");
-            this.aboutSection.classList.remove('hidden');
-        }
     }
     
     showLoginButton() {
