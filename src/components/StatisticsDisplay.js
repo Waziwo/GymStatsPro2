@@ -1,4 +1,4 @@
-import Chart from 'chart.js/auto';
+import Chart from 'https://cdn.jsdelivr.net/npm/chart.js/auto';
 
 export class StatisticsDisplay {
     constructor(scoreService) {
