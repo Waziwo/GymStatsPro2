@@ -2,11 +2,14 @@ import { ScoreDisplay } from '../components/score-display.js';
 
 export class AuthForms {
     constructor(authService, scoreService, userService, notificationManager) {
+        console.log("Inicjalizacja AuthForms");
         this.authService = authService;
         this.scoreService = scoreService;
         this.userService = userService;
         this.notificationManager = notificationManager;
+        console.log("Rozpoczęcie inicjalizacji formularzy");
         this.initializeForms();
+        console.log("Rozpoczęcie konfiguracji nasłuchiwania stanu autoryzacji");
         this.setupAuthStateListener();
     }
 
@@ -246,18 +249,6 @@ export class AuthForms {
             console.log("Ukrywanie sekcji o nas");
             this.aboutSection.classList.add('hidden');
         }
-    }
-    
-    constructor(authService, scoreService, userService, notificationManager) {
-        console.log("Inicjalizacja AuthForms");
-        this.authService = authService;
-        this.scoreService = scoreService;
-        this.userService = userService;
-        this.notificationManager = notificationManager;
-        console.log("Rozpoczęcie inicjalizacji formularzy");
-        this.initializeForms();
-        console.log("Rozpoczęcie konfiguracji nasłuchiwania stanu autoryzacji");
-        this.setupAuthStateListener();
     }
     
     setupAuthStateListener() {
