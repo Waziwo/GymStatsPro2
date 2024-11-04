@@ -161,72 +161,137 @@
                     </button>
                 </div>
             </div>
-        
+
             <div class="dashboard-content">
-                <div class="score-section">
-                    <h2>Dodaj nowy wynik</h2>
-                    <form id="score-form">
-                        <div class="form-group">
-                            <label for="exercise-type">Ćwiczenie</label>
-                            <select id="exercise-type" required>
-                                <option value="">Wybierz ćwiczenie</option>
-                                <option value="bench-press">Wyciskanie sztangi</option>
-                                <option value="squat">Przysiad</option>
-                                <option value="deadlift">Martwy ciąg</option>
+                <nav class="dashboard-nav">
+                    <ul>
+                        <li><a href="#overview" class="active"><i class="fas fa-home"></i> Przegląd</a></li>
+                        <li><a href="#add-score"><i class="fas fa-plus-circle"></i> Dodaj wynik</a></li>
+                        <li><a href="#scores-list"><i class="fas fa-list"></i> Lista wyników</a></li>
+                        <li><a href="#statistics"><i class="fas fa-chart-bar"></i> Statystyki</a></li>
+                        <li><a href="#activity"><i class="fas fa-history"></i> Historia aktywności</a></li>
+                    </ul>
+                </nav>
+
+                <div class="dashboard-sections">
+                    <div id="overview" class="dashboard-section active">
+                        <h2>Przegląd</h2>
+                        <div class="quick-stats">
+                            <div class="stat-card">
+                                <h3>Ostatni trening</h3>
+                                <p id="last-workout-date">-</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Liczba treningów</h3>
+                                <p id="total-workouts">-</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Ulubione ćwiczenie</h3>
+                                <p id="favorite-exercise">-</p>
+                            </div>
+                        </div>
+                        <div class="quick-add">
+                            <h3>Szybkie dodawanie wyniku</h3>
+                            <form id="quick-score-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="quick-exercise">Ćwiczenie</label>
+                                        <select id="quick-exercise" required>
+                                            <option value="">Wybierz ćwiczenie</option>
+                                            <option value="bench-press">Wyciskanie sztangi</option>
+                                            <option value="squat">Przysiad</option>
+                                            <option value="deadlift">Martwy ciąg</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="quick-weight">Ciężar (kg)</label>
+                                        <input type="number" id="quick-weight" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="quick-reps">Powtórzenia</label>
+                                        <input type="number" id="quick-reps" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary">Dodaj wynik</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="add-score" class="dashboard-section">
+                        <h2>Dodaj nowy wynik</h2>
+                        <form id="score-form">
+                            <div class="form-group">
+                                <label for="exercise-type">Ćwiczenie</label>
+                                <select id="exercise-type" required>
+                                    <option value="">Wybierz ćwiczenie</option>
+                                    <option value="bench-press">Wyciskanie sztangi</option>
+                                    <option value="squat">Przysiad</option>
+                                    <option value="deadlift">Martwy ciąg</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="weight">Ciężar (kg)</label>
+                                <input type="number" id="weight" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reps">Powtórzenia</label>
+                                <input type="number" id="reps" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Zapisz wynik</button>
+                        </form>
+                    </div>
+
+                    <div id="scores-list" class="dashboard-section">
+                        <h2>Twoje wyniki</h2>
+                        <div class="filtering-section">
+                            <form id="filter-form">
+                                <select id="filter-exercise">
+                                    <option value="">Wszystkie ćwiczenia</option>
+                                    <option value="bench-press">Wyciskanie sztangi</option>
+                                    <option value="squat">Przysiad</option>
+                                    <option value="deadlift">Martwy ciąg</option>
+                                </select>
+                                <input id="filter-date-from" type="date" placeholder="Od">
+                                <input id="filter-date-to" type="date" placeholder="Do">
+                                <button type="submit">Filtruj</button>
+                            </form>
+                            <select id="sort-select">
+                                <option value="date-desc">Data (najnowsze)</option>
+                                <option value="date-asc">Data (najstarsze)</option>
+                                <option value="weight-desc">Ciężar (największy)</option>
+                                <option value="weight-asc">Ciężar (najmniejszy)</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="weight">Ciężar (kg)</label>
-                            <input type="number" id="weight" required>
+                        <ul id="scores-list"></ul>
+                    </div>
+
+                    <div id="statistics" class="dashboard-section">
+                        <h2>Twoje statystyki</h2>
+                        <div id="averages"></div>
+                        <div class="charts-container">
+                            <div class="chart-wrapper">
+                                <h3>Postęp w czasie</h3>
+                                <canvas id="progressChart"></canvas>
+                            </div>
+                            <div class="chart-wrapper">
+                                <h3>Rozkład ćwiczeń</h3>
+                                <canvas id="exerciseDistributionChart"></canvas>
+                            </div>
+                            <div class="chart-wrapper">
+                                <h3>Maksymalne ciężary</h3>
+                                <canvas id="maxWeightChart"></canvas>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="reps">Powtórzenia</label>
-                            <input type="number" id="reps" required>
-                        </div>
-                        <button type="submit" class="btn-primary">Zapisz wynik</button>
-                    </form>
+                        <button id="export-statistics" class="btn-primary">
+                            <i class="fas fa-download"></i> Eksportuj Statystyki
+                        </button>
+                    </div>
+
+                    <div id="activity" class="dashboard-section">
+                        <h2>Historia aktywności</h2>
+                        <ul id="activity-list"></ul>
+                    </div>
                 </div>
-        
-                <!-- Dodaj sekcję filtrowania tutaj -->
-                <div class="filtering-section">
-                    <form id="filter-form">
-                        <select id="filter-exercise">
-                            <option value="">Wszystkie ćwiczenia</option>
-                            <option value="bench-press">Wyciskanie sztangi</option>
-                            <option value="squat">Przysiad</option>
-                            <option value="deadlift">Martwy ciąg</option>
-                        </select>
-                        <input id="filter-date-from" type="date" placeholder="Od">
-                        <input id="filter-date-to" type="date" placeholder="Do">
-                        <button type="submit">Filtruj</button>
-                    </form>
-                    <select id="sort-select">
-                        <option value="date-desc">Data (najnowsze)</option>
-                        <option value="date-asc">Data (najstarsze)</option>
-                        <option value="weight-desc">Ciężar (największy)</option>
-                        <option value="weight-asc">Ciężar (najmniejszy)</option>
-                    </select>
-                </div>
-        
-                <div class="scores-list-section">
-                    <h2>Twoje wyniki</h2>
-                    <ul id="scores-list"></ul>
-                </div>
-            </div>
-        
-            <div class="user-activities">
-                <h2>Historia aktywności</h2>
-                <ul id="activity-list"></ul>
-            </div>
-        
-            <!-- Zaktualizuj sekcję statystyk -->
-            <div class="statistics-section">
-                <h2>Twoje statystyki</h2>
-                <div id="averages"></div>
-                <canvas id="progressChart"></canvas>
-                <canvas id="exerciseDistributionChart"></canvas>
-                <canvas id="maxWeightChart"></canvas>
-                <button id="export-statistics" class="btn-primary">Eksportuj statystyki</button>
             </div>
         </section>
     </main>
@@ -236,5 +301,56 @@
     </footer>
 
     <script type="module" src="src/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.dashboard-nav a');
+            const sections = document.querySelectorAll('.dashboard-section');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === targetId) {
+                            section.classList.add('active');
+                        }
+                    });
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const navLinks = document.querySelector('.nav-links');
+
+            hamburgerMenu.addEventListener('click', (e) => {
+                e.stopPropagation();
+                hamburgerMenu.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+
+            // Zamykaj menu po kliknięciu w link
+            document.querySelectorAll('.nav-link, .btn-primary').forEach(item => {
+                item.addEventListener('click', () => {
+                    hamburgerMenu.classList.remove('active');
+                    navLinks.classList.remove('active');
+                });
+            });
+
+            // Zamykaj menu po kliknięciu poza nim
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('.nav-container')) {
+                    hamburgerMenu.classList.remove('active');
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
+                            
