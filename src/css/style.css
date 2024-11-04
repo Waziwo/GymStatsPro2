@@ -453,16 +453,33 @@ html {
 @media (max-width: 768px) {
     /* Nagłówek */
     .nav-container {
+        flex-direction: column;
+        align-items: center;
         padding: 0.5rem 1rem;
     }
 
     .logo {
         font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .nav-link {
+        padding: 10px 0;
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     /* Sekcja hero */
     .hero-content {
         padding: 2rem 1rem;
+        margin-top: 120px; /* Dodatkowy margines na górze dla fixed header */
     }
 
     .hero-content h1 {
@@ -478,18 +495,45 @@ html {
     .hero-buttons {
         flex-direction: column;
         gap: 1rem;
+        padding: 0 1rem;
+    }
+
+    .btn-primary, 
+    .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+
+    /* Sekcja funkcji */
+    .features-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0 1rem;
+    }
+
+    .feature-card {
+        padding: 1.5rem;
     }
 
     /* Formularze */
     .auth-container {
         margin: 1rem;
         padding: 1.5rem;
+        width: auto;
+        max-width: none;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
     }
 
     .form-group input,
     .form-group select {
-        padding: 0.6rem;
+        padding: 0.8rem;
         font-size: 16px; /* Zapobiega powiększaniu na iOS */
+        width: 100%;
     }
 
     /* Panel użytkownika */
@@ -497,14 +541,27 @@ html {
         flex-direction: column;
         gap: 1rem;
         padding: 1rem;
+        margin-top: 60px;
     }
 
     .user-info {
         flex-direction: column;
         text-align: center;
+        gap: 0.5rem;
+    }
+
+    #user-nickname,
+    #user-email {
+        display: block;
+        width: 100%;
+        text-align: center;
     }
 
     /* Lista wyników */
+    .scores-list-section {
+        padding: 0 1rem;
+    }
+
     #scores-list li {
         flex-direction: column;
         gap: 0.5rem;
@@ -514,16 +571,87 @@ html {
     .delete-button {
         width: 100%;
         margin-top: 0.5rem;
+        padding: 0.8rem;
     }
 
-    /* Sekcja funkcji */
-    .features-container {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+    /* Sekcja O nas */
+    .about-section {
+        padding: 2rem 1rem;
     }
 
-    .feature-card {
+    .about-content {
+        text-align: left;
+    }
+
+    .about-content h3 {
+        font-size: 1.3rem;
+        margin-top: 1.5rem;
+    }
+
+    .about-content p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    /* Footer */
+    footer {
         padding: 1.5rem;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+
+    /* Formularze logowania/rejestracji */
+    #login-form-container,
+    #register-form-container,
+    #reset-password-container {
+        padding: 1rem;
+    }
+
+    /* Przyciski w formularzach */
+    form button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 1rem;
+    }
+
+    /* Linki w formularzach */
+    .auth-container p {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+    }
+
+    /* Poprawki dla małych ekranów */
+    main {
+        padding: 1rem;
+        margin-top: 60px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Dodatkowe poprawki dla lepszej czytelności */
+    body {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Poprawki dla powiadomień */
+    .notification {
+        width: 90%;
+        margin: 0 auto;
+        font-size: 0.9rem;
     }
 }
 
@@ -623,20 +751,46 @@ select {
 /* Dodaj wsparcie dla ciemnego motywu */
 @media (prefers-color-scheme: dark) {
     :root {
-        --background-color: #1a1a1a;
+        --background-color: #121212;
         --text-color: #ffffff;
-        --card-background: #2d2d2d;
+        --card-background: #1e1e1e;
         --primary-color: #4dabf7;
         --secondary-color: #40c057;
     }
 
-    .feature-card {
-        background: var(--card-background);
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
     }
 
-    input, select {
+    .nav-header {
+        background-color: var(--card-background);
+    }
+
+    .hero-content, .features-section, .about-section {
+        background-color: var(--background-color);
+    }
+
+    .feature-card, .auth-container {
+        background-color: var(--card-background);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    input, select, button {
         background-color: #333;
         color: white;
         border-color: #444;
     }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: var(--background-color);
+    }
+
+    .btn-secondary {
+        background-color: var(--secondary-color);
+        color: var(--background-color);
+    }
+
+    /* Dodaj więcej specyficznych stylów dla ciemnego motywu, jeśli potrzeba */
 }
