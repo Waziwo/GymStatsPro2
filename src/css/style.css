@@ -182,6 +182,12 @@ main {
 }
 
 /* ===== DASHBOARD ===== */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    background-color: var(--background-color);
+}
 .dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -201,9 +207,62 @@ main {
 
 #user-nickname {
     font-weight: bold;
-    margin-right: 1rem;
+    font-size: 1.2rem;
+    color: var(--text-color);
+}
+#user-email {
+    color: #666;
+    font-size: 0.9rem;
+}
+.dashboard-content {
+    display: flex;
+    gap: 2rem;
 }
 
+.dashboard-nav {
+    width: 250px;
+    background: var(--card-background);
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.dashboard-nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.dashboard-nav li {
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-nav a {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.dashboard-nav a:hover,
+.dashboard-nav a.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.dashboard-nav i {
+    margin-right: 0.5rem;
+}
+
+.dashboard-sections {
+    flex: 1;
+    background: var(--card-background);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 /* Nowe style dla historii aktywności */
 .user-activities {
     margin-top: 20px;
@@ -951,6 +1010,13 @@ footer {
     #progressChart {
         height: 300px;
     }
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .charts-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1179,4 +1245,64 @@ main {
     box-shadow: none;
     border: 1px solid #ddd;
 }
+}
+/* ===== PRZEGLĄD ===== */
+.quick-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.stat-card h3 {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card p {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.quick-add {
+    background: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-top: 2rem;
+}
+
+.quick-add h3 {
+    margin-bottom: 1rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* ===== WYKRESY ===== */
+.charts-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.chart-wrapper {
+    background: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
