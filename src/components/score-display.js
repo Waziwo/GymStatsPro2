@@ -25,10 +25,11 @@ export class ScoreDisplay {
     }
 
     async handleScoreSubmit(e) {
+        e.preventDefault();  // Dodaj to, aby zapobiec odświeżaniu strony
         const exerciseType = this.scoreForm['exercise-type'].value;
         const weight = parseFloat(this.scoreForm['weight'].value);
         const reps = parseInt(this.scoreForm['reps'].value);
-
+    
         try {
             const user = await this.authService.getCurrentUser();
             if (!user) {
@@ -36,32 +37,20 @@ export class ScoreDisplay {
             }
             await this.scoreService.addScore(exerciseType, weight, reps);
             this.scoreForm.reset();
-            await this.loadScores();
+            await this.loadScores();  // Załaduj i wyświetl wyniki od razu po dodaniu
         } catch (error) {
             alert(error.message);
         }
     }
 
     async loadScores() {
-        console.log("ScoreService: Rozpoczęto ładowanie wyników");
-        const user = this.auth.currentUser;
-        if (!user) {
-            console.log("ScoreService: Brak zalogowanego użytkownika");
-            return [];
-        }
-    
+        console.log("ScoreDisplay: Rozpoczęto ładowanie wyników");
         try {
-            const q = query(this.scoresCollection, where("userId", "==", user.uid));
-            const scoresSnapshot = await getDocs(q);
-            const scores = scoresSnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            console.log("ScoreService: Załadowane wyniki:", scores);
-            return scores;
+            const scores = await this.scoreService.loadScores();
+            console.log("ScoreDisplay: Załadowane wyniki:", scores);
+            this.displayScores(scores);
         } catch (error) {
-            console.error("ScoreService: Błąd podczas ładowania wyników:", error);
-            return [];
+            console.error("ScoreDisplay: Błąd podczas ładowania wyników:", error);
         }
     }
 

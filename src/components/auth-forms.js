@@ -99,8 +99,8 @@ export class AuthForms {
             if (user) {
                 try {
                     const userData = await this.userService.getUserData(user.uid);
-                    this.authForms.showUserInfo(user.email, userData);
-                    this.authForms.hideLoginButton();
+                    this.showUserInfo(user.email, userData);
+                    this.hideLoginButton();
                     
                     // Inicjalizuj i ładuj wyniki po zalogowaniu
                     if (!this.scoreDisplay) {
@@ -109,12 +109,12 @@ export class AuthForms {
                     this.scoreDisplay.init();  // Dodaj to wywołanie
                 } catch (error) {
                     console.error('Error fetching user data:', error);
-                    this.authForms.showUserInfo(user.email);
-                    this.authForms.hideLoginButton();
+                    this.showUserInfo(user.email);
+                    this.hideLoginButton();
                 }
             } else {
-                this.authForms.hideUserInfo();
-                this.authForms.showLoginButton();
+                this.hideUserInfo();
+                this.showLoginButton();
                 this.scoreDisplay = null;  // Resetuj scoreDisplay przy wylogowaniu
             }
         });
