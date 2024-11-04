@@ -4,12 +4,12 @@ import { firebaseConfig } from "./config/firebase-config.js";
 import { AuthService } from "./auth/auth.js";
 import { ScoreService } from "./scores/scores.js";
 import { UserService } from "./services/user-service.js";
-import { AuthForms } from "../components/auth-forms.js";
-import { ScoreDisplay } from "../components/score-display.js";
-import { NotificationManager } from './notifications.js';
+import { AuthForms } from "./components/auth-forms.js";
+import { ScoreDisplay } from "./components/score-display.js";
+import { NotificationManager } from './utils/notifications.js';
 import { ActivityLogger } from './utils/activity-logger.js';
-import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
-import { initNavigation } from './navigation.js';
+import { StatisticsDisplay } from './components/StatisticsDisplay.js';
+import { initNavigation } from './utils/navigation.js';
 
 class App {
     constructor() {
