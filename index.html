@@ -321,12 +321,12 @@
         const aboutSection = document.getElementById('about');
         const navLinksContainer = document.querySelector('.nav-links');
         const hamburgerMenu = document.querySelector('.hamburger-menu');
+        const authSection = document.getElementById('auth-section');
 
         // Funkcja sprawdzająca stan autoryzacji
         const checkAuthState = () => {
-            // Tutaj możesz dodać logikę sprawdzania stanu autoryzacji
-            // Na przykład używając Firebase Auth
-            return false; // Tymczasowo zawsze zwraca false
+            const auth = firebase.auth();
+            return auth.currentUser !== null;
         };
 
         // Funkcja zarządzająca widocznością sekcji
@@ -342,6 +342,7 @@
                 dashboardLink.classList.remove('hidden');
                 featuresSection.classList.add('hidden');
                 aboutSection.classList.add('hidden');
+                authSection.classList.add('hidden'); // Ukryj sekcję logowania
             } else {
                 // Stan wylogowany
                 document.querySelectorAll('.nav-link').forEach(link => {
@@ -361,8 +362,17 @@
             e.preventDefault();
             const isLoggedIn = checkAuthState();
 
-            landingPage.classList.remove('hidden');
-            userDashboard.classList.add('hidden');
+            if (isLoggedIn) {
+                // Jeśli zalogowany, pokaż dashboard
+                landingPage.classList.add('hidden');
+                userDashboard.classList.remove('hidden');
+                authSection.classList.add('hidden');
+            } else {
+                // Jeśli niezalogowany, pokaż stronę główną
+                landingPage.classList.remove('hidden');
+                userDashboard.classList.add('hidden');
+                authSection.classList.add('hidden');
+            }
             manageSectionsVisibility(isLoggedIn);
         });
 
@@ -371,6 +381,7 @@
             e.preventDefault();
             landingPage.classList.add('hidden');
             userDashboard.classList.remove('hidden');
+            authSection.classList.add('hidden');
             manageSectionsVisibility(true);
         });
 
@@ -380,12 +391,9 @@
                 e.preventDefault();
                 const targetId = this.getAttribute('href').substring(1);
 
-                // Usuń klasę active ze wszystkich linków
                 navLinks.forEach(link => link.classList.remove('active'));
-                // Dodaj klasę active do klikniętego linku
                 this.classList.add('active');
 
-                // Pokaż odpowiednią sekcję
                 sections.forEach(section => {
                     section.classList.remove('active');
                     if (section.id === targetId) {
@@ -422,15 +430,30 @@
         const getStartedBtn = document.getElementById('get-started-btn');
         if (getStartedBtn) {
             getStartedBtn.addEventListener('click', () => {
-                // Tutaj dodaj logikę dla przycisku "Rozpocznij za darmo"
                 const isLoggedIn = checkAuthState();
                 if (!isLoggedIn) {
-                    // Pokaż formularz logowania/rejestracji
-                    document.getElementById('auth-section').classList.remove('hidden');
+                    authSection.classList.remove('hidden');
                     landingPage.classList.add('hidden');
+                    featuresSection.classList.add('hidden');
+                    aboutSection.classList.add('hidden');
                 }
             });
         }
+
+        // Nasłuchiwanie zmian stanu autoryzacji
+        firebase.auth().onAuthStateChanged(user => {
+            const isLoggedIn = user !== null;
+            manageSectionsVisibility(isLoggedIn);
+            
+            if (isLoggedIn) {
+                landingPage.classList.add('hidden');
+                userDashboard.classList.remove('hidden');
+                authSection.classList.add('hidden');
+            } else {
+                landingPage.classList.remove('hidden');
+                userDashboard.classList.add('hidden');
+            }
+        });
 
         // Inicjalizacja stanu początkowego
         const initialAuthState = checkAuthState();
