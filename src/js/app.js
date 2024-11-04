@@ -6,6 +6,7 @@ import { UserService } from "./services/user-service.js";
 import { AuthForms } from "../components/auth-forms.js";
 import { ScoreDisplay } from "../components/score-display.js";
 import { NotificationManager } from './notifications.js';
+import { ActivityLogger } from './utils/activity-logger.js';
 
 class App {
     constructor() {
@@ -17,16 +18,24 @@ class App {
         this.scoreService = new ScoreService();
         this.userService = new UserService();
         this.notificationManager = new NotificationManager();
+        this.activityLogger = new ActivityLogger();
 
         // Initialize components
         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService);
-        this.authForms = new AuthForms(this.authService, this.scoreService, this.userService, this.notificationManager);
+        this.authForms = new AuthForms(
+            this.authService, 
+            this.scoreService, 
+            this.userService, 
+            this.notificationManager,
+            this.activityLogger
+        );
 
         // DOM elements
         this.initializeElements();
         this.setupEventListeners();
         this.setupAuthStateListener();
     }
+    
 
     initializeElements() {
         this.loginButton = document.getElementById('login-button');

@@ -1,7 +1,7 @@
 import { ScoreDisplay } from '../components/score-display.js';
 
-export class AuthForms {
-    constructor(authService, scoreService, userService, notificationManager) {
+class AuthForms {
+    constructor(authService, scoreService, userService, notificationManager, activityLogger) {
         console.log("Inicjalizacja AuthForms");
         this.authService = authService;
         this.scoreService = scoreService;
@@ -15,6 +15,7 @@ export class AuthForms {
         // Zmień tę linię:
         this.navLinks = document.querySelectorAll('.nav-link'); // Użyj querySelectorAll zamiast querySelector
         this.setupMobileMenu();
+        this.activityLogger = activityLogger;
     }
     setupMobileMenu() {
         if (this.hamburgerMenu && this.navLinks) {
@@ -164,6 +165,39 @@ export class AuthForms {
         }
     }
 
+    async handleLogin(e) {
+        e.preventDefault();
+        const email = this.loginForm['login-email'].value;
+        const password = this.loginForm['login-password'].value;
+    
+        try {
+            await this.authService.login(email, password);
+            this.loginForm.reset();
+            this.notificationManager.show('Zalogowano pomyślnie!', 'success');
+            this.activityLogger.logActivity('login', { email: email });
+            if (this.authSection) {
+                this.authSection.classList.add('hidden');
+            }
+        } catch (error) {
+            this.notificationManager.show('Błąd logowania: ' + error.message, 'error');
+            this.activityLogger.logActivity('login_error', { error: error.message });
+        }
+    }
+    
+    async handleLogout() {
+        try {
+            await this.authService.logout();
+            this.notificationManager.show('Wylogowano pomyślnie!', 'success');
+            this.activityLogger.logActivity('logout', {});
+            if (this.authSection) {
+                this.authSection.classList.remove('hidden');
+            }
+        } catch (error) {
+            this.notificationManager.show('Błąd wylogowania: ' + error.message, 'error');
+            this.activityLogger.logActivity('logout_error', { error: error.message });
+        }
+    }
+    
     async handleRegister(e) {
         e.preventDefault();
         const email = this.registerForm['register-email'].value;
@@ -183,38 +217,12 @@ export class AuthForms {
             
             this.registerForm.reset();
             this.notificationManager.show('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.', 'success');
+            this.activityLogger.logActivity('register', { email: email, nickname: nickname });
             this.showLoginForm(e);
         } catch (error) {
             console.error("Registration error:", error);
             this.notificationManager.show(error.message, 'error');
-        }
-    }
-    
-    async handleLogin(e) {
-        e.preventDefault();
-        const email = this.loginForm['login-email'].value;
-        const password = this.loginForm['login-password'].value;
-    
-        try {
-            await this.authService.login(email, password);
-            this.loginForm.reset();
-            this.notificationManager.show('Zalogowano pomyślnie!', 'success');
-            if (this.authSection) {
-                this.authSection.classList.add('hidden');
-            }
-        } catch (error) {
-            this.notificationManager.show('Błąd logowania: ' + error.message, 'error'); }
-    }
-    
-    async handleLogout() {
-        try {
-            await this.authService.logout();
-            this.notificationManager.show('Wylogowano pomyślnie!', 'success');
-            if (this.authSection) {
-                this.authSection.classList.remove('hidden');
-            }
-        } catch (error) {
-            this.notificationManager.show('Błąd wylogowania: ' + error.message, 'error');
+            this.activityLogger.logActivity('register_error', { error: error.message });
         }
     }
 
@@ -252,9 +260,10 @@ export class AuthForms {
         if (this.userDashboard) {
             console.log("Pokazywanie panelu użytkownika");
             this.userDashboard.classList.remove('hidden');
+            // Dodaj wyświetlanie historii aktywności
+            this.displayUserActivities();
         }
         
-        // Dodaj sprawdzenie czy this.navLinks istnieje
         if (this.navLinks && this.navLinks.length > 0) {
             this.navLinks.forEach(link => {
                 if (link.getAttribute('href') === '#features' || link.getAttribute('href') === '#about') {
@@ -271,6 +280,30 @@ export class AuthForms {
             console.log("Ukrywanie sekcji o nas");
             this.aboutSection.classList.add('hidden');
         }
+    }
+    
+    // Dodaj nową metodę do wyświetlania historii aktywności
+    displayUserActivities() {
+        const activityList = document.getElementById('activity-list');
+        if (!activityList) {
+            console.log("Element activity-list nie został znaleziony");
+            return;
+        }
+    
+        const activities = this.activityLogger.getActivities();
+        activityList.innerHTML = '';
+    
+        activities.forEach(activity => {
+            const activityItem = document.createElement('li');
+            activityItem.className = 'activity-item';
+            const date = new Date(activity.timestamp);
+            activityItem.innerHTML = `
+                <span class="activity-type">${activity.type}</span>
+                <span class="activity-time">${date.toLocaleString()}</span>
+                ${activity.details ? `<span class="activity-details">${JSON.stringify(activity.details)}</span>` : ''}
+            `;
+            activityList.appendChild(activityItem);
+        });
     }
     
     hideUserInfo() {
@@ -357,6 +390,76 @@ export class AuthForms {
             this.loginButton.classList.add('hidden');
         } else {
             console.log("Nie znaleziono przycisku logowania");
+        }
+    }
+    // W klasie AuthForms dodaj metodę handleError:
+    handleError(error, context) {
+        console.error(`Błąd w ${context}:`, error);
+        let message = 'Wystąpił nieoczekiwany błąd';
+        
+        switch (error.code) {
+            case 'auth/user-not-found':
+                message = 'Nie znaleziono użytkownika o podanym adresie email';
+                break;
+            case 'auth/wrong-password':
+                message = 'Nieprawidłowe hasło';
+                break;
+            case 'auth/email-already-in-use':
+                message = 'Ten adres email jest już zajęty';
+                break;
+            case 'auth/weak-password':
+                message = 'Hasło jest za słabe. Powinno mieć co najmniej 6 znaków';
+                break;
+            case 'auth/invalid-email':
+                message = 'Nieprawidłowy format adresu email';
+                break;
+        }
+        
+        this.notificationManager.show(message, 'error');
+    }
+    setupFormValidation() {
+        const passwordInput = document.getElementById('register-password');
+        const emailInput = document.getElementById('register-email');
+        const nicknameInput = document.getElementById('register-nickname');
+    
+        if (passwordInput) {
+            passwordInput.addEventListener('input', (e) => {
+                const password = e.target.value;
+                let strength = 0;
+                
+                // Sprawdź długość
+                if (password.length >= 8) strength++;
+                // Sprawdź wielkie litery
+                if (/[A-Z]/.test(password)) strength++;
+                // Sprawdź małe litery
+                if (/[a-z]/.test(password)) strength++;
+                // Sprawdź cyfry
+                if (/[0-9]/.test(password)) strength++;
+                // Sprawdź znaki specjalne
+                if (/[^A-Za-z0-9]/.test(password)) strength++;
+    
+                const strengthMeter = document.getElementById('password-strength');
+                if (strengthMeter) {
+                    strengthMeter.className = `strength-${strength}`;
+                    strengthMeter.textContent = ['Bardzo słabe', 'Słabe', 'Średnie', 'Silne', 'Bardzo silne'][strength - 1];
+                }
+            });
+        }
+    
+        if (emailInput) {
+            emailInput.addEventListener('input', (e) => {
+                const email = e.target.value;
+                const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                emailInput.classList.toggle('invalid', !isValid);
+            });
+        }
+    
+        if (nicknameInput) {
+            nicknameInput.addEventListener('input', (e) => {
+                const nickname = e.target.value;
+                const isValid = /^[a-zA-Z0-9_-]{3,20}$/.test(nickname);
+                nicknameInput.classList.toggle('invalid', !isValid);
+            });
         }
     }
 }

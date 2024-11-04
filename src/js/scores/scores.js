@@ -1,13 +1,44 @@
 import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
+class ScoreCache {
+    constructor() {
+        this.cache = new Map();
+        this.maxAge = 5 * 60 * 1000; // 5 minut
+    }
+
+    set(key, value) {
+        this.cache.set(key, {
+            value,
+            timestamp: Date.now()
+        });
+    }
+
+    get(key) {
+        const cached = this.cache.get(key);
+        if (!cached) return null;
+
+        if (Date.now() - cached.timestamp > this.maxAge) {
+            this.cache.delete(key);
+            return null;
+        }
+
+        return cached.value;
+    }
+
+    clear() {
+        this.cache.clear();
+    }
+}
+
 export class ScoreService {
     constructor() {
         this.db = getFirestore();
         this.scoresCollection = collection(this.db, 'scores');
         this.auth = getAuth();
+        this.cache = new ScoreCache();
     }
-
+    
     async addScore(exerciseType, weight, reps) {
         try {
             const user = this.auth.currentUser;
@@ -21,6 +52,7 @@ export class ScoreService {
                 reps,
                 timestamp: Date.now(),
             });
+            this.clearCache();
         } catch (error) {
             throw error;
         }
@@ -34,6 +66,13 @@ export class ScoreService {
                 return [];
             }
     
+            const cacheKey = `scores_${user.uid}`;
+            const cachedScores = this.cache.get(cacheKey);
+            if (cachedScores) {
+                console.log("ScoreService: Zwracam wyniki z cache'a");
+                return cachedScores;
+            }
+    
             const q = query(
                 this.scoresCollection,
                 where("userId", "==", user.uid)
@@ -44,13 +83,16 @@ export class ScoreService {
                 id: doc.id,
                 ...doc.data()
             }));
-            console.log("ScoreService: Załadowane wyniki:", scores);
+            console.log("ScoreService: Załadowane wyniki z bazy:", scores);
+            
+            this.cache.set(cacheKey, scores);
             return scores;
         } catch (error) {
             console.error("ScoreService: Błąd podczas ładowania wyników:", error);
             return [];
         }
     }
+
     async deleteScore(scoreId) {
         try {
             const user = this.auth.currentUser;
@@ -58,8 +100,42 @@ export class ScoreService {
 
             const scoreRef = doc(this.db, 'scores', scoreId);
             await deleteDoc(scoreRef);
+            this.clearCache();
         } catch (error) {
             throw error;
+        }
+    }
+
+    clearCache() {
+        this.cache.clear();
+    }
+
+    async exportScores(format = 'csv') {
+        const scores = await this.loadScores();
+        
+        if (format === 'csv') {
+            const csvContent = [
+                ['Data', 'Ćwiczenie', 'Ciężar (kg)', 'Powtórzenia'].join(','),
+                ...scores.map(score => [
+                    new Date(score.timestamp).toLocaleDateString(),
+                    score.exerciseType,
+                    score.weight,
+                    score.reps
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `wyniki_${new Date().toLocaleDateString()}.csv`;
+            link.click();
+        } else if (format === 'json') {
+            const jsonContent = JSON.stringify(scores, null, 2);
+            const blob = new Blob([jsonContent], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `wyniki_${new Date().toLocaleDateString()}.json`;
+            link.click();
         }
     }
 }
