@@ -1,5 +1,5 @@
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-import { ScoreDisplay } from '../components/score-display.js';
+import { ScoreDisplay } from './score-display.js';
 
 export class AuthForms {
     constructor(authService, scoreService, userService, notificationManager, activityLogger) {
