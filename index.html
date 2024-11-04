@@ -323,6 +323,14 @@
         const hamburgerMenu = document.querySelector('.hamburger-menu');
         const authSection = document.getElementById('auth-section');
 
+        // Funkcja do płynnego przewijania do sekcji
+        const scrollToSection = (sectionId) => {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+
         // Funkcja sprawdzająca stan autoryzacji
         const checkAuthState = () => {
             const auth = firebase.auth();
@@ -342,7 +350,7 @@
                 dashboardLink.classList.remove('hidden');
                 featuresSection.classList.add('hidden');
                 aboutSection.classList.add('hidden');
-                authSection.classList.add('hidden'); // Ukryj sekcję logowania
+                authSection.classList.add('hidden');
             } else {
                 // Stan wylogowany
                 document.querySelectorAll('.nav-link').forEach(link => {
@@ -367,13 +375,23 @@
                 landingPage.classList.add('hidden');
                 userDashboard.classList.remove('hidden');
                 authSection.classList.add('hidden');
+                featuresSection.classList.add('hidden');
+                aboutSection.classList.add('hidden');
             } else {
                 // Jeśli niezalogowany, pokaż stronę główną
                 landingPage.classList.remove('hidden');
                 userDashboard.classList.add('hidden');
                 authSection.classList.add('hidden');
+                featuresSection.classList.remove('hidden');
+                aboutSection.classList.remove('hidden');
             }
             manageSectionsVisibility(isLoggedIn);
+
+            // Przewiń na górę strony
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
 
         // Obsługa kliknięcia w link do dashboardu
@@ -439,6 +457,19 @@
                 }
             });
         }
+
+        // Obsługa kliknięć w linki nawigacyjne
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const isLoggedIn = checkAuthState();
+
+                if (!isLoggedIn) {
+                    scrollToSection(targetId);
+                }
+            });
+        });
 
         // Nasłuchiwanie zmian stanu autoryzacji
         firebase.auth().onAuthStateChanged(user => {
