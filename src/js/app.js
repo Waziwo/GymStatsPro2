@@ -8,6 +8,7 @@ import { ScoreDisplay } from "../components/score-display.js";
 import { NotificationManager } from './notifications.js';
 import { ActivityLogger } from './utils/activity-logger.js';
 import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
+import { initNavigation } from './navigation.js';
 
 class App {
     constructor() {
