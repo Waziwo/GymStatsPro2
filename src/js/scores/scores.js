@@ -138,4 +138,67 @@ export class ScoreService {
             link.click();
         }
     }
+    async getFilteredScores(filters) {
+        let scores = await this.loadScores();
+        
+        if (filters.exerciseType) {
+            scores = scores.filter(score => score.exerciseType === filters.exerciseType);
+        }
+        if (filters.dateFrom) {
+            scores = scores.filter(score => score.timestamp >= new Date(filters.dateFrom).getTime());
+        }
+        if (filters.dateTo) {
+            scores = scores.filter(score => score.timestamp <= new Date(filters.dateTo).getTime());
+        }
+        
+        return scores;
+    }
+
+    sortScores(scores, sortBy, sortOrder = 'desc') {
+        return scores.sort((a, b) => {
+            if (sortOrder === 'asc') {
+                return a[sortBy] - b[sortBy];
+            } else {
+                return b[sortBy] - a[sortBy];
+            }
+        });
+    }
+
+    async exportStatistics() {
+        const scores = await this.loadScores();
+        const stats = this.calculateStatistics(scores);
+        
+        const jsonContent = JSON.stringify(stats, null, 2);
+        const blob = new Blob([jsonContent], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `statystyki_${new Date().toLocaleDateString()}.json`;
+        link.click();
+    }
+
+    calculateStatistics(scores) {
+        const stats = {
+            totalWorkouts: scores.length,
+            exerciseStats: {}
+        };
+
+        scores.forEach(score => {
+            if (!stats.exerciseStats[score.exerciseType]) {
+                stats.exerciseStats[score.exerciseType] = {
+                    totalSets: 0,
+                    totalReps: 0,
+                    totalWeight: 0,
+                    maxWeight: 0
+                };
+            }
+
+            const exerciseStats = stats.exerciseStats[score.exerciseType];
+            exerciseStats.totalSets++;
+            exerciseStats.totalReps += score.reps;
+            exerciseStats.totalWeight += score.weight * score.reps;
+            exerciseStats.maxWeight = Math.max(exerciseStats.maxWeight, score.weight);
+        });
+
+        return stats;
+    }
 }

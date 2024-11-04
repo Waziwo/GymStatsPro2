@@ -6,6 +6,14 @@ export class StatisticsDisplay {
 
     async init() {
         await this.loadAndDisplayStatistics();
+        this.setupExportButton();
+    }
+
+    setupExportButton() {
+        const exportButton = document.getElementById('export-statistics');
+        if (exportButton) {
+            exportButton.addEventListener('click', () => this.scoreService.exportStatistics());
+        }
     }
 
     async loadAndDisplayStatistics() {
@@ -13,10 +21,87 @@ export class StatisticsDisplay {
             const scores = await this.scoreService.loadScores();
             this.displayAverages(scores);
             this.createProgressChart(scores);
+            this.createPieChart(scores);
+            this.createBarChart(scores);
         } catch (error) {
             console.error('Error loading statistics:', error);
         }
     }
+
+    createPieChart(scores) {
+        const ctx = document.getElementById('exerciseDistributionChart');
+        if (!ctx) return;
+
+        const exerciseCounts = scores.reduce((acc, score) => {
+            acc[score.exerciseType] = (acc[score.exerciseType] || 0) + 1;
+            return acc;
+        }, {});
+
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(exerciseCounts).map(this.getExerciseName),
+                datasets: [{
+                    data: Object.values(exerciseCounts),
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Rozkład ćwiczeń'
+                    }
+                }
+            }
+        });
+    }
+
+    createBarChart(scores) {
+        const ctx = document.getElementById('maxWeightChart');
+        if (!ctx) return;
+
+        const maxWeights = scores.reduce((acc, score) => {
+            if (!acc[score.exerciseType] || score.weight > acc[score.exerciseType]) {
+                acc[score.exerciseType] = score.weight;
+            }
+            return acc;
+        }, {});
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(maxWeights).map(this.getExerciseName),
+                datasets: [{
+                    label: 'Maksymalny ciężar (kg)',
+                    data: Object.values(maxWeights),
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Maksymalny ciężar dla każdego ćwiczenia'
+                    }
+                }
+            }
+        });
+    }
+
 
     displayAverages(scores) {
         const averagesContainer = document.getElementById('averages');

@@ -161,7 +161,7 @@
                     </button>
                 </div>
             </div>
-
+        
             <div class="dashboard-content">
                 <div class="score-section">
                     <h2>Dodaj nowy wynik</h2>
@@ -186,20 +186,47 @@
                         <button type="submit" class="btn-primary">Zapisz wynik</button>
                     </form>
                 </div>
-
+        
+                <!-- Dodaj sekcję filtrowania tutaj -->
+                <div class="filtering-section">
+                    <form id="filter-form">
+                        <select id="filter-exercise">
+                            <option value="">Wszystkie ćwiczenia</option>
+                            <option value="bench-press">Wyciskanie sztangi</option>
+                            <option value="squat">Przysiad</option>
+                            <option value="deadlift">Martwy ciąg</option>
+                        </select>
+                        <input id="filter-date-from" type="date" placeholder="Od">
+                        <input id="filter-date-to" type="date" placeholder="Do">
+                        <button type="submit">Filtruj</button>
+                    </form>
+                    <select id="sort-select">
+                        <option value="date-desc">Data (najnowsze)</option>
+                        <option value="date-asc">Data (najstarsze)</option>
+                        <option value="weight-desc">Ciężar (największy)</option>
+                        <option value="weight-asc">Ciężar (najmniejszy)</option>
+                    </select>
+                </div>
+        
                 <div class="scores-list-section">
                     <h2>Twoje wyniki</h2>
                     <ul id="scores-list"></ul>
                 </div>
             </div>
+        
             <div class="user-activities">
                 <h2>Historia aktywności</h2>
                 <ul id="activity-list"></ul>
             </div>
+        
+            <!-- Zaktualizuj sekcję statystyk -->
             <div class="statistics-section">
                 <h2>Twoje statystyki</h2>
                 <div id="averages"></div>
                 <canvas id="progressChart"></canvas>
+                <canvas id="exerciseDistributionChart"></canvas>
+                <canvas id="maxWeightChart"></canvas>
+                <button id="export-statistics" class="btn-primary">Eksportuj statystyki</button>
             </div>
         </section>
     </main>
