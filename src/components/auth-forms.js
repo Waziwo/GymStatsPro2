@@ -11,6 +11,16 @@ export class AuthForms {
         this.initializeForms();
         console.log("Rozpoczęcie konfiguracji nasłuchiwania stanu autoryzacji");
         this.setupAuthStateListener();
+        this.hamburgerMenu = document.querySelector('.hamburger-menu');
+        this.navLinks = document.querySelector('.nav-links');
+        this.setupMobileMenu();
+    }
+    setupMobileMenu() {
+        if (this.hamburgerMenu && this.navLinks) {
+            this.hamburgerMenu.addEventListener('click', () => {
+                this.navLinks.classList.toggle('active');
+            });
+        }
     }
 
     initializeForms() {
