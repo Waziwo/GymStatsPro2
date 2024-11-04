@@ -7,6 +7,7 @@ import { AuthForms } from "../components/auth-forms.js";
 import { ScoreDisplay } from "../components/score-display.js";
 import { NotificationManager } from './notifications.js';
 import { ActivityLogger } from './utils/activity-logger.js';
+import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
 
 class App {
     constructor() {
@@ -19,6 +20,7 @@ class App {
         this.userService = new UserService();
         this.notificationManager = new NotificationManager();
         this.activityLogger = new ActivityLogger();
+        this.statisticsDisplay = new StatisticsDisplay(this.scoreService);
 
         // Initialize components
         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService);
@@ -92,6 +94,7 @@ class App {
                         this.userDashboard.classList.remove('hidden');
                         this.featuresSection.classList.add('hidden');
                         this.aboutSection.classList.add('hidden');
+                        this.statisticsDisplay.init();
                         
                         const userNicknameElement = document.getElementById('user-nickname');
                         const userEmailElement = document.getElementById('user-email');
