@@ -155,21 +155,16 @@ export class ScoreService {
     }
 
     sortScores(scores, sortBy, sortOrder) {
-        return [...scores].sort((a, b) => {
-            let comparison = 0;
-            
-            switch(sortBy) {
-                case 'date':
-                    comparison = a.timestamp - b.timestamp;
-                    break;
-                case 'weight':
-                    comparison = a.weight - b.weight;
-                    break;
-                default:
-                    comparison = 0;
+        return scores.sort((a, b) => {
+            if (sortBy === 'date') {
+                return sortOrder === 'asc' 
+                    ? new Date(a.timestamp) - new Date(b.timestamp)
+                    : new Date(b.timestamp) - new Date(a.timestamp);
+            } else if (sortBy === 'weight') {
+                return sortOrder === 'asc' 
+                    ? a.weight - b.weight 
+                    : b.weight - a.weight;
             }
-    
-            return sortOrder === 'asc' ? comparison : -comparison;
         });
     }
 

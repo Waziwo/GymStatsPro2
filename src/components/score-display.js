@@ -96,7 +96,7 @@ export class ScoreDisplay {
 
     displayScores(scores) {
         if (!this.scoresList) return;
-
+        this.scoresList.innerHTML = ''; // Upewnij się, że lista jest czyszczona przed dodaniem nowych wyników
         // Grupa wyników według daty
         const groupedScores = scores.reduce((acc, score) => {
             const date = new Date(score.timestamp);
