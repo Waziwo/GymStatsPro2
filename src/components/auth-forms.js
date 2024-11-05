@@ -285,8 +285,7 @@ export class AuthForms {
                 if (!this.scoreDisplay) {
                     this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService);
                 }
-                this.scoreDisplay.init();
-                this.scoreDisplay.initializeFiltering(); // Dodaj tę linię, jeśli stworzyłeś metodę initializeFiltering
+                this.scoreDisplay.init();  // To wywołanie zainicjuje wszystko, w tym filtrowanie
             }, 0);
         }
         

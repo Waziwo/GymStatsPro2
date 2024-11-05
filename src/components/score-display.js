@@ -8,11 +8,27 @@ export class ScoreDisplay {
         this.scoresList = null;
         this.auth = getAuth();
     }
+
     init() {
         this.initializeElements();
         this.loadScores();
         this.setupFilteringAndSorting();
-        this.updateOverview(); // Dodaj to wywołanie
+        this.updateOverview();
+        this.initializeFiltering(); // Dodaj to wywołanie
+    }
+
+    initializeFiltering() {
+        // Tutaj możesz dodać logikę do inicjalizacji filtrów
+        const filterForm = document.getElementById('filter-form');
+        const sortSelect = document.getElementById('sort-select');
+    
+        if (filterForm) {
+            filterForm.reset(); // Resetuje formularz filtrów
+        }
+    
+        if (sortSelect) {
+            sortSelect.selectedIndex = 0; // Ustawia domyślną opcję sortowania
+        }
     }
     setupFilteringAndSorting() {
         const filterForm = document.getElementById('filter-form');
