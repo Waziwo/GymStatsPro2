@@ -18,6 +18,10 @@ module.exports = {
                         presets: ['@babel/preset-env']
                     }
                 }
+            },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
             }
         ]
     },
@@ -25,13 +29,17 @@ module.exports = {
         new Dotenv()
     ],
     resolve: {
-        extensions: ['.js']
+        extensions: ['.js'],
+        alias: {
+            '@': path.resolve(__dirname, 'src/')
+        }
     },
     devServer: {
         static: {
             directory: path.join(__dirname, '/'),
         },
         compress: true,
-        port: 9000
+        port: 9000,
+        hot: true
     }
 };

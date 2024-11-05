@@ -10,6 +10,8 @@ import { NotificationManager } from './notifications.js';
 import { ActivityLogger } from './utils/activity-logger.js';
 import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
 import { initNavigation, manageSectionsVisibility } from './utils/navigation.js';
+import '../css/style.css';
+import '../css/notifications.css';
 
 class App {
     constructor() {

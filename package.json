@@ -19,12 +19,17 @@
         "@babel/core": "^7.26.0",
         "@babel/preset-env": "^7.26.0",
         "babel-loader": "^9.2.1",
+        "css-loader": "^7.1.2",
         "dotenv-webpack": "^8.1.0",
+        "style-loader": "^4.0.0",
         "webpack": "^5.96.1",
         "webpack-cli": "^5.1.4",
         "webpack-dev-server": "^4.15.1"
     },
     "dependencies": {
+        "chart.js": "^4.4.6",
+        "chartjs-adapter-date-fns": "^3.0.0",
+        "date-fns": "^4.1.0",
         "firebase": "^10.14.1"
     }
 }

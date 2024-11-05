@@ -1,5 +1,5 @@
-import { getAuth } from 'firebase/auth';
 import { ScoreDisplay } from './score-display.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
 export class AuthForms {
     constructor(authService, scoreService, userService, notificationManager, activityLogger) {
