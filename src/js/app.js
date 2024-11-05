@@ -197,7 +197,7 @@ class App {
     updateNavigation(isLoggedIn) {
         if (isLoggedIn) {
             this.loginButton.classList.add('hidden');
-            this.dashboardLink.classList.remove('hidden');
+            this.dashboardLink.classList.add('hidden');
             this.landingPage.classList.add('hidden');
             this.userDashboard.classList.remove('hidden');
             this.featuresSection.classList.add('hidden');

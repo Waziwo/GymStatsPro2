@@ -409,12 +409,6 @@ main {
     transform: translateY(0);
 }
 
-/* Dodaj ikonę do przycisku usuwania */
-.delete-button::before {
-    content: '\f1f8'; /* Kod ikony kosza z Font Awesome */
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-}
 .overview-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

@@ -32,6 +32,12 @@ const initNavigation = () => {
 
     // Funkcja zarządzająca widocznością sekcji
     const manageSectionsVisibility = isLoggedIn => {
+        const loginButton = document.getElementById('login-button');
+        const dashboardLink = document.getElementById('dashboard-link');
+        const featuresSection = document.getElementById('features');
+        const aboutSection = document.getElementById('about');
+        const authSection = document.getElementById('auth-section');
+    
         if (isLoggedIn) {
             // Stan zalogowany
             document.querySelectorAll('.nav-link').forEach(link => {
@@ -40,7 +46,7 @@ const initNavigation = () => {
                 }
             });
             loginButton.classList.add('hidden');
-            dashboardLink.classList.remove('hidden');
+            dashboardLink.classList.add('hidden'); // Ukryj link do dashboardu
             featuresSection.classList.add('hidden');
             aboutSection.classList.add('hidden');
             authSection.classList.add('hidden');
@@ -52,7 +58,7 @@ const initNavigation = () => {
                 }
             });
             loginButton.classList.remove('hidden');
-            dashboardLink.classList.add('hidden');
+            dashboardLink.classList.add('hidden'); // Zawsze ukryty, gdy użytkownik nie jest zalogowany
             featuresSection.classList.remove('hidden');
             aboutSection.classList.remove('hidden');
         }
