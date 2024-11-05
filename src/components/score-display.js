@@ -115,20 +115,45 @@ export class ScoreDisplay {
     }
 
     async handleDeleteScore(scoreId) {
-        if (confirm('Czy na pewno chcesz usunąć ten wynik?')) {
-            try {
-                await this.scoreService.deleteScore(scoreId);
-                await this.loadScores();
-                if (this.notificationManager) { // Dodaj sprawdzenie
-                    this.notificationManager.show('Wynik został pomyślnie usunięty.', 'success');
+        const dialog = document.getElementById('custom-confirm-dialog');
+        const confirmBtn = document.getElementById('confirm-delete');
+        const cancelBtn = document.getElementById('cancel-delete');
+    
+        dialog.classList.remove('hidden');
+    
+        return new Promise((resolve) => {
+            const handleConfirm = async () => {
+                dialog.classList.add('hidden');
+                try {
+                    await this.scoreService.deleteScore(scoreId);
+                    await this.loadScores();
+                    if (this.notificationManager) {
+                        this.notificationManager.show('Wynik został pomyślnie usunięty.', 'success');
+                    }
+                } catch (error) {
+                    console.error('Error deleting score:', error);
+                    if (this.notificationManager) {
+                        this.notificationManager.show('Wystąpił błąd podczas usuwania wyniku.', 'error');
+                    }
                 }
-            } catch (error) {
-                console.error('Error deleting score:', error);
-                if (this.notificationManager) { // Dodaj sprawdzenie
-                    this.notificationManager.show('Wystąpił błąd podczas usuwania wyniku.', 'error');
-                }
-            }
-        }
+                cleanup();
+                resolve();
+            };
+    
+            const handleCancel = () => {
+                dialog.classList.add('hidden');
+                cleanup();
+                resolve();
+            };
+    
+            const cleanup = () => {
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            };
+    
+            confirmBtn.addEventListener('click', handleConfirm);
+            cancelBtn.addEventListener('click', handleCancel);
+        });
     }
 
     displayScores(scores) {
