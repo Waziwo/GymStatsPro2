@@ -180,7 +180,47 @@ main {
     border-color: var(--primary-color);
     outline: none;
 }
+/* ===== SORTOWANIE ===== */
+.filtering-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
 
+#filter-form {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+#sort-select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.filtering-section select,
+.filtering-section input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.filtering-section button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+}
+
+.filtering-section button:hover {
+    background-color: var(--primary-color-dark);
+}
 /* ===== DASHBOARD ===== */
 .dashboard-container {
     display: flex;
@@ -1153,6 +1193,18 @@ footer {
     #export-statistics {
         width: 100%;
         margin-top: 1rem;
+    }
+    .filtering-section {
+        flex-direction: column;
+    }
+
+    #filter-form {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    #sort-select {
+        width: 100%;
     }
 } 
 

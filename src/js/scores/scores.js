@@ -154,13 +154,22 @@ export class ScoreService {
         return scores;
     }
 
-    sortScores(scores, sortBy, sortOrder = 'desc') {
-        return scores.sort((a, b) => {
-            if (sortOrder === 'asc') {
-                return a[sortBy] - b[sortBy];
-            } else {
-                return b[sortBy] - a[sortBy];
+    sortScores(scores, sortBy, sortOrder) {
+        return [...scores].sort((a, b) => {
+            let comparison = 0;
+            
+            switch(sortBy) {
+                case 'date':
+                    comparison = a.timestamp - b.timestamp;
+                    break;
+                case 'weight':
+                    comparison = a.weight - b.weight;
+                    break;
+                default:
+                    comparison = 0;
             }
+    
+            return sortOrder === 'asc' ? comparison : -comparison;
         });
     }
 

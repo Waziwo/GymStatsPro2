@@ -11,31 +11,7 @@ export class ScoreDisplay {
     init() {
         this.initializeElements();
         this.loadScores();
-        this.setupFilteringAndSorting();
         this.updateOverview(); // Dodaj to wywołanie
-    }
-
-    setupFilteringAndSorting() {
-        const filterForm = document.getElementById('filter-form');
-        const sortSelect = document.getElementById('sort-select');
-
-        filterForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const filters = {
-                exerciseType: filterForm['filter-exercise'].value,
-                dateFrom: filterForm['filter-date-from'].value,
-                dateTo: filterForm['filter-date-to'].value
-            };
-            const filteredScores = await this.scoreService.getFilteredScores(filters);
-            this.displayScores(filteredScores);
-        });
-
-        sortSelect.addEventListener('change', async () => {
-            const [sortBy, sortOrder] = sortSelect.value.split('-');
-            const scores = await this.scoreService.loadScores();
-            const sortedScores = this.scoreService.sortScores(scores, sortBy, sortOrder);
-            this.displayScores(sortedScores);
-        });
     }
 
     initializeElements() {
@@ -158,7 +134,7 @@ export class ScoreDisplay {
             if (sortedScores.length > 0) {
                 const lastWorkout = sortedScores[0];
                 document.getElementById('last-workout-date').textContent = new Date(lastWorkout.timestamp).toLocaleDateString();
-                document.getElementById('last-workout-details').textContent = `${lastWorkout.exerciseType}: ${lastWorkout.weight}kg x ${lastWorkout.reps} powtórzeń`;
+                document.getElementById('last-workout-details').textContent = `${lastWorkout.exerciseType}: ${lastWorkout.weight}kg x ${lastWorkout.reps}`;
             } else {
                 document.getElementById('last-workout-date').textContent = 'Brak treningów';
                 document.getElementById('last-workout-details').textContent = '';
@@ -175,14 +151,37 @@ export class ScoreDisplay {
             const favoriteExercise = Object.entries(exerciseCounts).sort((a, b) => b[1] - a[1])[0];
             document.getElementById('favorite-exercise').textContent = favoriteExercise ? favoriteExercise[0] : 'Brak danych';
     
-            // Ostatnie treningi
+            // Ostatnie treningi - tylko 5 ostatnich
             const recentWorkoutsList = document.getElementById('recent-workouts-list');
             recentWorkoutsList.innerHTML = '';
+            // Używamy slice(0, 5) aby pobrać tylko pierwsze 5 elementów
             sortedScores.slice(0, 5).forEach(score => {
                 const li = document.createElement('li');
                 li.textContent = `${new Date(score.timestamp).toLocaleDateString()} - ${score.exerciseType}: ${score.weight}kg x ${score.reps}`;
                 recentWorkoutsList.appendChild(li);
             });
+        });
+    }
+    setupFilteringAndSorting() {
+        const filterForm = document.getElementById('filter-form');
+        const sortSelect = document.getElementById('sort-select');
+    
+        filterForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const filters = {
+                exerciseType: filterForm['filter-exercise'].value,
+                dateFrom: filterForm['filter-date-from'].value,
+                dateTo: filterForm['filter-date-to'].value
+            };
+            const filteredScores = await this.scoreService.getFilteredScores(filters);
+            this.displayScores(filteredScores);
+        });
+    
+        sortSelect.addEventListener('change', async () => {
+            const [sortBy, sortOrder] = sortSelect.value.split('-');
+            const scores = await this.scoreService.loadScores();
+            const sortedScores = this.scoreService.sortScores(scores, sortBy, sortOrder);
+            this.displayScores(sortedScores);
         });
     }
 }
