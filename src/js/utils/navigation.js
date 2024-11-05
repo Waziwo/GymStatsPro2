@@ -40,28 +40,19 @@ const initNavigation = () => {
     
         if (isLoggedIn) {
             // Stan zalogowany
-            document.querySelectorAll('.nav-link').forEach(link => {
-                if (link.getAttribute('href') === '#features' || link.getAttribute('href') === '#about') {
-                    link.classList.add('hidden');
-                }
-            });
             loginButton.classList.add('hidden');
-            dashboardLink.classList.add('hidden'); // Ukryj link do dashboardu
-            featuresSection.classList.add('hidden');
-            aboutSection.classList.add('hidden');
-            authSection.classList.add('hidden');
+            dashboardLink.classList.remove('hidden'); // Pokaż link do dashboardu
+            // Nie ukrywamy features i about, bo chcemy je pokazać na landing page
         } else {
             // Stan wylogowany
-            document.querySelectorAll('.nav-link').forEach(link => {
-                if (link.getAttribute('href') === '#features' || link.getAttribute('href') === '#about') {
-                    link.classList.remove('hidden');
-                }
-            });
             loginButton.classList.remove('hidden');
-            dashboardLink.classList.add('hidden'); // Zawsze ukryty, gdy użytkownik nie jest zalogowany
-            featuresSection.classList.remove('hidden');
-            aboutSection.classList.remove('hidden');
+            dashboardLink.classList.add('hidden');
         }
+    
+        // Zawsze pokazuj Features i About na landing page
+        featuresSection.classList.remove('hidden');
+        aboutSection.classList.remove('hidden');
+        authSection.classList.add('hidden');
     };
 
     // Obsługa kliknięcia w logo
@@ -69,21 +60,14 @@ const initNavigation = () => {
         e.preventDefault();
         const isLoggedIn = checkAuthState();
 
-        if (isLoggedIn) {
-            // Jeśli zalogowany, pokaż dashboard
-            landingPage.classList.add('hidden');
-            userDashboard.classList.remove('hidden');
-            authSection.classList.add('hidden');
-            featuresSection.classList.add('hidden');
-            aboutSection.classList.add('hidden');
-        } else {
-            // Jeśli niezalogowany, pokaż stronę główną
-            landingPage.classList.remove('hidden');
-            userDashboard.classList.add('hidden');
-            authSection.classList.add('hidden');
-            featuresSection.classList.remove('hidden');
-            aboutSection.classList.remove('hidden');
-        }
+        // Zawsze pokazuj stronę główną po kliknięciu w logo
+        landingPage.classList.remove('hidden');
+        userDashboard.classList.add('hidden');
+        authSection.classList.add('hidden');
+        featuresSection.classList.remove('hidden');
+        aboutSection.classList.remove('hidden');
+
+        // Aktualizuj widoczność sekcji, ale zachowaj stan logowania
         manageSectionsVisibility(isLoggedIn);
 
         // Przewiń na górę strony
