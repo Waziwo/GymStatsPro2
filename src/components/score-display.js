@@ -4,17 +4,24 @@ export class ScoreDisplay {
     constructor(scoreService, authService) {
         this.scoreService = scoreService;
         this.authService = authService;
+        this.notificationManager = notificationManager;
         this.scoreForm = null;
         this.scoresList = null;
         this.auth = getAuth();
+        this.scoresList = document.querySelector('.scores-list');
     }
 
     init() {
-        this.initializeElements();
-        this.loadScores();
-        this.setupFilteringAndSorting();
-        this.updateOverview();
-        this.initializeFiltering(); // Dodaj to wywołanie
+        try {
+            this.initializeElements();
+            this.loadScores();
+            this.setupFilteringAndSorting();
+            this.updateOverview();
+            this.initializeFiltering(); // Dodaj to wywołanie
+        } catch (error) {
+            console.error("Błąd podczas inicjalizacji ScoreDisplay:", error);
+            this.notificationManager.show('Wystąpił błąd podczas ładowania danych.', 'error');
+        }
     }
 
     initializeFiltering() {
@@ -103,56 +110,56 @@ export class ScoreDisplay {
             this.displayScores(scores);
         } catch (error) {
             console.error("ScoreDisplay: Błąd podczas ładowania wyników:", error);
+            this.notificationManager.show('Wystąpił błąd podczas ładowania wyników.', 'error');
         }
     }
 
     async handleDeleteScore(scoreId) {
-        try {
-            if (confirm('Czy na pewno chcesz usunąć ten wynik?')) {
+        if (confirm('Czy na pewno chcesz usunąć ten wynik?')) {
+            try {
                 await this.scoreService.deleteScore(scoreId);
-                await this.loadScores(); // Odśwież listę po usunięciu
-                this.notificationManager.show('Wynik został pomyślnie usunięty.', 'success'); // Użyj NotificationManager
+                await this.loadScores();
+                this.notificationManager.show('Wynik został pomyślnie usunięty.', 'success');
+            } catch (error) {
+                console.error('Error deleting score:', error);
+                this.notificationManager.show('Wystąpił błąd podczas usuwania wyniku.', 'error');
             }
-        } catch (error) {
-            console.error('Error deleting score:', error);
-            this.notificationManager.show('Wystąpił błąd podczas usuwania wyniku.', 'error'); // Użyj NotificationManager
         }
     }
 
     displayScores(scores) {
         if (!this.scoresList) return;
-        this.scoresList.innerHTML = ''; // Upewnij się, że lista jest czyszczona przed dodaniem nowych wyników
+        this.scoresList.innerHTML = '';
+        
         // Grupa wyników według daty
         const groupedScores = scores.reduce((acc, score) => {
             const date = new Date(score.timestamp);
             const dateString = date.toLocaleDateString();
             const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
+    
             if (!acc[dateString]) {
                 acc[dateString] = [];
             }
             acc[dateString].push({ ...score, time: timeString });
             return acc;
         }, {});
-
-        this.scoresList.innerHTML = '';
-
+    
         // Sortuj daty od najnowszej do najstarszej
         const sortedDates = Object.keys(groupedScores).sort((a, b) => {
             return new Date(b) - new Date(a);
         });
-
+    
         // Wyświetl wyniki zgrupowane według daty
         for (const date of sortedDates) {
             const dateHeader = document.createElement('h3');
             dateHeader.textContent = date;
             this.scoresList.appendChild(dateHeader);
-
+    
             // Sortuj wyniki według godziny (od najnowszej do najstarszej)
             const sortedScores = groupedScores[date].sort((a, b) => {
                 return b.timestamp - a.timestamp;
             });
-
+    
             sortedScores.forEach(score => {
                 const li = document.createElement('li');
                 
@@ -160,14 +167,14 @@ export class ScoreDisplay {
                 const scoreContent = document.createElement('span');
                 scoreContent.textContent = `${score.exerciseType}: ${score.weight}kg x ${score.reps} reps (dodano o ${score.time})`;
                 li.appendChild(scoreContent);
-
+    
                 // Przycisk usuwania
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Usuń';
                 deleteButton.classList.add('delete-button');
                 deleteButton.addEventListener('click', () => this.handleDeleteScore(score.id));
                 li.appendChild(deleteButton);
-
+    
                 this.scoresList.appendChild(li);
             });
         }

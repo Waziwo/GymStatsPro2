@@ -100,8 +100,10 @@ export class ScoreService {
 
             const scoreRef = doc(this.db, 'scores', scoreId);
             await deleteDoc(scoreRef);
-            this.clearCache();
+            this.clearCache(); // Czyścimy cache po usunięciu wyniku
+            return true; // Zwracamy true, jeśli usunięcie się powiodło
         } catch (error) {
+            console.error("Błąd podczas usuwania wyniku:", error);
             throw error;
         }
     }
