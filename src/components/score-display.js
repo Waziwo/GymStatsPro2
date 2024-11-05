@@ -1,10 +1,10 @@
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 export class ScoreDisplay {
-    constructor(scoreService, authService) {
+    constructor(scoreService, authService, notificationManager) {
         this.scoreService = scoreService;
         this.authService = authService;
-        this.notificationManager = notificationManager;
+        this.notificationManager = notificationManager; // Zainicjalizuj notificationManager
         this.scoreForm = null;
         this.scoresList = null;
         this.auth = getAuth();
