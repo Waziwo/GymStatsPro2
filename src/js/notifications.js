@@ -22,9 +22,14 @@ export class NotificationManager {
     }
 
     close(notification) {
+        if (notification.classList.contains('closing')) return;
+        notification.classList.add('closing');
+        
         notification.style.animation = 'fadeOut 0.5s ease-out';
         notification.addEventListener('animationend', () => {
-            this.container.removeChild(notification);
+            if (notification.parentNode === this.container) {
+                this.container.removeChild(notification);
+            }
         });
     }
 }
