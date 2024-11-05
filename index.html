@@ -319,11 +319,15 @@
     </footer>
     <div id="custom-confirm-dialog" class="custom-dialog hidden">
         <div class="dialog-content">
-            <h3>Potwierdzenie usunięcia</h3>
-            <p>Czy na pewno chcesz usunąć ten wynik?</p>
+            <h3><i class="fas fa-exclamation-triangle"></i> Potwierdzenie usunięcia</h3>
+            <p>Czy na pewno chcesz usunąć ten wynik? Tej operacji nie można cofnąć.</p>
             <div class="dialog-buttons">
-                <button id="confirm-delete" class="btn-primary">Usuń</button>
-                <button id="cancel-delete" class="btn-secondary">Anuluj</button>
+                <button id="cancel-delete" class="btn-secondary">
+                    <i class="fas fa-times"></i> Anuluj
+                </button>
+                <button id="confirm-delete" class="btn-primary">
+                    <i class="fas fa-trash-alt"></i> Usuń
+                </button>
             </div>
         </div>
     </div>

@@ -392,13 +392,28 @@ main {
     color: white;
     border: none;
     padding: 0.5rem 1rem;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .delete-button:hover {
     background-color: #c0392b;
+    transform: translateY(-2px);
+}
+.delete-button:active {
+    transform: translateY(0);
+}
+
+/* Dodaj ikonę do przycisku usuwania */
+.delete-button::before {
+    content: '\f1f8'; /* Kod ikony kosza z Font Awesome */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
 }
 .overview-stats {
     display: grid;
@@ -1206,6 +1221,40 @@ footer {
     #sort-select {
         width: 100%;
     }
+    .custom-dialog {
+        padding: 1rem;
+    }
+
+    .dialog-content {
+        padding: 1.5rem;
+        width: 95%;
+        max-width: none;
+        margin: 0 auto;
+    }
+
+    .dialog-content h3 {
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .dialog-content p {
+        font-size: 1rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .dialog-buttons {
+        flex-direction: column-reverse; /* Przycisk usuwania na górze */
+        gap: 0.8rem;
+    }
+
+    .dialog-buttons button {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+        justify-content: center;
+    }
 } 
 
 @media (max-width: 480px) {
@@ -1298,6 +1347,25 @@ footer {
     .btn-secondary {
         background-color: var(--secondary-color);
         color: var(--background-color);
+    }
+    .dialog-content {
+        background-color: #2c3e50;
+    }
+
+    .dialog-content h3 {
+        color: #ecf0f1;
+    }
+
+    .dialog-content p {
+        color: #bdc3c7;
+    }
+
+    .dialog-buttons #cancel-delete {
+        background-color: #34495e;
+    }
+
+    .dialog-buttons #cancel-delete:hover {
+        background-color: #2c3e50;
     }
 }
 /* ===== OPTYMALIZACJA DLA URZĄDZEŃ DOTYKOWYCH (kontynuacja) ===== */
@@ -1502,11 +1570,12 @@ main {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7); /* Ciemniejsze tło */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    backdrop-filter: blur(4px); /* Efekt rozmycia tła */
 }
 
 .custom-dialog.hidden {
@@ -1514,22 +1583,86 @@ main {
 }
 
 .dialog-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     max-width: 400px;
-    width: 100%;
+    width: 90%;
+    animation: dialogSlideIn 0.3s ease-out;
 }
 
 .dialog-content h3 {
-    margin-top: 0;
-    color: var(--primary-color);
+    margin: 0 0 1rem 0;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.dialog-content p {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+    font-size: 1.1rem;
 }
 
 .dialog-buttons {
     display: flex;
     justify-content: flex-end;
-    margin-top: 20px;
-    gap: 10px;
+    gap: 1rem;
+}
+
+.dialog-buttons button {
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.dialog-buttons #confirm-delete {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.dialog-buttons #confirm-delete:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+.dialog-buttons #cancel-delete {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.dialog-buttons #cancel-delete:hover {
+    background-color: #7f8c8d;
+    transform: translateY(-2px);
+}
+/* Efekt hover dla przycisków */
+.dialog-buttons button:active {
+    transform: translateY(0);
+}
+
+/* Dodaj efekt focus dla dostępności */
+.dialog-buttons button:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Dodaj transition dla płynnych animacji */
+.custom-dialog {
+    transition: opacity 0.3s ease;
+}
+@keyframes dialogSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }

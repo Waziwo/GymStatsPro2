@@ -199,7 +199,7 @@ export class ScoreDisplay {
     
                 // Przycisk usuwania
                 const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Usuń';
+                deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> Usuń';
                 deleteButton.classList.add('delete-button');
                 deleteButton.addEventListener('click', () => this.handleDeleteScore(score.id));
                 li.appendChild(deleteButton);
