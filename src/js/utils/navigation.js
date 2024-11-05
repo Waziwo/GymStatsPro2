@@ -1,4 +1,107 @@
+// src/js/utils/navigation.js
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+// Funkcja zarządzająca widocznością sekcji
+export const manageSectionsVisibility = (isLoggedIn, isLandingPage = false) => {
+    const loginButton = document.getElementById('login-button');
+    const dashboardLink = document.getElementById('dashboard-link');
+    const featuresSection = document.getElementById('features');
+    const aboutSection = document.getElementById('about');
+    const authSection = document.getElementById('auth-section');
+    const landingPage = document.getElementById('landing-page');
+    const userDashboard = document.getElementById('user-dashboard');
+
+    if (isLoggedIn) {
+        // Stan zalogowany
+        loginButton.classList.add('hidden');
+        dashboardLink.classList.remove('hidden');
+        
+        if (isLandingPage) {
+            // Pokaż Features i About tylko na stronie głównej
+            landingPage.classList.remove('hidden');
+            userDashboard.classList.add('hidden');
+            featuresSection.classList.remove('hidden');
+            aboutSection.classList.remove('hidden');
+        } else {
+            // Ukryj Features i About w dashboardzie
+            landingPage.classList.add('hidden');
+            userDashboard.classList.remove('hidden');
+            featuresSection.classList.add('hidden');
+            aboutSection.classList.add('hidden');
+        }
+    } else {
+        // Stan wylogowany
+        loginButton.classList.remove('hidden');
+        dashboardLink.classList.add('hidden');
+        landingPage.classList.remove('hidden');
+        userDashboard.classList.add('hidden');
+        featuresSection.classList.remove('hidden');
+        aboutSection.classList.remove('hidden');
+    }
+
+    authSection.classList.add('hidden');
+};
+
+export class DashboardNavigation {
+    constructor() {
+        console.log("DashboardNavigation constructor called");
+        this.navLinks = document.querySelectorAll('.dashboard-nav a');
+        this.sections = document.querySelectorAll('.dashboard-section');
+        console.log("Nav links:", this.navLinks.length);
+        console.log("Sections:", this.sections.length);
+        this.init();
+    }
+
+    init() {
+        console.log("Initializing dashboard navigation");
+        this.setupEventListeners();
+        this.showSection('overview'); // Pokazuje domyślną sekcję
+    }
+
+    setupEventListeners() {
+        this.navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = link.getAttribute('href').substring(1);
+                console.log("Link clicked:", sectionId);
+                this.showSection(sectionId);
+            });
+        });
+    }
+
+    showSection(sectionId) {
+        console.log("Showing section:", sectionId);
+        // Ukryj wszystkie sekcje
+        this.sections.forEach(section => {
+            section.classList.remove('active');
+            console.log("Removing active from:", section.id);
+        });
+
+        // Usuń klasę active ze wszystkich linków
+        this.navLinks.forEach(link => {
+            link.classList.remove('active');
+            console.log("Removing active from link:", link.getAttribute('href'));
+        });
+
+        // Pokaż wybraną sekcję
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.classList.add('active');
+            console.log("Adding active to:", sectionId);
+        } else {
+            console.log("Target section not found:", sectionId);
+        }
+
+        // Dodaj klasę active do klikniętego linku
+        const activeLink = document.querySelector(`.dashboard-nav a[href="#${sectionId}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+            console.log("Adding active to link:", sectionId);
+        } else {
+            console.log("Active link not found:", sectionId);
+        }
+    }
+}
 
 const initNavigation = () => {
     const auth = getAuth();
@@ -30,52 +133,12 @@ const initNavigation = () => {
         return auth.currentUser !== null;
     };
 
-    // Funkcja zarządzająca widocznością sekcji
-    const manageSectionsVisibility = (isLoggedIn, isLandingPage = false) => {
-        const loginButton = document.getElementById('login-button');
-        const dashboardLink = document.getElementById('dashboard-link');
-        const featuresSection = document.getElementById('features');
-        const aboutSection = document.getElementById('about');
-        const authSection = document.getElementById('auth-section');
-    
-        if (isLoggedIn) {
-            // Stan zalogowany
-            loginButton.classList.add('hidden');
-            dashboardLink.classList.remove('hidden'); // Pokaż link do dashboardu
-            
-            if (isLandingPage) {
-                // Pokaż Features i About tylko na stronie głównej
-                featuresSection.classList.remove('hidden');
-                aboutSection.classList.remove('hidden');
-            } else {
-                // Ukryj Features i About w dashboardzie
-                featuresSection.classList.add('hidden');
-                aboutSection.classList.add('hidden');
-            }
-        } else {
-            // Stan wylogowany
-            loginButton.classList.remove('hidden');
-            dashboardLink.classList.add('hidden');
-            featuresSection.classList.remove('hidden');
-            aboutSection.classList.remove('hidden');
-        }
-    
-        authSection.classList.add('hidden');
-    };
-
     // Obsługa kliknięcia w logo
     logoLink.addEventListener('click', e => {
         e.preventDefault();
         const isLoggedIn = checkAuthState();
 
         // Zawsze pokazuj stronę główną po kliknięciu w logo
-        landingPage.classList.remove('hidden');
-        userDashboard.classList.add('hidden');
-        authSection.classList.add('hidden');
-        featuresSection.classList.remove('hidden');
-        aboutSection.classList.remove('hidden');
-
-        // Aktualizuj widoczność sekcji, ale zachowaj stan logowania
         manageSectionsVisibility(isLoggedIn, true);
 
         // Przewiń na górę strony
@@ -88,10 +151,7 @@ const initNavigation = () => {
     // Obsługa kliknięcia w link do dashboardu
     dashboardLink.addEventListener('click', e => {
         e.preventDefault();
-        landingPage.classList.add('hidden');
-        userDashboard.classList.remove('hidden');
-        authSection.classList.add('hidden');
-        manageSectionsVisibility(true);
+        manageSectionsVisibility(true, false);
     });
 
     // Obsługa nawigacji w dashboardzie
@@ -142,9 +202,7 @@ const initNavigation = () => {
             const isLoggedIn = checkAuthState();
             if (!isLoggedIn) {
                 authSection.classList.remove('hidden');
-                landingPage.classList.add('hidden');
-                featuresSection.classList.add('hidden');
-                aboutSection.classList.add('hidden');
+                manageSectionsVisibility(false, false);
             }
         });
     }
@@ -165,36 +223,32 @@ const initNavigation = () => {
     // Nasłuchiwanie zmian stanu autoryzacji
     onAuthStateChanged(auth, user => {
         const isLoggedIn = user !== null;
-        manageSectionsVisibility(isLoggedIn);
-        
-        if (isLoggedIn) {
-            landingPage.classList.add('hidden');
-            userDashboard.classList.remove('hidden');
-            authSection.classList.add('hidden');
-        } else {
-            landingPage.classList.remove('hidden');
-            userDashboard.classList.add('hidden');
-        }
+        manageSectionsVisibility(isLoggedIn, !isLoggedIn);
     });
 
     // Inicjalizacja stanu początkowego
     const initialAuthState = checkAuthState();
-    manageSectionsVisibility(initialAuthState);
+    manageSectionsVisibility(initialAuthState, true);
 };
+
+// Obsługa menu hamburgerowego
 const hamburgerMenu = document.querySelector('.hamburger-menu');
 const navLinksContainer = document.querySelector('.nav-links');
 
-hamburgerMenu.addEventListener('click', () => {
-    navLinksContainer.classList.toggle('active'); // Dodaj lub usuń klasę active
-});
-
-// Zamykanie menu po kliknięciu w link
-document.querySelectorAll('.nav-link').forEach(item => {
-    item.addEventListener('click', () => {
-        navLinksContainer.classList.remove('active'); // Ukryj menu po kliknięciu
+if (hamburgerMenu && navLinksContainer) {
+    hamburgerMenu.addEventListener('click', () => {
+        navLinksContainer.classList.toggle('active');
     });
-});
+
+    // Zamykanie menu po kliknięciu w link
+    document.querySelectorAll('.nav-link').forEach(item => {
+        item.addEventListener('click', () => {
+            navLinksContainer.classList.remove('active');
+        });
+    });
+}
+
 // Inicjalizacja po załadowaniu DOM
 document.addEventListener('DOMContentLoaded', initNavigation);
 
-export { initNavigation };
+export { initNavigation, manageSectionsVisibility };
