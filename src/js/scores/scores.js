@@ -1,5 +1,14 @@
-import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { 
+    getFirestore, 
+    collection, 
+    addDoc, 
+    query, 
+    where, 
+    getDocs, 
+    deleteDoc,
+    doc 
+} from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 class ScoreCache {
     constructor() {

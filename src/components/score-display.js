@@ -1,4 +1,4 @@
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth } from "firebase/auth";
 
 export class ScoreDisplay {
     constructor(scoreService, authService, notificationManager) {

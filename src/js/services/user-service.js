@@ -1,5 +1,9 @@
-// src/js/services/user-service.js
-import { getFirestore, doc, setDoc, getDoc, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { 
+    getFirestore, 
+    doc, 
+    setDoc, 
+    getDoc 
+} from 'firebase/firestore';
 
 export class UserService {
     constructor() {

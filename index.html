@@ -331,19 +331,6 @@
             </div>
         </div>
     </div>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { firebaseConfig } from "./src/js/config/firebase-config.js";
-
-        try {
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            window.firebaseApp = app; // Opcjonalnie, jeśli potrzebujesz dostępu w innych miejscach
-        } catch (error) {
-            console.error("Błąd inicjalizacji Firebase:", error);
-        }
-    </script>
     <script type="module" src="src/js/app.js"></script>
 </body>
 </html>

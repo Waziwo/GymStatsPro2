@@ -1,9 +1,9 @@
 export const firebaseConfig = {
-    apiKey: "AIzaSyDNtXbYetm8aLRmomgBlVP6HXNZyhttFfQ",
-    authDomain: "strona-do-zapisywania-wynikow.firebaseapp.com",
-    projectId: "strona-do-zapisywania-wynikow",
-    storageBucket: "strona-do-zapisywania-wynikow.firebasestorage.app",
-    messagingSenderId: "30761717995",
-    appId: "1:30761717995:web:ac03840376114c5fbdeeae",
-    measurementId: "G-4F2LGNY193"
-};
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID,
+    measurementId: process.env.FIREBASE_MEASUREMENT_ID
+  };

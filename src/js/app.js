@@ -1,5 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from "./config/firebase-config.js";
 import { AuthService } from "./auth/auth.js";
 import { ScoreService } from "./scores/scores.js";

@@ -1,4 +1,4 @@
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth } from 'firebase/auth';
 import { ScoreDisplay } from './score-display.js';
 
 export class AuthForms {

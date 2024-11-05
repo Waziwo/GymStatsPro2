@@ -1,5 +1,4 @@
-// src/js/utils/navigation.js
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 // Funkcja zarządzająca widocznością sekcji
 export const manageSectionsVisibility = (isLoggedIn, isLandingPage = false) => {
