@@ -4,7 +4,7 @@ export class ScoreDisplay {
     constructor(scoreService, authService, notificationManager) {
         this.scoreService = scoreService;
         this.authService = authService;
-        this.notificationManager = notificationManager; // Zainicjalizuj notificationManager
+        this.notificationManager = notificationManager; // Dodaj to
         this.scoreForm = null;
         this.scoresList = null;
         this.auth = getAuth();
@@ -119,10 +119,14 @@ export class ScoreDisplay {
             try {
                 await this.scoreService.deleteScore(scoreId);
                 await this.loadScores();
-                this.notificationManager.show('Wynik został pomyślnie usunięty.', 'success');
+                if (this.notificationManager) { // Dodaj sprawdzenie
+                    this.notificationManager.show('Wynik został pomyślnie usunięty.', 'success');
+                }
             } catch (error) {
                 console.error('Error deleting score:', error);
-                this.notificationManager.show('Wystąpił błąd podczas usuwania wyniku.', 'error');
+                if (this.notificationManager) { // Dodaj sprawdzenie
+                    this.notificationManager.show('Wystąpił błąd podczas usuwania wyniku.', 'error');
+                }
             }
         }
     }
