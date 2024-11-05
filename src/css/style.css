@@ -394,9 +394,7 @@ main {
 .last-workout {
     margin-top: 0.5rem;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.1); /* Lekko przezroczysty kolor */
     border-radius: 8px;
-    border-left: 4px solid #4CAF50; /* Zielony pasek po lewej */
 }
 
 .last-workout p {
