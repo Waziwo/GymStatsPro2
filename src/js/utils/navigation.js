@@ -103,7 +103,7 @@ export class DashboardNavigation {
     }
 }
 
-const initNavigation = () => {
+export const initNavigation = () => {
     const auth = getAuth();
     
     // Pobieranie wszystkich potrzebnych elementów
