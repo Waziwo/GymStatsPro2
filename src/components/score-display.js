@@ -12,6 +12,7 @@ export class ScoreDisplay {
         this.initializeElements();
         this.loadScores();
         this.setupFilteringAndSorting();
+        this.updateOverview(); // Dodaj to wywołanie
     }
 
     setupFilteringAndSorting() {
@@ -146,5 +147,42 @@ export class ScoreDisplay {
                 this.scoresList.appendChild(li);
             });
         }
+    }
+    updateOverview() {
+        const scores = this.scoreService.loadScores();
+        scores.then(data => {
+            // Sortuj wyniki od najnowszego do najstarszego
+            const sortedScores = data.sort((a, b) => b.timestamp - a.timestamp);
+    
+            // Ostatni trening
+            if (sortedScores.length > 0) {
+                const lastWorkout = sortedScores[0];
+                document.getElementById('last-workout-date').textContent = new Date(lastWorkout.timestamp).toLocaleDateString();
+                document.getElementById('last-workout-details').textContent = `${lastWorkout.exerciseType}: ${lastWorkout.weight}kg x ${lastWorkout.reps} powtórzeń`;
+            } else {
+                document.getElementById('last-workout-date').textContent = 'Brak treningów';
+                document.getElementById('last-workout-details').textContent = '';
+            }
+    
+            // Liczba treningów
+            document.getElementById('total-workouts').textContent = sortedScores.length;
+    
+            // Ulubione ćwiczenie
+            const exerciseCounts = {};
+            sortedScores.forEach(score => {
+                exerciseCounts[score.exerciseType] = (exerciseCounts[score.exerciseType] || 0) + 1;
+            });
+            const favoriteExercise = Object.entries(exerciseCounts).sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('favorite-exercise').textContent = favoriteExercise ? favoriteExercise[0] : 'Brak danych';
+    
+            // Ostatnie treningi
+            const recentWorkoutsList = document.getElementById('recent-workouts-list');
+            recentWorkoutsList.innerHTML = '';
+            sortedScores.slice(0, 5).forEach(score => {
+                const li = document.createElement('li');
+                li.textContent = `${new Date(score.timestamp).toLocaleDateString()} - ${score.exerciseType}: ${score.weight}kg x ${score.reps}`;
+                recentWorkoutsList.appendChild(li);
+            });
+        });
     }
 }

@@ -183,7 +183,19 @@ const initNavigation = () => {
     const initialAuthState = checkAuthState();
     manageSectionsVisibility(initialAuthState);
 };
+const hamburgerMenu = document.querySelector('.hamburger-menu');
+const navLinksContainer = document.querySelector('.nav-links');
 
+hamburgerMenu.addEventListener('click', () => {
+    navLinksContainer.classList.toggle('active'); // Dodaj lub usuń klasę active
+});
+
+// Zamykanie menu po kliknięciu w link
+document.querySelectorAll('.nav-link').forEach(item => {
+    item.addEventListener('click', () => {
+        navLinksContainer.classList.remove('active'); // Ukryj menu po kliknięciu
+    });
+});
 // Inicjalizacja po załadowaniu DOM
 document.addEventListener('DOMContentLoaded', initNavigation);
 

@@ -360,6 +360,49 @@ main {
 .delete-button:hover {
     background-color: #c0392b;
 }
+.overview-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--card-background);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stat-card h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.recent-workouts {
+    background: var(--card-background);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.recent-workouts h3 {
+    margin-bottom: 1rem;
+}
+
+#recent-workouts-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#recent-workouts-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+#recent-workouts-list li:last-child {
+    border-bottom: none;
+}
 
 /* ===== LISTA WYNIKÓW ===== */
 .scores-list-section {
@@ -822,217 +865,285 @@ footer {
     background-color: #2980b9;
 }
 /* ===== MEDIA QUERIES ===== */
-@media (max-width: 768px) {
-    body {
-        font-size: 16px;
-    }
+@media (max-width: 768px) { 
+    body { 
+        font-size: 16px; 
+    } 
 
-    main {
-        padding: 0.5rem;
-        margin-top: 70px;
-    }
+    main { 
+        padding: 0.5rem; 
+        margin-top: 70px; 
+    } 
 
-    .nav-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 1000;
-        background-color: var(--card-background);
-    }
+    .nav-header { 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        z-index: 1000; 
+        background-color: var(--card-background); 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    } 
 
-    .nav-container {
-        flex-direction: column;
-        padding: 0.5rem;
-    }
+    .nav-container { 
+        flex-direction: column; 
+        align-items: flex-start; /* Wyrównanie do lewej */ 
+        padding: 0.5rem; 
+    } 
 
-    .logo {
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-    }
+    .logo { 
+        font-size: 1.2rem; 
+        margin-bottom: 0.5rem; 
+    } 
 
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        background-color: var(--card-background);
+    .nav-links { 
+        display: none; 
+        flex-direction: column; 
+        width: 100%; 
+        background-color: var(--card-background); 
+        position: absolute; 
+        top: 60px; 
+        left: 0; 
+        right: 0; 
+        z-index: 1000; 
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    } 
+
+    .nav-links.active { 
+        display: flex; 
+    } 
+
+    .nav-link, #login-button { 
+        width: 100%; 
+        text-align: center; 
+        padding: 0.7rem; 
+        margin: 0.3rem 0;
+        border: none; 
+        background-color: var(--primary-color); 
+        color: white; 
+        border-radius: 4px; 
+        font-size: 1rem; 
+    } 
+
+    .hamburger-menu { 
+        display: block; 
         position: absolute;
-        top: 60px;
-        left: 0;
-        right: 0;
-        z-index: 1000;
+        right: 1rem;
+        top: 1rem;
+    } 
+
+    .hero-content { 
+        padding: 1rem 0.5rem; 
+    } 
+
+    h1 { 
+        font-size: 2rem; 
+    } 
+
+    .hero-content h1 { 
+        font-size: 1.5rem; 
+        line-height: 1.3; 
+    } 
+
+    .hero-subtitle { 
+        font-size: 0.9rem; 
+        padding: 0 0.5rem; 
+    } 
+
+    .hero-buttons { 
+        flex-direction: column; 
+        gap: 0.5rem; 
+    } 
+
+    .btn-primary, 
+    .btn-secondary { 
+        width: 100%; 
+        padding: 0.8rem; 
+        font-size: 1rem; 
+        justify-content: center; 
+    } 
+
+    .auth-container { 
+        width: 100%; 
+        padding: 1rem 0.5rem; 
+        margin: 0; 
+    } 
+
+    .form-group { 
+        margin-bottom: 0.8rem; 
+    } 
+
+    .form-group input, 
+    .form-group select { 
+        padding: 0.7rem; 
+        font-size: 16px; 
+        width: 100%; 
+    } 
+
+    .dashboard-header { 
+        padding: 0.5rem; 
+        margin-top: 70px; 
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center; 
+    } 
+
+    .user-info { 
+        flex-direction: column; 
+        align-items: center; 
+        gap: 0.3rem; 
+    } 
+
+    #user-nickname, 
+    #user-email { 
+        font-size: 0.9rem; 
+    } 
+
+    .dashboard-content {
+        flex-direction: column;
+        gap: 1rem;
     }
 
-    .nav-links.active {
-        display: flex;
-    }
-
-    .nav-link, #login-button {
+    .dashboard-nav {
         width: 100%;
-        text-align: center;
-        padding: 0.7rem;
-        border: none;
-        background-color: var(--primary-color);
-        color: white;
-        border-radius: 4px;
-        font-size: 1rem;
+        margin-bottom: 1rem;
     }
 
-    .hamburger-menu {
-        display: block;
+    .dashboard-sections {
+        padding: 1rem;
     }
 
-    .hero-content {
-        padding: 1rem 0.5rem;
+    .dashboard-section {
+        padding: 1rem;
     }
 
-    h1 {
-        font-size: 2rem;
+    #scores-list li { 
+        padding: 0.8rem; 
+        font-size: 0.9rem; 
+        flex-direction: column; 
+        align-items: flex-start; 
+    } 
+
+    .delete-button { 
+        padding: 0.5rem; 
+        font-size: 0.8rem; 
+        margin-top: 10px; 
+    } 
+
+    .section-title { 
+        font-size: 1.5rem; 
+        margin-bottom: 1rem; 
+    } 
+
+    .features-container, 
+    .about-container { 
+        padding: 0 0.5rem; 
+    } 
+
+    .about-content h3 { 
+        font-size: 1.5rem; 
+    } 
+
+    .about-content p { 
+        font-size: 0.9rem; 
+    } 
+
+    /* Nowe style dla dashboardu i historii aktywności */ 
+    .dashboard-header { 
+        flex-direction: column; 
+        align-items: flex-start; 
+    } 
+
+    .user-info { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        margin-bottom: 1rem; 
+    } 
+
+    .user-activities { 
+        margin-top: 15px; 
+        padding: 15px; 
+    } 
+
+    .activity-item { 
+        flex-direction: column; 
+        align-items: flex-start; 
+    } 
+
+    .activity-time { 
+        margin-top: 5px; 
+    } 
+
+    #scores-list li { 
+        flex-direction: column; 
+        align-items: flex-start; 
+    } 
+
+    .delete-button { 
+        margin-top: 10px; 
+    } 
+
+    .statistics-section { 
+        padding: 1rem; 
+    } 
+
+    #averages { 
+        grid-template-columns: 1fr; 
+        gap: 1rem;
+    } 
+
+    #progressChart { 
+        height: 300px; 
+    } 
+
+    .stats-grid { 
+        grid-template-columns: 1fr; 
+    } 
+
+    .charts-container { 
+        grid-template-columns: 1fr; 
+        gap: 1rem;
+    } 
+
+    .chart-wrapper {
+        margin-bottom: 1rem;
     }
 
-    .hero-content h1 {
-        font-size: 1.5rem;
-        line-height: 1.3;
-    }
-
-    .hero-subtitle {
-        font-size: 0.9rem;
-        padding: 0 0.5rem;
-    }
-
-    .hero-buttons {
+    /* Formularz filtrowania */
+    .filtering-section {
         flex-direction: column;
         gap: 0.5rem;
     }
 
-    .btn-primary, 
-    .btn-secondary {
-        width: 100%;
-        padding: 0.8rem;
-        font-size: 1rem;
-        justify-content: center;
-    }
-
-    .auth-container {
-        width: 100%;
-        padding: 1rem 0.5rem;
-        margin: 0;
-    }
-
-    .form-group {
-        margin-bottom: 0.8rem;
-    }
-
-    .form-group input,
-    .form-group select {
-        padding: 0.7rem;
-        font-size: 16px;
+    #filter-form {
+        flex-direction: column;
         width: 100%;
     }
 
-    .dashboard-header {
-        padding: 0.5rem;
-        margin-top: 70px;
+    #filter-form input,
+    #filter-form select,
+    #sort-select {
+        width: 100%;
+        margin: 0.3rem 0;
+    }
+
+    /* Quick Add Form */
+    .quick-add form {
         flex-direction: column;
-        align-items: center;
-        text-align: center;
     }
 
-    .user-info {
+    .form-row {
         flex-direction: column;
-        align-items: center;
-        gap: 0.3rem;
+        gap: 0.5rem;
     }
 
-    #user-nickname,
-    #user-email {
-        font-size: 0.9rem;
+    /* Przyciski eksportu */
+    #export-statistics {
+        width: 100%;
+        margin-top: 1rem;
     }
-
-    #scores-list li {
-        padding: 0.8rem;
-        font-size: 0.9rem;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .delete-button {
-        padding: 0.5rem;
-        font-size: 0.8rem;
-        margin-top: 10px;
-    }
-
-    .section-title {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .features-container,
-    .about-container {
-        padding: 0 0.5rem;
-    }
-
-    .about-content h3 {
-        font-size: 1.5rem;
-    }
-
-    .about-content p {
-        font-size: 0.9rem;
-    }
-
-    /* Nowe style dla dashboardu i historii aktywności */
-    .dashboard-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .user-info {
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-    }
-
-    .user-activities {
-        margin-top: 15px;
-        padding: 15px;
-    }
-
-    .activity-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .activity-time {
-        margin-top: 5px;
-    }
-
-    #scores-list li {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .delete-button {
-        margin-top: 10px;
-    }
-    .statistics-section {
-        padding: 1rem;
-    }
-
-    #averages {
-        grid-template-columns: 1fr;
-    }
-
-    #progressChart {
-        height: 300px;
-    }
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .charts-container {
-        grid-template-columns: 1fr;
-    }
-}
+} 
 
 @media (max-width: 480px) {
     main {

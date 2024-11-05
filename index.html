@@ -206,22 +206,31 @@
                 <!-- Sekcje dashboardu -->
                 <div class="dashboard-sections">
                     <!-- Sekcja Przegląd -->
+                    <!-- Sekcja Przegląd -->
                     <div id="overview" class="dashboard-section active">
                         <h2>Przegląd</h2>
-                        <div class="quick-stats">
+                        <div class="overview-stats">
                             <div class="stat-card">
                                 <h3>Ostatni trening</h3>
-                                <p id="last-workout-date">-</p>
+                                <p id="last-workout-date">Ładowanie...</p>
+                                <p id="last-workout-details">Ładowanie...</p>
                             </div>
                             <div class="stat-card">
                                 <h3>Liczba treningów</h3>
-                                <p id="total-workouts">-</p>
+                                <p id="total-workouts">Ładowanie...</p>
                             </div>
                             <div class="stat-card">
                                 <h3>Ulubione ćwiczenie</h3>
-                                <p id="favorite-exercise">-</p>
+                                <p id="favorite-exercise">Ładowanie...</p>
                             </div>
                         </div>
+                        <div class="recent-workouts">
+                            <h3>Ostatnie treningi</h3>
+                            <ul id="recent-workouts-list">
+                                <!-- Lista ostatnich treningów będzie generowana dynamicznie -->
+                            </ul>
+                        </div>
+                    </div>
                         <div class="quick-add">
                             <h3>Szybkie dodawanie wyniku</h3>
                             <form id="quick-score-form">
