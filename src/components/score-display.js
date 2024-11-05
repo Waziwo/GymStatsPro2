@@ -11,7 +11,30 @@ export class ScoreDisplay {
     init() {
         this.initializeElements();
         this.loadScores();
+        this.setupFilteringAndSorting();
         this.updateOverview(); // Dodaj to wywołanie
+    }
+    setupFilteringAndSorting() {
+        const filterForm = document.getElementById('filter-form');
+        const sortSelect = document.getElementById('sort-select');
+    
+        filterForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const filters = {
+                exerciseType: filterForm['filter-exercise'].value,
+                dateFrom: filterForm['filter-date-from'].value,
+                dateTo: filterForm['filter-date-to'].value
+            };
+            const filteredScores = await this.scoreService.getFilteredScores(filters);
+            this.displayScores(filteredScores);
+        });
+    
+        sortSelect.addEventListener('change', async () => {
+            const [sortBy, sortOrder] = sortSelect.value.split('-');
+            const scores = await this.scoreService.loadScores();
+            const sortedScores = this.scoreService.sortScores(scores, sortBy, sortOrder);
+            this.displayScores(sortedScores);
+        });
     }
 
     initializeElements() {
@@ -160,28 +183,6 @@ export class ScoreDisplay {
                 li.textContent = `${new Date(score.timestamp).toLocaleDateString()} - ${score.exerciseType}: ${score.weight}kg x ${score.reps}`;
                 recentWorkoutsList.appendChild(li);
             });
-        });
-    }
-    setupFilteringAndSorting() {
-        const filterForm = document.getElementById('filter-form');
-        const sortSelect = document.getElementById('sort-select');
-    
-        filterForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const filters = {
-                exerciseType: filterForm['filter-exercise'].value,
-                dateFrom: filterForm['filter-date-from'].value,
-                dateTo: filterForm['filter-date-to'].value
-            };
-            const filteredScores = await this.scoreService.getFilteredScores(filters);
-            this.displayScores(filteredScores);
-        });
-    
-        sortSelect.addEventListener('change', async () => {
-            const [sortBy, sortOrder] = sortSelect.value.split('-');
-            const scores = await this.scoreService.loadScores();
-            const sortedScores = this.scoreService.sortScores(scores, sortBy, sortOrder);
-            this.displayScores(sortedScores);
         });
     }
 }
