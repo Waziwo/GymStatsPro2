@@ -172,6 +172,12 @@ class App {
                         this.updateNavigation(true);
                         this.statisticsDisplay.init();
                         this.updateUserInfo(userData, user.email);
+                        // Pokaż dashboard po zalogowaniu
+                        this.landingPage.classList.add('hidden');
+                        this.userDashboard.classList.remove('hidden');
+                        this.authSection.classList.add('hidden');
+                        this.featuresSection.classList.add('hidden');
+                        this.aboutSection.classList.add('hidden');
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);
