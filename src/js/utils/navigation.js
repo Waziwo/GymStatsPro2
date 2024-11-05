@@ -250,5 +250,3 @@ if (hamburgerMenu && navLinksContainer) {
 
 // Inicjalizacja po załadowaniu DOM
 document.addEventListener('DOMContentLoaded', initNavigation);
-
-export { initNavigation, manageSectionsVisibility };
