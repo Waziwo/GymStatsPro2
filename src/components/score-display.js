@@ -87,10 +87,11 @@ export class ScoreDisplay {
             if (confirm('Czy na pewno chcesz usunąć ten wynik?')) {
                 await this.scoreService.deleteScore(scoreId);
                 await this.loadScores(); // Odśwież listę po usunięciu
+                this.notificationManager.show('Wynik został pomyślnie usunięty.', 'success'); // Użyj NotificationManager
             }
         } catch (error) {
             console.error('Error deleting score:', error);
-            alert('Wystąpił błąd podczas usuwania wyniku');
+            this.notificationManager.show('Wystąpił błąd podczas usuwania wyniku.', 'error'); // Użyj NotificationManager
         }
     }
 
