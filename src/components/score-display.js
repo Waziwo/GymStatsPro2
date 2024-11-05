@@ -18,23 +18,31 @@ export class ScoreDisplay {
         const filterForm = document.getElementById('filter-form');
         const sortSelect = document.getElementById('sort-select');
     
-        filterForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const filters = {
-                exerciseType: filterForm['filter-exercise'].value,
-                dateFrom: filterForm['filter-date-from'].value,
-                dateTo: filterForm['filter-date-to'].value
-            };
-            const filteredScores = await this.scoreService.getFilteredScores(filters);
-            this.displayScores(filteredScores);
-        });
+        if (filterForm) {
+            filterForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const filters = {
+                    exerciseType: filterForm['filter-exercise'].value,
+                    dateFrom: filterForm['filter-date-from'].value,
+                    dateTo: filterForm['filter-date-to'].value
+                };
+                const filteredScores = await this.scoreService.getFilteredScores(filters);
+                this.displayScores(filteredScores);
+            });
+        } else {
+            console.warn('Element filter-form not found');
+        }
     
-        sortSelect.addEventListener('change', async () => {
-            const [sortBy, sortOrder] = sortSelect.value.split('-');
-            const scores = await this.scoreService.loadScores();
-            const sortedScores = this.scoreService.sortScores(scores, sortBy, sortOrder);
-            this.displayScores(sortedScores);
-        });
+        if (sortSelect) {
+            sortSelect.addEventListener('change', async () => {
+                const [sortBy, sortOrder] = sortSelect.value.split('-');
+                const scores = await this.scoreService.loadScores();
+                const sortedScores = this.scoreService.sortScores(scores, sortBy, sortOrder);
+                this.displayScores(sortedScores);
+            });
+        } else {
+            console.warn('Element sort-select not found');
+        }
     }
 
     initializeElements() {

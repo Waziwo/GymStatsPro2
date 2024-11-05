@@ -10,6 +10,7 @@ export class AuthForms {
         this.notificationManager = notificationManager;
         this.activityLogger = activityLogger;
         this.auth = getAuth();
+        this.scoreDisplay = null;
         
         console.log("Rozpoczęcie inicjalizacji formularzy");
         this.initializeForms();
@@ -234,45 +235,6 @@ export class AuthForms {
             this.activityLogger.logActivity('register_error', { error: error.message });
         }
     }
-
-    showUserInfo(email, userData) {
-        if (this.userInfo) {
-            this.userInfo.classList.remove('hidden');
-            const nicknameElement = document.getElementById('user-nickname');
-            const emailElement = document.getElementById('user-email');
-            
-            if (nicknameElement) {
-                nicknameElement.textContent = userData?.nickname || 'Użytkownik';
-            }
-            if (emailElement) {
-                emailElement.textContent = email;
-            }
-        }
-        
-        // Pokazuj/ukrywaj sekcje w zależności od stanu
-        if (this.landingPage) {
-            this.landingPage.classList.add('hidden');
-        }
-        if (this.userDashboard) {
-            this.userDashboard.classList.remove('hidden');
-        }
-        
-        // Zawsze ukrywaj linki Features i About gdy użytkownik jest zalogowany
-        if (this.navLinks) {
-            this.navLinks.forEach(link => {
-                if (link.getAttribute('href') === '#features' || link.getAttribute('href') === '#about') {
-                    link.classList.add('hidden');
-                }
-            });
-        }
-        
-        if (this.featuresSection) {
-            this.featuresSection.classList.add('hidden');
-        }
-        if (this.aboutSection) {
-            this.aboutSection.classList.add('hidden');
-        }
-    }
     
     // Dodaj nową metodę do wyświetlania historii aktywności
     displayUserActivities() {
@@ -297,7 +259,53 @@ export class AuthForms {
             activityList.appendChild(activityItem);
         });
     }
-    
+    showUserInfo(email, userData) {
+        if (this.userInfo) {
+            this.userInfo.classList.remove('hidden');
+            const nicknameElement = document.getElementById('user-nickname');
+            const emailElement = document.getElementById('user-email');
+            
+            if (nicknameElement) {
+                nicknameElement.textContent = userData?.nickname || 'Użytkownik';
+            }
+            if (emailElement) {
+                emailElement.textContent = email;
+            }
+        }
+        
+        // Pokazuj/ukrywaj sekcje w zależności od stanu
+        if (this.landingPage) {
+            this.landingPage.classList.add('hidden');
+        }
+        if (this.userDashboard) {
+            this.userDashboard.classList.remove('hidden');
+            
+            // Dodaj to opóźnienie dla inicjalizacji ScoreDisplay
+            setTimeout(() => {
+                if (!this.scoreDisplay) {
+                    this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService);
+                }
+                this.scoreDisplay.init();
+                this.scoreDisplay.initializeFiltering(); // Dodaj tę linię, jeśli stworzyłeś metodę initializeFiltering
+            }, 0);
+        }
+        
+        // Zawsze ukrywaj linki Features i About gdy użytkownik jest zalogowany
+        if (this.navLinks) {
+            this.navLinks.forEach(link => {
+                if (link.getAttribute('href') === '#features' || link.getAttribute('href') === '#about') {
+                    link.classList.add('hidden');
+                }
+            });
+        }
+        
+        if (this.featuresSection) {
+            this.featuresSection.classList.add('hidden');
+        }
+        if (this.aboutSection) {
+            this.aboutSection.classList.add('hidden');
+        }
+    }
     hideUserInfo() {
         if (this.userInfo) {
             this.userInfo.classList.add('hidden');
@@ -450,3 +458,6 @@ export class AuthForms {
         }
     }
 }
+
+
+
