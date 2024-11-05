@@ -176,8 +176,7 @@ class App {
                         this.landingPage.classList.add('hidden');
                         this.userDashboard.classList.remove('hidden');
                         this.authSection.classList.add('hidden');
-                        this.featuresSection.classList.add('hidden');
-                        this.aboutSection.classList.add('hidden');
+                        manageSectionsVisibility(true, false); // Dodaj false jako drugi argument
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);
@@ -185,6 +184,7 @@ class App {
                 }
             } else {
                 this.updateNavigation(false);
+                manageSectionsVisibility(false, true); // Dodaj true jako drugi argument
             }
         });
     }

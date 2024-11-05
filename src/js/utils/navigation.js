@@ -31,7 +31,7 @@ const initNavigation = () => {
     };
 
     // Funkcja zarządzająca widocznością sekcji
-    const manageSectionsVisibility = isLoggedIn => {
+    const manageSectionsVisibility = (isLoggedIn, isLandingPage = false) => {
         const loginButton = document.getElementById('login-button');
         const dashboardLink = document.getElementById('dashboard-link');
         const featuresSection = document.getElementById('features');
@@ -42,16 +42,24 @@ const initNavigation = () => {
             // Stan zalogowany
             loginButton.classList.add('hidden');
             dashboardLink.classList.remove('hidden'); // Pokaż link do dashboardu
-            // Nie ukrywamy features i about, bo chcemy je pokazać na landing page
+            
+            if (isLandingPage) {
+                // Pokaż Features i About tylko na stronie głównej
+                featuresSection.classList.remove('hidden');
+                aboutSection.classList.remove('hidden');
+            } else {
+                // Ukryj Features i About w dashboardzie
+                featuresSection.classList.add('hidden');
+                aboutSection.classList.add('hidden');
+            }
         } else {
             // Stan wylogowany
             loginButton.classList.remove('hidden');
             dashboardLink.classList.add('hidden');
+            featuresSection.classList.remove('hidden');
+            aboutSection.classList.remove('hidden');
         }
     
-        // Zawsze pokazuj Features i About na landing page
-        featuresSection.classList.remove('hidden');
-        aboutSection.classList.remove('hidden');
         authSection.classList.add('hidden');
     };
 
@@ -68,7 +76,7 @@ const initNavigation = () => {
         aboutSection.classList.remove('hidden');
 
         // Aktualizuj widoczność sekcji, ale zachowaj stan logowania
-        manageSectionsVisibility(isLoggedIn);
+        manageSectionsVisibility(isLoggedIn, true);
 
         // Przewiń na górę strony
         window.scrollTo({
