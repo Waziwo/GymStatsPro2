@@ -42,13 +42,16 @@ class ScoreCache {
 
 export class ScoreService {
     constructor() {
+        this.initialized = false;
         this.db = getFirestore();
         this.scoresCollection = collection(this.db, 'scores');
         this.auth = getAuth();
         this.cache = new ScoreCache();
     }
+
     
     async addScore(exerciseType, weight, reps) {
+        console.log("Próba dodania wyniku:", exerciseType, weight, reps);
         try {
             const user = this.auth.currentUser;
             if (!user) throw new Error('Użytkownik nie jest zalogowany');
@@ -61,8 +64,10 @@ export class ScoreService {
                 reps,
                 timestamp: Date.now(),
             });
+            console.log("Wynik dodany pomyślnie");
             this.clearCache();
         } catch (error) {
+            console.error("Błąd podczas dodawania wyniku:", error);
             throw error;
         }
     }

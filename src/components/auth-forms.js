@@ -304,6 +304,14 @@ export class AuthForms {
         if (this.aboutSection) {
             this.aboutSection.classList.add('hidden');
         }
+        if (this.userDashboard) {
+            this.userDashboard.classList.remove('hidden');
+            
+            if (!this.scoreDisplay) {
+                this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+            }
+            this.scoreDisplay.init();
+        }
     }
     hideUserInfo() {
         if (this.userInfo) {

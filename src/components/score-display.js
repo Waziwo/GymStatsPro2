@@ -9,15 +9,19 @@ export class ScoreDisplay {
         this.scoresList = null;
         this.auth = getAuth();
         this.scoresList = document.querySelector('.scores-list');
+        this.initialized = false;
     }
 
     init() {
+        if (this.initialized) return;
+        this.initialized = true;
+
         try {
             this.initializeElements();
             this.loadScores();
             this.setupFilteringAndSorting();
             this.updateOverview();
-            this.initializeFiltering(); // Dodaj to wywołanie
+            this.initializeFiltering();
         } catch (error) {
             console.error("Błąd podczas inicjalizacji ScoreDisplay:", error);
             this.notificationManager.show('Wystąpił błąd podczas ładowania danych.', 'error');
@@ -69,22 +73,26 @@ export class ScoreDisplay {
     }
 
     initializeElements() {
+        if (this.initialized) return; // Sprawdź, czy już zainicjalizowane
+        this.initialized = true; // Ustaw flagę na true
+
         this.scoreForm = document.getElementById('score-form');
         this.scoresList = document.getElementById('scores-list');
         if (this.scoreForm) {
             this.setupEventListeners();
         }
     }
-
+    
     setupEventListeners() {
-        this.scoreForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            await this.handleScoreSubmit(e);
-        });
+        if (this.scoreForm) {
+            this.scoreForm.removeEventListener('submit', this.handleScoreSubmit);
+            this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
+        }
     }
 
     async handleScoreSubmit(e) {
-        e.preventDefault();  // Dodaj to, aby zapobiec odświeżaniu strony
+        e.preventDefault();
+        console.log("Obsługa formularza dodawania wyniku");
         const exerciseType = this.scoreForm['exercise-type'].value;
         const weight = parseFloat(this.scoreForm['weight'].value);
         const reps = parseInt(this.scoreForm['reps'].value);
@@ -96,9 +104,11 @@ export class ScoreDisplay {
             }
             await this.scoreService.addScore(exerciseType, weight, reps);
             this.scoreForm.reset();
-            await this.loadScores();  // Załaduj i wyświetl wyniki od razu po dodaniu
+            await this.loadScores();
+            this.notificationManager.show('Wynik został pomyślnie dodany.', 'success');
         } catch (error) {
-            alert(error.message);
+            console.error("Błąd podczas dodawania wyniku:", error);
+            this.notificationManager.show(error.message, 'error');
         }
     }
 

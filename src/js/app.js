@@ -19,6 +19,7 @@ class App {
 
         try {
             this.initializeServices();
+            this.scoreDisplay = null;
             this.initializeComponents();
             this.initializeElements();
             this.setupEventListeners();
@@ -39,7 +40,6 @@ class App {
 
     initializeComponents() {
         this.statisticsDisplay = new StatisticsDisplay(this.scoreService);
-        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager); // Dodaj notificationManager
         this.authForms = new AuthForms(
             this.authService, 
             this.scoreService, 
@@ -47,6 +47,10 @@ class App {
             this.notificationManager,
             this.activityLogger
         );
+        if (!this.scoreDisplay) {
+            this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+            this.scoreDisplay.init();
+        }
     }
 
     initializeElements() {
@@ -171,9 +175,14 @@ class App {
                     console.error('Error fetching user data:', error);
                     this.notificationManager.show('Wystąpił błąd podczas pobierania danych użytkownika', 'error');
                 }
+                if (!this.scoreDisplay) {
+                    this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+                }
+                this.scoreDisplay.init();
             } else {
                 this.updateNavigation(false);
                 manageSectionsVisibility(false, true); // Dodaj true jako drugi argument
+                this.scoreDisplay = null;
             }
         });
     }
