@@ -2,10 +2,12 @@ const path = require('path');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development', // Dodaj tryb
     entry: './src/js/app.js',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
+        clean: true, // Czyści folder dist przed każdym buildem
     },
     module: {
         rules: [
@@ -15,7 +17,8 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env']
+                        presets: ['@babel/preset-env'],
+                        cacheDirectory: true // Włącz cache dla szybszego budowania
                     }
                 }
             },
@@ -26,7 +29,10 @@ module.exports = {
         ]
     },
     plugins: [
-        new Dotenv()
+        new Dotenv({
+            systemvars: true,
+            safe: true
+        })
     ],
     resolve: {
         extensions: ['.js'],
@@ -40,6 +46,10 @@ module.exports = {
         },
         compress: true,
         port: 9000,
-        hot: true
-    }
+        hot: true,
+        open: true, // Automatycznie otwiera przeglądarkę
+        historyApiFallback: true, // Wsparcie dla routingu po stronie klienta
+    },
+    // Dodaj source maps dla trybu development
+    devtool: process.env.NODE_ENV === 'production' ? 'source-map' : 'eval-source-map',
 };

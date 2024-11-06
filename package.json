@@ -5,7 +5,8 @@
     "main": "src/js/app.js",
     "scripts": {
         "start": "webpack serve --open",
-        "build": "webpack --mode production",
+        "build": "NODE_ENV=production webpack --mode production",
+        "dev": "webpack serve --mode development",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
@@ -24,7 +25,7 @@
         "style-loader": "^4.0.0",
         "webpack": "^5.96.1",
         "webpack-cli": "^5.1.4",
-        "webpack-dev-server": "^4.15.1"
+        "webpack-dev-server": "^4.15.2"
     },
     "dependencies": {
         "chart.js": "^4.4.6",

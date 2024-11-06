@@ -1,5 +1,4 @@
 import { 
-    getFirestore, 
     collection, 
     addDoc, 
     query, 
@@ -8,12 +7,13 @@ import {
     deleteDoc,
     doc 
 } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { db, auth } from '../firebase-init.js';
 
-class ScoreCache {
+export class ScoreService {
     constructor() {
-        this.cache = new Map();
-        this.maxAge = 5 * 60 * 1000; // 5 minut
+        this.db = db;
+        this.auth = auth;
+        this.scoresCollection = collection(this.db, 'scores');
     }
 
     set(key, value) {

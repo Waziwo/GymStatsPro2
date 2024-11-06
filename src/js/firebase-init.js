@@ -1,4 +1,8 @@
-export const firebaseConfig = {
+import { initializeApp } from 'firebase/app.js';
+import { getAuth } from 'firebase/auth.js';
+import { getFirestore } from 'firebase/firestore.js';
+
+const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
     authDomain: process.env.FIREBASE_AUTH_DOMAIN,
     projectId: process.env.FIREBASE_PROJECT_ID,
@@ -7,18 +11,10 @@ export const firebaseConfig = {
     appId: process.env.FIREBASE_APP_ID,
     measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
-// Dodaj weryfikację konfiguracji
-const requiredKeys = [
-    'apiKey',
-    'authDomain',
-    'projectId',
-    'storageBucket',
-    'messagingSenderId',
-    'appId'
-];
 
-requiredKeys.forEach(key => {
-    if (!firebaseConfig[key]) {
-        console.error(`Brakuje wymaganego klucza konfiguracyjnego Firebase: ${key}`);
-    }
-});
+// Inicjalizacja Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+export { app, auth, db };

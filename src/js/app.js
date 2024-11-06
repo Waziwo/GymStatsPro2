@@ -1,6 +1,4 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { firebaseConfig } from "./config/firebase-config.js";
+import { app, auth, db } from './firebase-init.js';
 import { AuthService } from "./auth/auth.js";
 import { ScoreService } from "./scores/scores.js";
 import { UserService } from "./services/user-service.js";
@@ -15,28 +13,17 @@ import '../css/notifications.css';
 
 class App {
     constructor() {
+        if (!app) {
+            throw new Error('Firebase nie został zainicjalizowany');
+        }
+
         try {
-            // Initialize Firebase (if not already initialized)
-            if (!window.firebaseApp) {
-                this.app = initializeApp(firebaseConfig);
-            } else {
-                this.app = window.firebaseApp;
-            }
-            
-            const auth = getAuth(this.app);
-
-            // Initialize services
             this.initializeServices();
-            
-            // Initialize components
             this.initializeComponents();
-
-            // Setup event listeners and auth state
             this.initializeElements();
             this.setupEventListeners();
             this.setupAuthStateListener();
-            this.setupDashboardNavigation(); // Dodana nowa metoda
-
+            this.setupDashboardNavigation();
         } catch (error) {
             console.error("Błąd podczas inicjalizacji aplikacji:", error);
         }
@@ -232,8 +219,17 @@ class App {
     }
 }
 
-// Inicjalizacja aplikacji
+// Poczekaj na załadowanie DOM przed inicjalizacją aplikacji
 document.addEventListener('DOMContentLoaded', () => {
-    new App();
-    initNavigation();
+    if (!app) {
+        console.error('Firebase nie został zainicjalizowany');
+        return;
+    }
+    
+    try {
+        window.app = new App();
+        initNavigation();
+    } catch (error) {
+        console.error("Błąd podczas uruchamiania aplikacji:", error);
+    }
 });

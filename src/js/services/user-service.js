@@ -1,16 +1,19 @@
 import { 
-    getFirestore, 
+    collection,
     doc, 
     setDoc, 
-    getDoc 
+    getDoc,
+    query,
+    where,
+    getDocs
 } from 'firebase/firestore';
+import { db } from '../firebase-init.js';
 
 export class UserService {
     constructor() {
-        this.db = getFirestore();
+        this.db = db;
         this.usersCollection = collection(this.db, 'users');
     }
-
 
     async createUser(uid, email, nickname) {
         try {
