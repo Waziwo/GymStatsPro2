@@ -1,55 +1,58 @@
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
 
-module.exports = {
-    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development', // Dodaj tryb
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production';
+  
+  return {
+    mode: isProduction ? 'production' : 'development',
     entry: './src/js/app.js',
     output: {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist'),
-        clean: true, // Czyści folder dist przed każdym buildem
+      filename: 'bundle.js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
     },
     module: {
-        rules: [
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env'],
-                        cacheDirectory: true // Włącz cache dla szybszego budowania
-                    }
-                }
-            },
-            {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader']
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+              cacheDirectory: true
             }
-        ]
+          }
+        },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader']
+        }
+      ]
     },
     plugins: [
-        new Dotenv({
-            systemvars: true,
-            safe: true
-        })
+      new Dotenv({
+        systemvars: true,
+        safe: true
+      })
     ],
     resolve: {
-        extensions: ['.js'],
-        alias: {
-            '@': path.resolve(__dirname, 'src/')
-        }
+      extensions: ['.js'],
+      alias: {
+        '@': path.resolve(__dirname, 'src/')
+      }
     },
     devServer: {
-        static: {
-            directory: path.join(__dirname, '/'),
-        },
-        compress: true,
-        port: 9000,
-        hot: true,
-        open: true, // Automatycznie otwiera przeglądarkę
-        historyApiFallback: true, // Wsparcie dla routingu po stronie klienta
+      static: {
+        directory: path.join(__dirname, '/'),
+      },
+      compress: true,
+      port: 9000,
+      hot: true,
+      open: true,
+      historyApiFallback: true,
     },
-    // Dodaj source maps dla trybu development
-    devtool: process.env.NODE_ENV === 'production' ? 'source-map' : 'eval-source-map',
+    devtool: isProduction ? 'source-map' : 'eval-source-map',
+  };
 };

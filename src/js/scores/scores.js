@@ -5,15 +5,15 @@ import {
     where, 
     getDocs, 
     deleteDoc,
-    doc 
+    doc,
+    getFirestore 
 } from 'firebase/firestore';
-import { db, auth } from '../firebase-init.js';
+import { getAuth } from 'firebase/auth';
 
-export class ScoreService {
-    constructor() {
-        this.db = db;
-        this.auth = auth;
-        this.scoresCollection = collection(this.db, 'scores');
+class ScoreCache {
+    constructor(maxAge = 5 * 60 * 1000) { // 5 minut domyślnie
+        this.cache = new Map();
+        this.maxAge = maxAge;
     }
 
     set(key, value) {
@@ -109,8 +109,8 @@ export class ScoreService {
 
             const scoreRef = doc(this.db, 'scores', scoreId);
             await deleteDoc(scoreRef);
-            this.clearCache(); // Czyścimy cache po usunięciu wyniku
-            return true; // Zwracamy true, jeśli usunięcie się powiodło
+            this.clearCache();
+            return true;
         } catch (error) {
             console.error("Błąd podczas usuwania wyniku:", error);
             throw error;
@@ -149,6 +149,7 @@ export class ScoreService {
             link.click();
         }
     }
+
     async getFilteredScores(filters) {
         let scores = await this.loadScores();
         
