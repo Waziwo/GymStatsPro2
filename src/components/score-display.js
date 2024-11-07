@@ -2,10 +2,10 @@ import { getAuth } from "firebase/auth";
 
 export class ScoreDisplay {
     constructor(scoreService, authService, notificationManager) {
-        console.log("[ScoreDisplay] Inicjalizacja konstruktora");
         this.scoreService = scoreService;
         this.authService = authService;
         this.notificationManager = notificationManager;
+        this.statisticsDisplay = new StatisticsDisplay(scoreService);
         this.initialized = false;
     }
 
@@ -48,71 +48,52 @@ export class ScoreDisplay {
         }
     }
     setupFilteringAndSorting() {
-        console.log("[ScoreDisplay] Konfiguracja filtrowania i sortowania");
         const filterForm = document.getElementById('filter-form');
         const sortSelect = document.getElementById('sort-select');
     
         if (filterForm) {
             filterForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const filters = {
-                    exerciseType: filterForm['filter-exercise'].value,
-                    dateFrom: filterForm['filter-date-from'].value,
-                    dateTo: filterForm['filter-date-to'].value
-                };
-                try {
-                    const scores = await this.scoreService.getFilteredScores(filters);
-                    // Najpierw sortujemy według aktualnie wybranej opcji
-                    const sortedScores = this.sortScores(scores, sortSelect.value);
-                    // Następnie odświeżamy widok
-                    this.displayScores(sortedScores);
-                } catch (error) {
-                    console.error('Error filtering scores:', error);
-                    this.notificationManager.show('Błąd podczas filtrowania wyników', 'error');
-                }
+                await this.applyFiltersAndSort();
             });
         }
     
         if (sortSelect) {
             sortSelect.addEventListener('change', async () => {
-                try {
-                    // Pobierz świeże dane
-                    let scores = await this.scoreService.loadScores();
-                    console.log("Pobrane wyniki przed sortowaniem:", scores);
-    
-                    // Zastosuj aktualne filtry, jeśli są
-                    if (filterForm) {
-                        const filters = {
-                            exerciseType: filterForm['filter-exercise'].value,
-                            dateFrom: filterForm['filter-date-from'].value,
-                            dateTo: filterForm['filter-date-to'].value
-                        };
-                        if (filters.exerciseType || filters.dateFrom || filters.dateTo) {
-                            scores = await this.scoreService.getFilteredScores(filters);
-                        }
-                    }
-    
-                    // Sortuj wyniki
-                    const sortedScores = this.sortScores(scores, sortSelect.value);
-                    console.log("Po sortowaniu:", sortedScores);
-    
-                    // Wyczyść kontener i wyświetl posortowane wyniki
-                    const scoresContainer = document.querySelector('.scores-list-container');
-                    if (scoresContainer) {
-                        scoresContainer.innerHTML = '';
-                    }
-                    
-                    // Odśwież wyświetlanie
-                    this.displayScores(sortedScores);
-                    
-                    // Opcjonalnie: pokaż powiadomienie o pomyślnym sortowaniu
-                    this.notificationManager.show('Wyniki zostały posortowane', 'success');
-    
-                } catch (error) {
-                    console.error('Error sorting scores:', error);
-                    this.notificationManager.show('Błąd podczas sortowania wyników', 'error');
-                }
+                await this.applyFiltersAndSort();
             });
+        }
+    }
+    async applyFiltersAndSort() {
+        try {
+            const filterForm = document.getElementById('filter-form');
+            const sortSelect = document.getElementById('sort-select');
+            let scores = await this.scoreService.loadScores();
+    
+            // Zastosuj filtry
+            if (filterForm) {
+                const filters = {
+                    exerciseType: filterForm['filter-exercise'].value,
+                    dateFrom: filterForm['filter-date-from'].value,
+                    dateTo: filterForm['filter-date-to'].value
+                };
+    
+                if (filters.exerciseType || filters.dateFrom || filters.dateTo) {
+                    scores = await this.scoreService.getFilteredScores(filters);
+                }
+            }
+    
+            // Zastosuj sortowanie
+            if (sortSelect) {
+                scores = this.sortScores(scores, sortSelect.value);
+            }
+    
+            // Wyświetl wyniki
+            this.displayScores(scores);
+            
+        } catch (error) {
+            console.error('Error applying filters and sort:', error);
+            this.notificationManager.show('Błąd podczas filtrowania i sortowania wyników', 'error');
         }
     }
 
@@ -147,19 +128,25 @@ export class ScoreDisplay {
         }
     }
 
-
     async handleScoreSubmit(e) {
-        e.preventDefault();
+        e.preventDefault(); // Zapobiega odświeżeniu strony
         console.log("Obsługa formularza dodawania wyniku");
-        const exerciseType = this.scoreForm['exercise-type'].value;
-        const weight = parseFloat(this.scoreForm['weight'].value);
-        const reps = parseInt(this.scoreForm['reps'].value);
-    
+        
+        const exerciseType = document.getElementById('exercise-type').value;
+        const weight = parseFloat(document.getElementById('weight').value);
+        const reps = parseInt(document.getElementById('reps').value);
+
         try {
             await this.scoreService.addScore(exerciseType, weight, reps);
-            this.scoreForm.reset();
-            await this.loadScores();
+            document.getElementById('score-form').reset();
+            await this.loadScores(); // Odśwież wyniki
             this.notificationManager.show('Wynik został pomyślnie dodany.', 'success');
+            
+            // Odśwież statystyki i przegląd
+            if (this.statisticsDisplay) {
+                this.statisticsDisplay.init();
+            }
+            this.updateOverview();
         } catch (error) {
             console.error("Błąd podczas dodawania wyniku:", error);
             this.notificationManager.show(error.message, 'error');
@@ -286,11 +273,10 @@ export class ScoreDisplay {
             // Ostatni trening
             if (sortedScores.length > 0) {
                 const lastWorkout = sortedScores[0];
-                document.getElementById('last-workout-date').textContent = new Date(lastWorkout.timestamp).toLocaleDateString();
-                document.getElementById('last-workout-details').textContent = `${lastWorkout.exerciseType}: ${lastWorkout.weight}kg x ${lastWorkout.reps}`;
-            } else {
-                document.getElementById('last-workout-date').textContent = 'Brak treningów';
-                document.getElementById('last-workout-details').textContent = '';
+                document.getElementById('last-workout-date').textContent = 
+                    new Date(lastWorkout.timestamp).toLocaleDateString();
+                document.getElementById('last-workout-details').textContent = 
+                    `${lastWorkout.exerciseType}: ${lastWorkout.weight}kg x ${lastWorkout.reps}`;
             }
     
             // Liczba treningów
@@ -301,13 +287,14 @@ export class ScoreDisplay {
             sortedScores.forEach(score => {
                 exerciseCounts[score.exerciseType] = (exerciseCounts[score.exerciseType] || 0) + 1;
             });
-            const favoriteExercise = Object.entries(exerciseCounts).sort((a, b) => b[1] - a[1])[0];
-            document.getElementById('favorite-exercise').textContent = favoriteExercise ? favoriteExercise[0] : 'Brak danych';
+            const favoriteExercise = Object.entries(exerciseCounts)
+                .sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('favorite-exercise').textContent = 
+                favoriteExercise ? favoriteExercise[0] : 'Brak danych';
     
             // Ostatnie treningi - tylko 5 ostatnich
             const recentWorkoutsList = document.getElementById('recent-workouts-list');
             recentWorkoutsList.innerHTML = '';
-            // Używamy slice(0, 5) aby pobrać tylko pierwsze 5 elementów
             sortedScores.slice(0, 5).forEach(score => {
                 const li = document.createElement('li');
                 li.textContent = `${new Date(score.timestamp).toLocaleDateString()} - ${score.exerciseType}: ${score.weight}kg x ${score.reps}`;
@@ -315,4 +302,4 @@ export class ScoreDisplay {
             });
         });
     }
-}
+}    

@@ -14,10 +14,14 @@ export class StatisticsDisplay {
     async init() {
         try {
             const scores = await this.scoreService.loadScores();
-            this.displayAverages(scores);
-            this.createProgressChart(scores);
-            this.createExerciseDistributionChart(scores);
-            this.createMaxWeightChart(scores);
+            if (scores && scores.length > 0) {
+                this.displayAverages(scores);
+                this.createProgressChart(scores);
+                this.createExerciseDistributionChart(scores);
+                this.createMaxWeightChart(scores);
+            } else {
+                console.log('Brak wyników do wyświetlenia w statystykach');
+            }
         } catch (error) {
             console.error('Error loading statistics:', error);
         }
