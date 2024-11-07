@@ -12,8 +12,7 @@ import '../css/style.css';
 import '../css/notifications.css';
 
 // src/js/app.js
-
-export class App {
+class App {
     constructor() {
         this.scoreService = new ScoreService();
         this.authService = new AuthService();
