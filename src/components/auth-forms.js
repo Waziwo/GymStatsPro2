@@ -61,7 +61,12 @@ export class AuthForms {
 
         this.setupEventListeners();
     }
-
+    initializeScoreDisplay() {
+        if (!this.scoreDisplay) {
+            this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+            this.scoreDisplay.init();
+        }
+    }
     setupFormToggle() {
         if (this.showRegisterLink) {
             this.showRegisterLink.addEventListener('click', (e) => {
@@ -279,14 +284,7 @@ export class AuthForms {
         }
         if (this.userDashboard) {
             this.userDashboard.classList.remove('hidden');
-            
-            // Dodaj to opóźnienie dla inicjalizacji ScoreDisplay
-            setTimeout(() => {
-                if (!this.scoreDisplay) {
-                    this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
-                }
-                this.scoreDisplay.init();  // To wywołanie zainicjuje wszystko, w tym filtrowanie
-            }, 0);
+            this.initializeScoreDisplay();
         }
         
         // Zawsze ukrywaj linki Features i About gdy użytkownik jest zalogowany
@@ -306,11 +304,6 @@ export class AuthForms {
         }
         if (this.userDashboard) {
             this.userDashboard.classList.remove('hidden');
-            
-            if (!this.scoreDisplay) {
-                this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
-            }
-            this.scoreDisplay.init();
         }
     }
     hideUserInfo() {
@@ -356,11 +349,6 @@ export class AuthForms {
                     this.hideLoginButton();
                     
                     console.log("Inicjalizacja wyświetlania wyników");
-                    if (!this.scoreDisplay) {
-                        console.log("Tworzenie nowej instancji ScoreDisplay");
-                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
-                    }
-                    this.scoreDisplay.init();
                 } catch (error) {
                     console.error('Błąd podczas pobierania danych użytkownika:', error);
                     this.showUserInfo(user.email);
