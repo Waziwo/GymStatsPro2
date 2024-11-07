@@ -4,27 +4,27 @@ export class ScoreDisplay {
     constructor(scoreService, authService, notificationManager) {
         this.scoreService = scoreService;
         this.authService = authService;
-        this.notificationManager = notificationManager; // Dodaj to
-        this.scoreForm = null;
-        this.scoresList = null;
-        this.auth = getAuth();
-        this.scoresList = document.querySelector('.scores-list');
+        this.notificationManager = notificationManager;
         this.initialized = false;
+        this.boundHandleSubmit = this.handleScoreSubmit.bind(this);
     }
-
+    
     init() {
         if (this.initialized) return;
         this.initialized = true;
+    
+        this.initializeElements();
+        this.loadScores();
+        this.setupFilteringAndSorting();
+        this.updateOverview();
+        this.initializeFiltering();
+        this.setupEventListeners();
+    }
 
-        try {
-            this.initializeElements();
-            this.loadScores();
-            this.setupFilteringAndSorting();
-            this.updateOverview();
-            this.initializeFiltering();
-        } catch (error) {
-            console.error("Błąd podczas inicjalizacji ScoreDisplay:", error);
-            this.notificationManager.show('Wystąpił błąd podczas ładowania danych.', 'error');
+    setupEventListeners() {
+        if (this.scoreForm && !this.initialized) {
+            this.scoreForm.removeEventListener('submit', this.boundHandleSubmit);
+            this.scoreForm.addEventListener('submit', this.boundHandleSubmit);
         }
     }
 
@@ -82,13 +82,7 @@ export class ScoreDisplay {
             this.setupEventListeners();
         }
     }
-    
-    setupEventListeners() {
-        if (this.scoreForm) {
-            this.scoreForm.removeEventListener('submit', this.handleScoreSubmit);
-            this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
-        }
-    }
+
 
     async handleScoreSubmit(e) {
         e.preventDefault();

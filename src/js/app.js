@@ -39,6 +39,7 @@ class App {
     }
 
     initializeComponents() {
+        console.log("[App] Inicjalizacja komponentów");
         this.statisticsDisplay = new StatisticsDisplay(this.scoreService);
         this.authForms = new AuthForms(
             this.authService, 
@@ -47,10 +48,16 @@ class App {
             this.notificationManager,
             this.activityLogger
         );
-        if (!this.scoreDisplay) {
-            this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
-            this.scoreDisplay.init();
+        
+        // Dodaj sprawdzenie
+        if (this.scoreDisplay) {
+            console.log("[App] ScoreDisplay już istnieje - pomijam inicjalizację");
+            return;
         }
+        
+        console.log("[App] Tworzenie nowej instancji ScoreDisplay");
+        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+        this.scoreDisplay.init();
     }
 
     initializeElements() {
