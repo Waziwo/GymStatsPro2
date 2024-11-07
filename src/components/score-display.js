@@ -2,35 +2,29 @@ import { getAuth } from "firebase/auth";
 
 export class ScoreDisplay {
     constructor(scoreService, authService, notificationManager) {
+        console.log("[ScoreDisplay] Inicjalizacja konstruktora");
         this.scoreService = scoreService;
         this.authService = authService;
         this.notificationManager = notificationManager;
         this.initialized = false;
-        this.boundHandleSubmit = this.handleScoreSubmit.bind(this);
-        this.scoresList = null; // Inicjalizacja na null
     }
-    
+
     init() {
-        if (this.initialized) return;
-        this.initialized = true;
-        
-        this.scoresList = document.getElementById('scores-list'); // Inicjalizacja w metodzie init
-        this.setupFilteringAndSorting(); // Dodaj to wywołanie
-        this.initializeElements();
-        this.loadScores();
-        this.setupFilteringAndSorting();
-        this.updateOverview();
-        this.initializeFiltering();
-        this.setupEventListeners();
-        console.log("Inicjalizacja ScoreDisplay");
-        this.scoreForm = document.getElementById('score-form');
-        if (this.scoreForm) {
-            console.log("Znaleziono formularz, dodawanie event listenera");
-            this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
-        } else {
-            console.error("Nie znaleziono formularza o id 'score-form'");
+        if (this.initialized) {
+            console.log("[ScoreDisplay] Już zainicjalizowano");
+            return;
         }
-        this.loadScores();
+        console.log("[ScoreDisplay] Rozpoczęcie inicjalizacji");
+        
+        try {
+            this.setupFilteringAndSorting();
+            this.loadScores();
+            this.initialized = true;
+            console.log("[ScoreDisplay] Inicjalizacja zakończona pomyślnie");
+        } catch (error) {
+            console.error("[ScoreDisplay] Błąd podczas inicjalizacji:", error);
+            this.notificationManager.show('Wystąpił błąd podczas inicjalizacji wyświetlania wyników', 'error');
+        }
     }
 
     setupEventListeners() {
@@ -54,9 +48,10 @@ export class ScoreDisplay {
         }
     }
     setupFilteringAndSorting() {
+        console.log("[ScoreDisplay] Konfiguracja filtrowania i sortowania");
         const filterForm = document.getElementById('filter-form');
         const sortSelect = document.getElementById('sort-select');
-    
+
         if (filterForm) {
             filterForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -74,9 +69,9 @@ export class ScoreDisplay {
                 }
             });
         } else {
-            console.warn('Element filter-form not found');
+            console.warn('[ScoreDisplay] Element filter-form nie został znaleziony');
         }
-    
+
         if (sortSelect) {
             sortSelect.addEventListener('change', async () => {
                 try {
@@ -89,12 +84,12 @@ export class ScoreDisplay {
                 }
             });
         } else {
-            console.warn('Element sort-select not found');
+            console.warn('[ScoreDisplay] Element sort-select nie został znaleziony');
         }
     }
-    
-    // Dodaj metodę sortowania
+
     sortScores(scores, sortOption) {
+        console.log("[ScoreDisplay] Sortowanie wyników:", sortOption);
         const [sortBy, sortOrder] = sortOption.split('-');
         
         return [...scores].sort((a, b) => {
@@ -141,14 +136,14 @@ export class ScoreDisplay {
     }
 
     async loadScores() {
-        console.log("ScoreDisplay: Rozpoczęto ładowanie wyników");
         try {
+            console.log("[ScoreDisplay] Ładowanie wyników");
             const scores = await this.scoreService.loadScores();
-            console.log("ScoreDisplay: Załadowane wyniki:", scores);
+            console.log("[ScoreDisplay] Załadowane wyniki:", scores);
             this.displayScores(scores);
         } catch (error) {
-            console.error("ScoreDisplay: Błąd podczas ładowania wyników:", error);
-            this.notificationManager.show('Wystąpił błąd podczas ładowania wyników.', 'error');
+            console.error("[ScoreDisplay] Błąd podczas ładowania wyników:", error);
+            this.notificationManager.show('Błąd podczas ładowania wyników', 'error');
         }
     }
 
@@ -195,43 +190,43 @@ export class ScoreDisplay {
     }
 
     displayScores(scores) {
-        this.scoresList = document.getElementById('scores-list');
-        if (!this.scoresList) {
-            console.error("Element scores-list nie został znaleziony!");
+        const scoresContainer = document.querySelector('.scores-list-container');
+        if (!scoresContainer) {
+            console.error("Element scores-list-container nie został znaleziony!");
             return;
         }
         console.log("Wyświetlanie wyników:", scores);
-        this.scoresList.innerHTML = '';
+        scoresContainer.innerHTML = '';
         
         // Grupa wyników według daty
         const groupedScores = scores.reduce((acc, score) => {
             const date = new Date(score.timestamp);
             const dateString = date.toLocaleDateString();
             const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    
+
             if (!acc[dateString]) {
                 acc[dateString] = [];
             }
             acc[dateString].push({ ...score, time: timeString });
             return acc;
         }, {});
-    
+
         // Sortuj daty od najnowszej do najstarszej
         const sortedDates = Object.keys(groupedScores).sort((a, b) => {
             return new Date(b) - new Date(a);
         });
-    
+
         // Wyświetl wyniki zgrupowane według daty
         for (const date of sortedDates) {
             const dateHeader = document.createElement('h3');
             dateHeader.textContent = date;
-            this.scoresList.appendChild(dateHeader);
-    
+            scoresContainer.appendChild(dateHeader);
+
             // Sortuj wyniki według godziny (od najnowszej do najstarszej)
             const sortedScores = groupedScores[date].sort((a, b) => {
                 return b.timestamp - a.timestamp;
             });
-    
+
             sortedScores.forEach(score => {
                 const li = document.createElement('li');
                 
@@ -239,15 +234,15 @@ export class ScoreDisplay {
                 const scoreContent = document.createElement('span');
                 scoreContent.textContent = `${score.exerciseType}: ${score.weight}kg x ${score.reps} reps (dodano o ${score.time})`;
                 li.appendChild(scoreContent);
-    
+
                 // Przycisk usuwania
                 const deleteButton = document.createElement('button');
                 deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> Usuń';
                 deleteButton.classList.add('delete-button');
                 deleteButton.addEventListener('click', () => this.handleDeleteScore(score.id));
                 li.appendChild(deleteButton);
-    
-                this.scoresList.appendChild(li);
+
+                scoresContainer.appendChild(li);
             });
         }
     }
