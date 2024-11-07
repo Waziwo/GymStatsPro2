@@ -169,31 +169,24 @@ class App {
                 try {
                     const userData = await this.userService.getUserData(user.uid);
                     if (userData) {
-                        this.updateNavigation(true);
-                        this.statisticsDisplay.init();
-                        this.updateUserInfo(userData, user.email);
-                        // Pokaż dashboard po zalogowaniu
-                        this.landingPage.classList.add('hidden');
-                        this.userDashboard.classList.remove('hidden');
-                        this.authSection.classList.add('hidden');
                         manageSectionsVisibility(true, false);
+                        this.updateUserInfo(userData, user.email);
+                        
+                        if (!this.scoreDisplay) {
+                            this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+                        }
+                        this.scoreDisplay.init();
                     }
-                    if (!this.scoreDisplay) {
-                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
-                    }
-                    this.scoreDisplay.init();
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                     this.notificationManager.show('Wystąpił błąd podczas pobierania danych użytkownika', 'error');
                 }
             } else {
-                this.updateNavigation(false);
-                manageSectionsVisibility(false, true);
+                manageSectionsVisibility(false);
                 this.scoreDisplay = null;
             }
         });
     }
-
     updateUserInfo(userData, email) {
         const userNicknameElement = document.getElementById('user-nickname');
         const userEmailElement = document.getElementById('user-email');
@@ -207,6 +200,8 @@ class App {
 
     updateNavigation(isLoggedIn) {
         if (isLoggedIn) {
+            if (this.loginButton) this.loginButton.classList.add('hidden');
+            if (this.dashboardLink) this.dashboardLink.classList.remove('hidden');
             this.loginButton.classList.add('hidden');
             this.dashboardLink.classList.add('hidden');
             this.landingPage.classList.add('hidden');
@@ -215,6 +210,8 @@ class App {
             this.aboutSection.classList.add('hidden');
             this.authSection.classList.add('hidden');
         } else {
+            if (this.loginButton) this.loginButton.classList.remove('hidden');
+            if (this.dashboardLink) this.dashboardLink.classList.add('hidden');
             this.loginButton.classList.remove('hidden');
             this.dashboardLink.classList.add('hidden');
             this.userDashboard.classList.add('hidden');

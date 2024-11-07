@@ -7,12 +7,13 @@ export class ScoreDisplay {
         this.notificationManager = notificationManager;
         this.initialized = false;
         this.boundHandleSubmit = this.handleScoreSubmit.bind(this);
+        this.scoresList = null; // Inicjalizacja na null
     }
     
     init() {
         if (this.initialized) return;
         this.initialized = true;
-    
+        this.scoresList = document.getElementById('scores-list'); // Inicjalizacja w metodzie init
         this.initializeElements();
         this.loadScores();
         this.setupFilteringAndSorting();
@@ -166,6 +167,7 @@ export class ScoreDisplay {
     }
 
     displayScores(scores) {
+        this.scoresList = document.getElementById('scores-list');
         if (!this.scoresList) {
             console.error("Element scores-list nie został znaleziony!");
             return;

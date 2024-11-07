@@ -1,5 +1,6 @@
 import { ScoreDisplay } from './score-display.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { manageSectionsVisibility } from '../js/utils/navigation';
 
 export class AuthForms {
     constructor(authService, scoreService, userService, notificationManager, activityLogger) {
@@ -339,34 +340,28 @@ export class AuthForms {
     
     setupAuthStateListener() {
         this.authService.onAuthStateChanged(async (user) => {
-            if (user) {
-                try {
+            try {
+                if (user) {
                     const userData = await this.userService.getUserData(user.uid);
-                    this.updateNavigation(true);
-                    this.statisticsDisplay.init();
-                    this.updateUserInfo(userData, user.email);
-                    // Pokaż dashboard po zalogowaniu
-                    this.landingPage.classList.add('hidden');
-                    this.userDashboard.classList.remove('hidden');
-                    this.authSection.classList.add('hidden');
+                    this.showUserInfo(user.email, userData);
                     manageSectionsVisibility(true, false);
                     
-                    // Dodaj to:
                     if (!this.scoreDisplay) {
                         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
                     }
                     this.scoreDisplay.init();
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                    this.notificationManager.show('Wystąpił błąd podczas pobierania danych użytkownika', 'error');
+                } else {
+                    this.hideUserInfo();
+                    manageSectionsVisibility(false);
+                    this.scoreDisplay = null;
                 }
-            } else {
-                this.updateNavigation(false);
-                manageSectionsVisibility(false, true);
-                this.scoreDisplay = null;
+            } catch (error) {
+                console.error('Error in auth state change:', error);
+                this.notificationManager.show('Wystąpił błąd podczas aktualizacji stanu użytkownika', 'error');
             }
         });
     }
+    
     
     showLoginButton() {
         console.log("Próba pokazania przycisku logowania");
