@@ -69,6 +69,7 @@ export class ScoreService {
             });
             console.log("[ScoreService] Wynik dodany pomyślnie");
             this.clearCache();
+            return true; // Dodaj to
         } catch (error) {
             console.error("[ScoreService] Błąd podczas dodawania wyniku:", error);
             throw error;
@@ -76,7 +77,6 @@ export class ScoreService {
             this.pendingAdd = false;
         }
     }
-
     async loadScores() {
         try {
             const user = this.auth.currentUser;

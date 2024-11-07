@@ -19,7 +19,16 @@ export class ScoreDisplay {
         this.updateOverview();
         this.initializeFiltering();
         this.setupEventListeners();
-    }
+            console.log("Inicjalizacja ScoreDisplay");
+            this.scoreForm = document.getElementById('score-form');
+            if (this.scoreForm) {
+                console.log("Znaleziono formularz, dodawanie event listenera");
+                this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
+            } else {
+                console.error("Nie znaleziono formularza o id 'score-form'");
+            }
+            this.loadScores();
+        }
 
     setupEventListeners() {
         if (this.scoreForm && !this.initialized) {
@@ -92,10 +101,6 @@ export class ScoreDisplay {
         const reps = parseInt(this.scoreForm['reps'].value);
     
         try {
-            const user = await this.authService.getCurrentUser();
-            if (!user) {
-                throw new Error('Musisz być zalogowany aby dodać wynik');
-            }
             await this.scoreService.addScore(exerciseType, weight, reps);
             this.scoreForm.reset();
             await this.loadScores();

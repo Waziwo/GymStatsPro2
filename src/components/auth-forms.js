@@ -62,10 +62,11 @@ export class AuthForms {
         this.setupEventListeners();
     }
     initializeScoreDisplay() {
+        console.log("Inicjalizacja ScoreDisplay");
         if (!this.scoreDisplay) {
             this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
-            this.scoreDisplay.init();
         }
+        this.scoreDisplay.init();
     }
     setupFormToggle() {
         if (this.showRegisterLink) {
