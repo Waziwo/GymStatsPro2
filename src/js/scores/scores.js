@@ -69,7 +69,7 @@ export class ScoreService {
             });
             console.log("[ScoreService] Wynik dodany pomyślnie");
             this.clearCache();
-            return true; // Dodaj to
+            return true;
         } catch (error) {
             console.error("[ScoreService] Błąd podczas dodawania wyniku:", error);
             throw error;

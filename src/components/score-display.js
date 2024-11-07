@@ -18,6 +18,7 @@ export class ScoreDisplay {
         console.log("[ScoreDisplay] Rozpoczęcie inicjalizacji");
         
         try {
+            this.setupEventListeners(); // Dodaj to wywołanie
             this.setupFilteringAndSorting();
             this.loadScores();
             this.initialized = true;
@@ -29,9 +30,11 @@ export class ScoreDisplay {
     }
 
     setupEventListeners() {
-        if (this.scoreForm && !this.initialized) {
-            this.scoreForm.removeEventListener('submit', this.boundHandleSubmit);
-            this.scoreForm.addEventListener('submit', this.boundHandleSubmit);
+        const scoreForm = document.getElementById('score-form');
+        if (scoreForm && !scoreForm.dataset.initialized) {
+            scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
+            scoreForm.dataset.initialized = 'true';
+            console.log("Dodano nasłuchiwanie formularza");
         }
     }
 
@@ -133,11 +136,16 @@ export class ScoreDisplay {
         e.preventDefault(); // Zapobiega odświeżeniu strony
         console.log("Obsługa formularza dodawania wyniku");
         
-        const exerciseType = document.getElementById('exercise-type').value;
-        const weight = parseFloat(document.getElementById('weight').value);
-        const reps = parseInt(document.getElementById('reps').value);
-
         try {
+            const exerciseType = document.getElementById('exercise-type').value;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const reps = parseInt(document.getElementById('reps').value);
+    
+            // Sprawdzenie czy dane są poprawne
+            if (!exerciseType || isNaN(weight) || isNaN(reps)) {
+                throw new Error('Proszę wypełnić wszystkie pola poprawnie');
+            }
+    
             await this.scoreService.addScore(exerciseType, weight, reps);
             document.getElementById('score-form').reset();
             await this.loadScores(); // Odśwież wyniki
