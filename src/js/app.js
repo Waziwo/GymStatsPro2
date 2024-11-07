@@ -11,20 +11,26 @@ import { initNavigation, manageSectionsVisibility } from './utils/navigation';
 import '../css/style.css';
 import '../css/notifications.css';
 
-class App {
-    constructor() {
-        if (!app) {
-            throw new Error('Firebase nie został zainicjalizowany');
-        }
+// src/js/app.js
 
+export class App {
+    constructor() {
+        this.scoreService = new ScoreService();
+        this.authService = new AuthService();
+        this.notificationManager = new NotificationManager();
+        this.scoreDisplay = new ScoreDisplay(
+            this.scoreService, 
+            this.authService, 
+            this.notificationManager
+        );
+    }
+
+    async init() {
         try {
-            this.initializeServices();
-            this.scoreDisplay = null;
-            this.initializeComponents();
-            this.initializeElements();
-            this.setupEventListeners();
-            this.setupAuthStateListener();
-            this.setupDashboardNavigation();
+            await this.authService.init();
+            if (this.authService.isLoggedIn()) {
+                await this.scoreDisplay.init();
+            }
         } catch (error) {
             console.error("Błąd podczas inicjalizacji aplikacji:", error);
         }

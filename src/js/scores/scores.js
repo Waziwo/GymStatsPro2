@@ -80,34 +80,30 @@ export class ScoreService {
     async loadScores() {
         try {
             const user = this.auth.currentUser;
-            console.log("LoadScores - Current user:", user);
-            
             if (!user) {
-                console.log("ScoreService: Brak zalogowanego użytkownika");
+                console.log("LoadScores - Brak zalogowanego użytkownika");
                 return [];
             }
-    
+
+            console.log("LoadScores - Rozpoczęcie ładowania wyników");
             const q = query(
                 this.scoresCollection,
                 where("userId", "==", user.uid)
             );
             
             const scoresSnapshot = await getDocs(q);
-            console.log("LoadScores - Query snapshot:", scoresSnapshot);
-            
             const scores = scoresSnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
-            console.log("ScoreService: Załadowane wyniki z bazy:", scores);
             
+            console.log("LoadScores - Załadowano wyniki:", scores);
             return scores;
         } catch (error) {
-            console.error("ScoreService: Błąd podczas ładowania wyników:", error);
-            return [];
+            console.error("LoadScores - Błąd:", error);
+            throw error;
         }
     }
-
     async deleteScore(scoreId) {
         try {
             const user = this.auth.currentUser;

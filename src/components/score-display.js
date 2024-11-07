@@ -11,31 +11,32 @@ export class ScoreDisplay {
     }
 
     async init() {
-        if (this.initialized) {
-            console.log("[ScoreDisplay] Już zainicjalizowano");
-            return;
-        }
-        console.log("[ScoreDisplay] Rozpoczęcie inicjalizacji");
+        if (this.initialized) return;
         
         try {
+            console.log("Inicjalizacja ScoreDisplay");
+            const user = await this.authService.getCurrentUser();
+            if (!user) {
+                console.log("Użytkownik nie jest zalogowany");
+                return;
+            }
+            await this.updateOverview();
             this.setupEventListeners();
-            this.setupFilteringAndSorting();
-            await this.loadScores();
-            this.updateOverview(); // Dodaj to wywołanie
             this.initialized = true;
-            console.log("[ScoreDisplay] Inicjalizacja zakończona pomyślnie");
+            console.log("Zakończono inicjalizację ScoreDisplay");
         } catch (error) {
-            console.error("[ScoreDisplay] Błąd podczas inicjalizacji:", error);
+            console.error("Błąd podczas inicjalizacji ScoreDisplay:", error);
             this.notificationManager.show('Wystąpił błąd podczas inicjalizacji wyświetlania wyników', 'error');
         }
     }
-
+    formatWorkoutDetails(workout) {
+        return `${this.translateExerciseType(workout.exerciseType)}: ${workout.weight}kg × ${workout.reps}`;
+    }
     setupEventListeners() {
+        // Tutaj dodaj nasłuchiwanie na zdarzenia formularza i innych elementów
         const scoreForm = document.getElementById('score-form');
-        if (scoreForm && !scoreForm.dataset.initialized) {
-            scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
-            scoreForm.dataset.initialized = 'true';
-            console.log("Dodano nasłuchiwanie formularza");
+        if (scoreForm) {
+            scoreForm.addEventListener('submit', (e) => this.handleScoreSubmit(e));
         }
     }
 
@@ -275,79 +276,73 @@ export class ScoreDisplay {
             });
         }
     }
-    updateOverview() {
-        const scores = this.scoreService.loadScores(); // To jest Promise
-        scores.then(data => {
+    async updateOverview() {
+        try {
+            console.log("Rozpoczęcie aktualizacji przeglądu");
+            const scores = await this.scoreService.loadScores(); // Czekamy na załadowanie wyników
+            
             // Sortuj wyniki od najnowszego do najstarszego
-            const sortedScores = data.sort((a, b) => b.timestamp - a.timestamp);
-    
-            // Ostatni trening
+            const sortedScores = scores.sort((a, b) => b.timestamp - a.timestamp);
+
+            // Aktualizacja ostatniego treningu
+            const lastWorkoutDate = document.getElementById('last-workout-date');
+            const lastWorkoutDetails = document.getElementById('last-workout-details');
+            
             if (sortedScores.length > 0) {
                 const lastWorkout = sortedScores[0];
-                const lastWorkoutDate = document.getElementById('last-workout-date');
-                const lastWorkoutDetails = document.getElementById('last-workout-details');
-                
-                if (lastWorkoutDate && lastWorkoutDetails) {
-                    lastWorkoutDate.textContent = new Date(lastWorkout.timestamp).toLocaleDateString();
-                    lastWorkoutDetails.textContent = `${lastWorkout.exerciseType}: ${lastWorkout.weight}kg x ${lastWorkout.reps}`;
-                }
+                lastWorkoutDate.textContent = new Date(lastWorkout.timestamp).toLocaleDateString();
+                lastWorkoutDetails.textContent = this.formatWorkoutDetails(lastWorkout);
             } else {
-                // Jeśli nie ma wyników
-                const lastWorkoutDate = document.getElementById('last-workout-date');
-                const lastWorkoutDetails = document.getElementById('last-workout-details');
-                
-                if (lastWorkoutDate && lastWorkoutDetails) {
-                    lastWorkoutDate.textContent = 'Brak treningów';
-                    lastWorkoutDetails.textContent = 'Dodaj swój pierwszy trening!';
-                }
+                lastWorkoutDate.textContent = 'Brak treningów';
+                lastWorkoutDetails.textContent = 'Dodaj swój pierwszy trening!';
             }
-    
-            // Liczba treningów
+
+            // Aktualizacja liczby treningów
             const totalWorkouts = document.getElementById('total-workouts');
-            if (totalWorkouts) {
-                totalWorkouts.textContent = sortedScores.length || '0';
-            }
-    
-            // Ulubione ćwiczenie
+            totalWorkouts.textContent = sortedScores.length.toString();
+
+            // Aktualizacja ulubionych ćwiczeń
             const exerciseCounts = {};
             sortedScores.forEach(score => {
                 exerciseCounts[score.exerciseType] = (exerciseCounts[score.exerciseType] || 0) + 1;
             });
-    
+
             const favoriteExercise = document.getElementById('favorite-exercise');
-            if (favoriteExercise) {
-                if (Object.keys(exerciseCounts).length > 0) {
-                    const [mostCommonExercise] = Object.entries(exerciseCounts)
-                        .sort((a, b) => b[1] - a[1]);
-                    favoriteExercise.textContent = this.translateExerciseType(mostCommonExercise[0]);
-                } else {
-                    favoriteExercise.textContent = 'Brak danych';
-                }
+            if (Object.keys(exerciseCounts).length > 0) {
+                const mostCommon = Object.entries(exerciseCounts)
+                    .sort((a, b) => b[1] - a[1])[0];
+                favoriteExercise.textContent = this.translateExerciseType(mostCommon[0]);
+            } else {
+                favoriteExercise.textContent = 'Brak danych';
             }
-    
-            // Ostatnie treningi
+
+            // Aktualizacja listy ostatnich treningów
             const recentWorkoutsList = document.getElementById('recent-workouts-list');
-            if (recentWorkoutsList) {
-                recentWorkoutsList.innerHTML = '';
-                if (sortedScores.length > 0) {
-                    sortedScores.slice(0, 5).forEach(score => {
-                        const li = document.createElement('li');
-                        li.textContent = `${new Date(score.timestamp).toLocaleDateString()} - ${this.translateExerciseType(score.exerciseType)}: ${score.weight}kg x ${score.reps}`;
-                        recentWorkoutsList.appendChild(li);
-                    });
-                } else {
+            recentWorkoutsList.innerHTML = ''; // Wyczyść listę
+
+            if (sortedScores.length > 0) {
+                sortedScores.slice(0, 5).forEach(score => {
                     const li = document.createElement('li');
-                    li.textContent = 'Brak historii treningów';
+                    li.innerHTML = `
+                        <span class="workout-date">${new Date(score.timestamp).toLocaleDateString()}</span>
+                        <span class="workout-type">${this.translateExerciseType(score.exerciseType)}</span>
+                        <span class="workout-details">${score.weight}kg × ${score.reps}</span>
+                    `;
                     recentWorkoutsList.appendChild(li);
-                }
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'Brak historii treningów';
+                recentWorkoutsList.appendChild(li);
             }
-        }).catch(error => {
+
+            console.log("Zakończono aktualizację przeglądu");
+        } catch (error) {
             console.error('Błąd podczas aktualizacji przeglądu:', error);
             this.notificationManager.show('Wystąpił błąd podczas ładowania danych przeglądu', 'error');
-        });
+        }
     }
-    
-    // Dodaj metodę do tłumaczenia nazw ćwiczeń
+
     translateExerciseType(exerciseType) {
         const translations = {
             'bench-press': 'Wyciskanie sztangi',
