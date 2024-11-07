@@ -87,18 +87,19 @@ export class ScoreDisplay {
     }
 
     sortScores(scores, sortOption) {
-        console.log("[ScoreDisplay] Sortowanie wyników:", sortOption);
-        
         return [...scores].sort((a, b) => {
+            const aTimestamp = typeof a.timestamp === 'string' ? new Date(a.timestamp).getTime() : a.timestamp;
+            const bTimestamp = typeof b.timestamp === 'string' ? new Date(b.timestamp).getTime() : b.timestamp;
+            
             switch (sortOption) {
                 case 'date-desc':
-                    return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+                    return bTimestamp - aTimestamp;
                 case 'date-asc':
-                    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+                    return aTimestamp - bTimestamp;
                 case 'weight-desc':
-                    return parseFloat(b.weight) - parseFloat(a.weight);
+                    return b.weight - a.weight;
                 case 'weight-asc':
-                    return parseFloat(a.weight) - parseFloat(b.weight);
+                    return a.weight - b.weight;
                 default:
                     return 0;
             }
