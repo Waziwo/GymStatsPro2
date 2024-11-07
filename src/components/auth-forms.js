@@ -338,27 +338,31 @@ export class AuthForms {
     }
     
     setupAuthStateListener() {
-        console.log("Ustawianie nasłuchiwania na zmiany stanu autoryzacji");
         this.authService.onAuthStateChanged(async (user) => {
-            console.log("Stan autoryzacji zmieniony:", user);
             if (user) {
                 try {
-                    console.log("Próba pobrania danych użytkownika:", user.uid);
                     const userData = await this.userService.getUserData(user.uid);
-                    console.log("Pobrane dane użytkownika:", userData);
-                    this.showUserInfo(user.email, userData);
-                    this.hideLoginButton();
+                    this.updateNavigation(true);
+                    this.statisticsDisplay.init();
+                    this.updateUserInfo(userData, user.email);
+                    // Pokaż dashboard po zalogowaniu
+                    this.landingPage.classList.add('hidden');
+                    this.userDashboard.classList.remove('hidden');
+                    this.authSection.classList.add('hidden');
+                    manageSectionsVisibility(true, false);
                     
-                    console.log("Inicjalizacja wyświetlania wyników");
+                    // Dodaj to:
+                    if (!this.scoreDisplay) {
+                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+                    }
+                    this.scoreDisplay.init();
                 } catch (error) {
-                    console.error('Błąd podczas pobierania danych użytkownika:', error);
-                    this.showUserInfo(user.email);
-                    this.hideLoginButton();
+                    console.error('Error fetching user data:', error);
+                    this.notificationManager.show('Wystąpił błąd podczas pobierania danych użytkownika', 'error');
                 }
             } else {
-                console.log("Użytkownik wylogowany - resetowanie widoku");
-                this.hideUserInfo();
-                this.showLoginButton();
+                this.updateNavigation(false);
+                manageSectionsVisibility(false, true);
                 this.scoreDisplay = null;
             }
         });

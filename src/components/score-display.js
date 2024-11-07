@@ -19,16 +19,16 @@ export class ScoreDisplay {
         this.updateOverview();
         this.initializeFiltering();
         this.setupEventListeners();
-            console.log("Inicjalizacja ScoreDisplay");
-            this.scoreForm = document.getElementById('score-form');
-            if (this.scoreForm) {
-                console.log("Znaleziono formularz, dodawanie event listenera");
-                this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
-            } else {
-                console.error("Nie znaleziono formularza o id 'score-form'");
-            }
-            this.loadScores();
+        console.log("Inicjalizacja ScoreDisplay");
+        this.scoreForm = document.getElementById('score-form');
+        if (this.scoreForm) {
+            console.log("Znaleziono formularz, dodawanie event listenera");
+            this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
+        } else {
+            console.error("Nie znaleziono formularza o id 'score-form'");
         }
+        this.loadScores();
+    }
 
     setupEventListeners() {
         if (this.scoreForm && !this.initialized) {
