@@ -10,7 +10,7 @@ export class ScoreDisplay {
         this.initialized = false;
     }
 
-    init() {
+    async init() {
         if (this.initialized) {
             console.log("[ScoreDisplay] Już zainicjalizowano");
             return;
@@ -18,9 +18,10 @@ export class ScoreDisplay {
         console.log("[ScoreDisplay] Rozpoczęcie inicjalizacji");
         
         try {
-            this.setupEventListeners(); // Dodaj to wywołanie
+            this.setupEventListeners();
             this.setupFilteringAndSorting();
-            this.loadScores();
+            await this.loadScores();
+            this.updateOverview(); // Dodaj to wywołanie
             this.initialized = true;
             console.log("[ScoreDisplay] Inicjalizacja zakończona pomyślnie");
         } catch (error) {
@@ -133,7 +134,7 @@ export class ScoreDisplay {
     }
 
     async handleScoreSubmit(e) {
-        e.preventDefault(); // Zapobiega odświeżeniu strony
+        e.preventDefault();
         console.log("Obsługa formularza dodawania wyniku");
         
         try {
@@ -149,13 +150,13 @@ export class ScoreDisplay {
             await this.scoreService.addScore(exerciseType, weight, reps);
             document.getElementById('score-form').reset();
             await this.loadScores(); // Odśwież wyniki
+            this.updateOverview(); // Dodane wywołanie
             this.notificationManager.show('Wynik został pomyślnie dodany.', 'success');
             
             // Odśwież statystyki i przegląd
             if (this.statisticsDisplay) {
                 this.statisticsDisplay.init();
             }
-            this.updateOverview();
         } catch (error) {
             console.error("Błąd podczas dodawania wyniku:", error);
             this.notificationManager.show(error.message, 'error');
@@ -187,6 +188,7 @@ export class ScoreDisplay {
                 try {
                     await this.scoreService.deleteScore(scoreId);
                     await this.loadScores();
+                    this.updateOverview(); // Dodane wywołanie
                     if (this.notificationManager) {
                         this.notificationManager.show('Wynik został pomyślnie usunięty.', 'success');
                     }
@@ -274,7 +276,7 @@ export class ScoreDisplay {
         }
     }
     updateOverview() {
-        const scores = this.scoreService.loadScores();
+        const scores = this.scoreService.loadScores(); // To jest Promise
         scores.then(data => {
             // Sortuj wyniki od najnowszego do najstarszego
             const sortedScores = data.sort((a, b) => b.timestamp - a.timestamp);
@@ -282,33 +284,76 @@ export class ScoreDisplay {
             // Ostatni trening
             if (sortedScores.length > 0) {
                 const lastWorkout = sortedScores[0];
-                document.getElementById('last-workout-date').textContent = 
-                    new Date(lastWorkout.timestamp).toLocaleDateString();
-                document.getElementById('last-workout-details').textContent = 
-                    `${lastWorkout.exerciseType}: ${lastWorkout.weight}kg x ${lastWorkout.reps}`;
+                const lastWorkoutDate = document.getElementById('last-workout-date');
+                const lastWorkoutDetails = document.getElementById('last-workout-details');
+                
+                if (lastWorkoutDate && lastWorkoutDetails) {
+                    lastWorkoutDate.textContent = new Date(lastWorkout.timestamp).toLocaleDateString();
+                    lastWorkoutDetails.textContent = `${lastWorkout.exerciseType}: ${lastWorkout.weight}kg x ${lastWorkout.reps}`;
+                }
+            } else {
+                // Jeśli nie ma wyników
+                const lastWorkoutDate = document.getElementById('last-workout-date');
+                const lastWorkoutDetails = document.getElementById('last-workout-details');
+                
+                if (lastWorkoutDate && lastWorkoutDetails) {
+                    lastWorkoutDate.textContent = 'Brak treningów';
+                    lastWorkoutDetails.textContent = 'Dodaj swój pierwszy trening!';
+                }
             }
     
             // Liczba treningów
-            document.getElementById('total-workouts').textContent = sortedScores.length;
+            const totalWorkouts = document.getElementById('total-workouts');
+            if (totalWorkouts) {
+                totalWorkouts.textContent = sortedScores.length || '0';
+            }
     
             // Ulubione ćwiczenie
             const exerciseCounts = {};
             sortedScores.forEach(score => {
                 exerciseCounts[score.exerciseType] = (exerciseCounts[score.exerciseType] || 0) + 1;
             });
-            const favoriteExercise = Object.entries(exerciseCounts)
-                .sort((a, b) => b[1] - a[1])[0];
-            document.getElementById('favorite-exercise').textContent = 
-                favoriteExercise ? favoriteExercise[0] : 'Brak danych';
     
-            // Ostatnie treningi - tylko 5 ostatnich
+            const favoriteExercise = document.getElementById('favorite-exercise');
+            if (favoriteExercise) {
+                if (Object.keys(exerciseCounts).length > 0) {
+                    const [mostCommonExercise] = Object.entries(exerciseCounts)
+                        .sort((a, b) => b[1] - a[1]);
+                    favoriteExercise.textContent = this.translateExerciseType(mostCommonExercise[0]);
+                } else {
+                    favoriteExercise.textContent = 'Brak danych';
+                }
+            }
+    
+            // Ostatnie treningi
             const recentWorkoutsList = document.getElementById('recent-workouts-list');
-            recentWorkoutsList.innerHTML = '';
-            sortedScores.slice(0, 5).forEach(score => {
-                const li = document.createElement('li');
-                li.textContent = `${new Date(score.timestamp).toLocaleDateString()} - ${score.exerciseType}: ${score.weight}kg x ${score.reps}`;
-                recentWorkoutsList.appendChild(li);
-            });
+            if (recentWorkoutsList) {
+                recentWorkoutsList.innerHTML = '';
+                if (sortedScores.length > 0) {
+                    sortedScores.slice(0, 5).forEach(score => {
+                        const li = document.createElement('li');
+                        li.textContent = `${new Date(score.timestamp).toLocaleDateString()} - ${this.translateExerciseType(score.exerciseType)}: ${score.weight}kg x ${score.reps}`;
+                        recentWorkoutsList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.textContent = 'Brak historii treningów';
+                    recentWorkoutsList.appendChild(li);
+                }
+            }
+        }).catch(error => {
+            console.error('Błąd podczas aktualizacji przeglądu:', error);
+            this.notificationManager.show('Wystąpił błąd podczas ładowania danych przeglądu', 'error');
         });
+    }
+    
+    // Dodaj metodę do tłumaczenia nazw ćwiczeń
+    translateExerciseType(exerciseType) {
+        const translations = {
+            'bench-press': 'Wyciskanie sztangi',
+            'squat': 'Przysiad',
+            'deadlift': 'Martwy ciąg'
+        };
+        return translations[exerciseType] || exerciseType;
     }
 }    
