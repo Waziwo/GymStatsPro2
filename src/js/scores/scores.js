@@ -157,19 +157,29 @@ export class ScoreService {
     }
 
     async getFilteredScores(filters) {
-        let scores = await this.loadScores();
-        
-        if (filters.exerciseType) {
-            scores = scores.filter(score => score.exerciseType === filters.exerciseType);
+        try {
+            let scores = await this.loadScores();
+            
+            if (filters.exerciseType) {
+                scores = scores.filter(score => score.exerciseType === filters.exerciseType);
+            }
+            
+            if (filters.dateFrom) {
+                const fromDate = new Date(filters.dateFrom);
+                scores = scores.filter(score => new Date(score.timestamp) >= fromDate);
+            }
+            
+            if (filters.dateTo) {
+                const toDate = new Date(filters.dateTo);
+                toDate.setHours(23, 59, 59, 999); // Ustawia koniec dnia
+                scores = scores.filter(score => new Date(score.timestamp) <= toDate);
+            }
+            
+            return scores;
+        } catch (error) {
+            console.error('Error filtering scores:', error);
+            throw error;
         }
-        if (filters.dateFrom) {
-            scores = scores.filter(score => score.timestamp >= new Date(filters.dateFrom).getTime());
-        }
-        if (filters.dateTo) {
-            scores = scores.filter(score => score.timestamp <= new Date(filters.dateTo).getTime());
-        }
-        
-        return scores;
     }
 
     sortScores(scores, sortBy, sortOrder) {

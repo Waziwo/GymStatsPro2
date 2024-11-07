@@ -13,7 +13,9 @@ export class ScoreDisplay {
     init() {
         if (this.initialized) return;
         this.initialized = true;
+        
         this.scoresList = document.getElementById('scores-list'); // Inicjalizacja w metodzie init
+        this.setupFilteringAndSorting(); // Dodaj to wywołanie
         this.initializeElements();
         this.loadScores();
         this.setupFilteringAndSorting();
@@ -63,8 +65,13 @@ export class ScoreDisplay {
                     dateFrom: filterForm['filter-date-from'].value,
                     dateTo: filterForm['filter-date-to'].value
                 };
-                const filteredScores = await this.scoreService.getFilteredScores(filters);
-                this.displayScores(filteredScores);
+                try {
+                    const scores = await this.scoreService.getFilteredScores(filters);
+                    this.displayScores(scores);
+                } catch (error) {
+                    console.error('Error filtering scores:', error);
+                    this.notificationManager.show('Błąd podczas filtrowania wyników', 'error');
+                }
             });
         } else {
             console.warn('Element filter-form not found');
@@ -72,14 +79,35 @@ export class ScoreDisplay {
     
         if (sortSelect) {
             sortSelect.addEventListener('change', async () => {
-                const [sortBy, sortOrder] = sortSelect.value.split('-');
-                const scores = await this.scoreService.loadScores();
-                const sortedScores = this.scoreService.sortScores(scores, sortBy, sortOrder);
-                this.displayScores(sortedScores);
+                try {
+                    const scores = await this.scoreService.loadScores();
+                    const sortedScores = this.sortScores(scores, sortSelect.value);
+                    this.displayScores(sortedScores);
+                } catch (error) {
+                    console.error('Error sorting scores:', error);
+                    this.notificationManager.show('Błąd podczas sortowania wyników', 'error');
+                }
             });
         } else {
             console.warn('Element sort-select not found');
         }
+    }
+    
+    // Dodaj metodę sortowania
+    sortScores(scores, sortOption) {
+        const [sortBy, sortOrder] = sortOption.split('-');
+        
+        return [...scores].sort((a, b) => {
+            if (sortBy === 'date') {
+                const comparison = new Date(b.timestamp) - new Date(a.timestamp);
+                return sortOrder === 'asc' ? -comparison : comparison;
+            }
+            if (sortBy === 'weight') {
+                const comparison = b.weight - a.weight;
+                return sortOrder === 'asc' ? -comparison : comparison;
+            }
+            return 0;
+        });
     }
 
     initializeElements() {
