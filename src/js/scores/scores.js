@@ -80,16 +80,11 @@ export class ScoreService {
     async loadScores() {
         try {
             const user = this.auth.currentUser;
+            console.log("LoadScores - Current user:", user);
+            
             if (!user) {
                 console.log("ScoreService: Brak zalogowanego użytkownika");
                 return [];
-            }
-    
-            const cacheKey = `scores_${user.uid}`;
-            const cachedScores = this.cache.get(cacheKey);
-            if (cachedScores) {
-                console.log("ScoreService: Zwracam wyniki z cache'a");
-                return cachedScores;
             }
     
             const q = query(
@@ -98,13 +93,14 @@ export class ScoreService {
             );
             
             const scoresSnapshot = await getDocs(q);
+            console.log("LoadScores - Query snapshot:", scoresSnapshot);
+            
             const scores = scoresSnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
             console.log("ScoreService: Załadowane wyniki z bazy:", scores);
             
-            this.cache.set(cacheKey, scores);
             return scores;
         } catch (error) {
             console.error("ScoreService: Błąd podczas ładowania wyników:", error);

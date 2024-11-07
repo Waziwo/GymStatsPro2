@@ -82,9 +82,9 @@ export class ScoreDisplay {
     }
 
     initializeElements() {
-        if (this.initialized) return; // Sprawdź, czy już zainicjalizowane
-        this.initialized = true; // Ustaw flagę na true
-
+        if (this.initialized) return;
+        this.initialized = true;
+    
         this.scoreForm = document.getElementById('score-form');
         this.scoresList = document.getElementById('scores-list');
         if (this.scoreForm) {
@@ -166,7 +166,11 @@ export class ScoreDisplay {
     }
 
     displayScores(scores) {
-        if (!this.scoresList) return;
+        if (!this.scoresList) {
+            console.error("Element scores-list nie został znaleziony!");
+            return;
+        }
+        console.log("Wyświetlanie wyników:", scores);
         this.scoresList.innerHTML = '';
         
         // Grupa wyników według daty

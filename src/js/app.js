@@ -176,19 +176,19 @@ class App {
                         this.landingPage.classList.add('hidden');
                         this.userDashboard.classList.remove('hidden');
                         this.authSection.classList.add('hidden');
-                        manageSectionsVisibility(true, false); // Dodaj false jako drugi argument
+                        manageSectionsVisibility(true, false);
                     }
+                    if (!this.scoreDisplay) {
+                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+                    }
+                    this.scoreDisplay.init();
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                     this.notificationManager.show('Wystąpił błąd podczas pobierania danych użytkownika', 'error');
                 }
-                if (!this.scoreDisplay) {
-                    this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
-                }
-                this.scoreDisplay.init();
             } else {
                 this.updateNavigation(false);
-                manageSectionsVisibility(false, true); // Dodaj true jako drugi argument
+                manageSectionsVisibility(false, true);
                 this.scoreDisplay = null;
             }
         });
