@@ -62,7 +62,10 @@ export class ScoreDisplay {
                 };
                 try {
                     const scores = await this.scoreService.getFilteredScores(filters);
-                    this.displayScores(scores);
+                    // Najpierw sortujemy według aktualnie wybranej opcji
+                    const sortedScores = this.sortScores(scores, sortSelect.value);
+                    // Następnie odświeżamy widok
+                    this.displayScores(sortedScores);
                 } catch (error) {
                     console.error('Error filtering scores:', error);
                     this.notificationManager.show('Błąd podczas filtrowania wyników', 'error');
@@ -73,11 +76,38 @@ export class ScoreDisplay {
         if (sortSelect) {
             sortSelect.addEventListener('change', async () => {
                 try {
-                    const scores = await this.scoreService.loadScores();
-                    console.log("Przed sortowaniem:", scores);
+                    // Pobierz świeże dane
+                    let scores = await this.scoreService.loadScores();
+                    console.log("Pobrane wyniki przed sortowaniem:", scores);
+    
+                    // Zastosuj aktualne filtry, jeśli są
+                    if (filterForm) {
+                        const filters = {
+                            exerciseType: filterForm['filter-exercise'].value,
+                            dateFrom: filterForm['filter-date-from'].value,
+                            dateTo: filterForm['filter-date-to'].value
+                        };
+                        if (filters.exerciseType || filters.dateFrom || filters.dateTo) {
+                            scores = await this.scoreService.getFilteredScores(filters);
+                        }
+                    }
+    
+                    // Sortuj wyniki
                     const sortedScores = this.sortScores(scores, sortSelect.value);
                     console.log("Po sortowaniu:", sortedScores);
+    
+                    // Wyczyść kontener i wyświetl posortowane wyniki
+                    const scoresContainer = document.querySelector('.scores-list-container');
+                    if (scoresContainer) {
+                        scoresContainer.innerHTML = '';
+                    }
+                    
+                    // Odśwież wyświetlanie
                     this.displayScores(sortedScores);
+                    
+                    // Opcjonalnie: pokaż powiadomienie o pomyślnym sortowaniu
+                    this.notificationManager.show('Wyniki zostały posortowane', 'success');
+    
                 } catch (error) {
                     console.error('Error sorting scores:', error);
                     this.notificationManager.show('Błąd podczas sortowania wyników', 'error');
