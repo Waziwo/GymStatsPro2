@@ -51,7 +51,7 @@ export class ScoreDisplay {
         console.log("[ScoreDisplay] Konfiguracja filtrowania i sortowania");
         const filterForm = document.getElementById('filter-form');
         const sortSelect = document.getElementById('sort-select');
-
+    
         if (filterForm) {
             filterForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -68,40 +68,40 @@ export class ScoreDisplay {
                     this.notificationManager.show('Błąd podczas filtrowania wyników', 'error');
                 }
             });
-        } else {
-            console.warn('[ScoreDisplay] Element filter-form nie został znaleziony');
         }
-
+    
         if (sortSelect) {
             sortSelect.addEventListener('change', async () => {
                 try {
                     const scores = await this.scoreService.loadScores();
+                    console.log("Przed sortowaniem:", scores);
                     const sortedScores = this.sortScores(scores, sortSelect.value);
+                    console.log("Po sortowaniu:", sortedScores);
                     this.displayScores(sortedScores);
                 } catch (error) {
                     console.error('Error sorting scores:', error);
                     this.notificationManager.show('Błąd podczas sortowania wyników', 'error');
                 }
             });
-        } else {
-            console.warn('[ScoreDisplay] Element sort-select nie został znaleziony');
         }
     }
 
     sortScores(scores, sortOption) {
         console.log("[ScoreDisplay] Sortowanie wyników:", sortOption);
-        const [sortBy, sortOrder] = sortOption.split('-');
         
         return [...scores].sort((a, b) => {
-            if (sortBy === 'date') {
-                const comparison = new Date(b.timestamp) - new Date(a.timestamp);
-                return sortOrder === 'asc' ? -comparison : comparison;
+            switch (sortOption) {
+                case 'date-desc':
+                    return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+                case 'date-asc':
+                    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+                case 'weight-desc':
+                    return parseFloat(b.weight) - parseFloat(a.weight);
+                case 'weight-asc':
+                    return parseFloat(a.weight) - parseFloat(b.weight);
+                default:
+                    return 0;
             }
-            if (sortBy === 'weight') {
-                const comparison = b.weight - a.weight;
-                return sortOrder === 'asc' ? -comparison : comparison;
-            }
-            return 0;
         });
     }
 

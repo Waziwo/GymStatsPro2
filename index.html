@@ -256,22 +256,34 @@
                         <h2>Twoje wyniki</h2>
                         <div class="filtering-section">
                             <form id="filter-form">
-                                <select id="filter-exercise">
-                                    <option value="">Wszystkie ćwiczenia</option>
-                                    <option value="bench-press">Wyciskanie sztangi</option>
-                                    <option value="squat">Przysiad</option>
-                                    <option value="deadlift">Martwy ciąg</option>
-                                </select>
-                                <input type="date" id="filter-date-from" placeholder="Od">
-                                <input type="date" id="filter-date-to" placeholder="Do">
+                                <div class="form-group">
+                                    <label for="filter-exercise">Ćwiczenie</label>
+                                    <select id="filter-exercise">
+                                        <option value="">Wszystkie ćwiczenia</option>
+                                        <option value="bench-press">Wyciskanie sztangi</option>
+                                        <option value="squat">Przysiad</option>
+                                        <option value="deadlift">Martwy ciąg</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="filter-date-from">Od daty</label>
+                                    <input type="date" id="filter-date-from">
+                                </div>
+                                <div class="form-group">
+                                    <label for="filter-date-to">Do daty</label>
+                                    <input type="date" id="filter-date-to">
+                                </div>
                                 <button type="submit" class="btn-primary">Filtruj</button>
                             </form>
-                            <select id="sort-select">
-                                <option value="date-desc">Data (najnowsze)</option>
-                                <option value="date-asc">Data (najstarsze)</option>
-                                <option value="weight-desc">Ciężar (największy)</option>
-                                <option value="weight-asc">Ciężar (najmniejszy)</option>
-                            </select>
+                            <div class="sort-container">
+                                <label for="sort-select">Sortuj według:</label>
+                                <select id="sort-select">
+                                    <option value="date-desc">Data (od najnowszych)</option>
+                                    <option value="date-asc">Data (od najstarszych)</option>
+                                    <option value="weight-desc">Ciężar (od największego)</option>
+                                    <option value="weight-asc">Ciężar (od najmniejszego)</option>
+                                </select>
+                            </div>
                         </div>
                         <ul class="scores-list-container"></ul> <!-- Zmień ID na klasę -->
                     </div>
