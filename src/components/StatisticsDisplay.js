@@ -1,5 +1,5 @@
-import Chart from 'chart.js/auto';
-import 'chartjs-adapter-date-fns';
+import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js';
+
 
 export class StatisticsDisplay {
     constructor(scoreService) {
