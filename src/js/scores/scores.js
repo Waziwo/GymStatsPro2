@@ -7,8 +7,8 @@ import {
     deleteDoc,
     doc,
     getFirestore 
-} from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js'
+import { getAuth } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js';
 
 class ScoreCache {
     constructor(maxAge = 5 * 60 * 1000) { // 5 minut domyślnie

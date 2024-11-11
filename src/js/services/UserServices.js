@@ -6,7 +6,7 @@ import {
     query,
     where,
     getDocs
-} from 'firebase/firestore';
+}  from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 import { db } from '../config/FirebaseInit.js';
 
 export class UserService {

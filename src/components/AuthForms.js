@@ -1,5 +1,5 @@
 import { ScoreDisplay } from './ScoreDisplay.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getAuth } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js';
 import { manageSectionsVisibility } from '../js/Navigation/Navigation.js';
 
 export class AuthForms {
