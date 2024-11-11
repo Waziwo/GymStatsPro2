@@ -1,6 +1,6 @@
 import { app, auth, db } from './config/FirebaseInit.js';
-import { AuthService } from "./auth/Auth.js";
-import { ScoreService } from "./scores/Scores.js";
+import { AuthService } from "./auth/auth.js";
+import { ScoreService } from "./scores/scores.js";
 import { UserService } from "./services/UserServices.js";
 import { AuthForms } from '../components/AuthForms.js';
 import { ScoreDisplay } from '../components/ScoreDisplay.js';
