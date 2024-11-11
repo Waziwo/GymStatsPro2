@@ -4,7 +4,6 @@ import { manageSectionsVisibility } from '../js/Navigation/Navigation.js';
 
 export class AuthForms {
     constructor(authService, scoreService, userService, notificationManager, activityLogger) {
-        console.log("Inicjalizacja AuthForms");
         this.authService = authService;
         this.scoreService = scoreService;
         this.userService = userService;
@@ -12,18 +11,39 @@ export class AuthForms {
         this.activityLogger = activityLogger;
         this.auth = getAuth();
         this.scoreDisplay = null;
-        
-        console.log("Rozpoczęcie inicjalizacji formularzy");
+
         this.initializeForms();
-        console.log("Rozpoczęcie konfiguracji nasłuchiwania stanu autoryzacji");
-        this.setupAuthStateListener();
+        this.setupAuthStateListener(); // Dodaj to wywołanie
         this.hamburgerMenu = document.querySelector('.hamburger-menu');
         this.navLinks = document.querySelectorAll('.nav-link');
         this.setupMobileMenu();
-        console.log("Inicjalizacja formularzy logowania");
-        console.log("Login button:", this.loginButton);
-        console.log("Auth section:", this.authSection);
-        console.log("Login form container:", this.loginFormContainer);
+    }
+
+    setupAuthStateListener() {
+        this.authService.onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    const userData = await this.userService.getUserData(user.uid); // Poprawka: getUser Data zamiast getUser  Data
+                    this.showUserInfo(user.email, userData); // Poprawka: showUser Info zamiast showUser  Info
+                    this.hideLoginButton();
+                    
+                    // Inicjalizuj i ładuj wyniki po zalogowaniu
+                    if (!this.scoreDisplay) {
+                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+                    }
+                    await this.scoreDisplay.init();  // Dodaj to wywołanie
+                    await this.scoreDisplay.loadScores(); // Załaduj wyniki po zalogowaniu
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    this.showUserInfo(user.email);
+                    this.hideLoginButton();
+                }
+            } else {
+                this.hideUserInfo();
+                this.showLoginButton();
+                this.scoreDisplay = null;  // Resetuj scoreDisplay przy wylogowaniu
+            }
+        });
     }
     setupMobileMenu() {
         if (this.hamburgerMenu && this.navLinks) {
@@ -32,7 +52,6 @@ export class AuthForms {
             });
         }
     }
-
     initializeForms() {
         this.registerForm = document.getElementById('register-form');
         this.loginForm = document.getElementById('login-form');
@@ -124,32 +143,6 @@ export class AuthForms {
         if (this.backToLoginLink) {
             this.backToLoginLink.addEventListener('click', this.showLoginForm.bind(this));
         }
-    }
-
-    setupAuthStateListener() {
-        this.authService.onAuthStateChanged(async (user) => {
-            if (user) {
-                try {
-                    const userData = await this.userService.getUserData(user.uid);
-                    this.showUserInfo(user.email, userData);
-                    this.hideLoginButton();
-                    
-                    // Inicjalizuj i ładuj wyniki po zalogowaniu
-                    if (!this.scoreDisplay) {
-                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
-                    }
-                    this.scoreDisplay.init();  // Dodaj to wywołanie
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                    this.showUserInfo(user.email);
-                    this.hideLoginButton();
-                }
-            } else {
-                this.hideUserInfo();
-                this.showLoginButton();
-                this.scoreDisplay = null;  // Resetuj scoreDisplay przy wylogowaniu
-            }
-        });
     }
 
     showResetPasswordForm(e) {

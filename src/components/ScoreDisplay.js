@@ -169,6 +169,7 @@ export class ScoreDisplay {
             const scores = await this.scoreService.loadScores();
             console.log("[ScoreDisplay] Załadowane wyniki:", scores);
             this.displayScores(scores);
+            await this.updateOverview(); // Dodaj to, aby zaktualizować przegląd
         } catch (error) {
             console.error("[ScoreDisplay] Błąd podczas ładowania wyników:", error);
             this.notificationManager.show('Błąd podczas ładowania wyników', 'error');
@@ -278,11 +279,11 @@ export class ScoreDisplay {
     async updateOverview() {
         try {
             console.log("Rozpoczęcie aktualizacji przeglądu");
-            const scores = await this.scoreService.loadScores(); // Czekamy na załadowanie wyników
+            const scores = await this.scoreService.loadScores();
             
             // Sortuj wyniki od najnowszego do najstarszego
             const sortedScores = scores.sort((a, b) => b.timestamp - a.timestamp);
-
+    
             // Aktualizacja ostatniego treningu
             const lastWorkoutDate = document.getElementById('last-workout-date');
             const lastWorkoutDetails = document.getElementById('last-workout-details');
@@ -295,17 +296,17 @@ export class ScoreDisplay {
                 lastWorkoutDate.textContent = 'Brak treningów';
                 lastWorkoutDetails.textContent = 'Dodaj swój pierwszy trening!';
             }
-
+    
             // Aktualizacja liczby treningów
             const totalWorkouts = document.getElementById('total-workouts');
             totalWorkouts.textContent = sortedScores.length.toString();
-
+    
             // Aktualizacja ulubionych ćwiczeń
             const exerciseCounts = {};
             sortedScores.forEach(score => {
                 exerciseCounts[score.exerciseType] = (exerciseCounts[score.exerciseType] || 0) + 1;
             });
-
+    
             const favoriteExercise = document.getElementById('favorite-exercise');
             if (Object.keys(exerciseCounts).length > 0) {
                 const mostCommon = Object.entries(exerciseCounts)
@@ -314,11 +315,11 @@ export class ScoreDisplay {
             } else {
                 favoriteExercise.textContent = 'Brak danych';
             }
-
+    
             // Aktualizacja listy ostatnich treningów
             const recentWorkoutsList = document.getElementById('recent-workouts-list');
             recentWorkoutsList.innerHTML = ''; // Wyczyść listę
-
+    
             if (sortedScores.length > 0) {
                 sortedScores.slice(0, 5).forEach(score => {
                     const li = document.createElement('li');
@@ -334,7 +335,7 @@ export class ScoreDisplay {
                 li.textContent = 'Brak historii treningów';
                 recentWorkoutsList.appendChild(li);
             }
-
+    
             console.log("Zakończono aktualizację przeglądu");
         } catch (error) {
             console.error('Błąd podczas aktualizacji przeglądu:', error);

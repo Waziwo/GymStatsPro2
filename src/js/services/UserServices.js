@@ -45,16 +45,18 @@ export class UserService {
         }
     }
 
-    async getUserData(userId) {
+    async getUserData(uid) {
         try {
-            const userDoc = await getDoc(doc(this.db, "users", userId));
-            if (userDoc.exists()) {
+            const userDoc = await db.collection('users').doc(uid).get();
+            if (userDoc.exists) {
                 return userDoc.data();
+            } else {
+                throw new Error('Nie znaleziono użytkownika');
             }
-            return null;
-        } catch (error) {
-            console.error("Error fetching user data:", error);
-            throw error;
+        }
+        catch (error) {
+            console.error('Error fetching user data:', error);
+            throw error; // Rzuć błąd dalej
         }
     }
 }
