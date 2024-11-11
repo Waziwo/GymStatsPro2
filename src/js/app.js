@@ -8,8 +8,6 @@ import { NotificationManager } from './notifications/Notifications.js';
 import { ActivityLogger } from './utils/ActivityLogger.js';
 import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
 import { initNavigation, manageSectionsVisibility } from './Navigation/Navigation.js';
-import '../css/style.css';
-import '../css/notifications.css';
 
 // src/js/app.js
 class App {
