@@ -1,4 +1,3 @@
-import { getAuth } from "firebase/auth";
 import { StatisticsDisplay } from './StatisticsDisplay.js';
 
 export class ScoreDisplay {
