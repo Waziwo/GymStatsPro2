@@ -1,13 +1,13 @@
-import { app, auth, db } from './config/FirebaseInit';
-import { AuthService } from "./auth/Auth";
-import { ScoreService } from "./scores/Scores";
-import { UserService } from "./services/UserServices";
-import { AuthForms } from '../components/AuthForms';
-import { ScoreDisplay } from '../components/ScoreDisplay';
-import { NotificationManager } from './notifications/Notifications';
-import { ActivityLogger } from './utils/ActivityLogger';
-import { StatisticsDisplay } from '../components/StatisticsDisplay';
-import { initNavigation, manageSectionsVisibility } from './Navigation/Navigation';
+import { app, auth, db } from './config/FirebaseInit.js';
+import { AuthService } from "./auth/Auth.js";
+import { ScoreService } from "./scores/Scores.js";
+import { UserService } from "./services/UserServices.js";
+import { AuthForms } from '../components/AuthForms.js';
+import { ScoreDisplay } from '../components/ScoreDisplay.js';
+import { NotificationManager } from './notifications/Notifications.js';
+import { ActivityLogger } from './utils/ActivityLogger.js';
+import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
+import { initNavigation, manageSectionsVisibility } from './Navigation/Navigation.js';
 import '../css/style.css';
 import '../css/notifications.css';
 
