@@ -1,5 +1,4 @@
-import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js';
-
+import { Chart } from 'https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.esm.js';
 
 export class StatisticsDisplay {
     constructor(scoreService) {
