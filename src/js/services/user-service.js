@@ -7,7 +7,7 @@ import {
     where,
     getDocs
 } from 'firebase/firestore';
-import { db } from '../firebase-init.js';
+import { db } from '../config/firebase-init.js';
 
 export class UserService {
     constructor() {

@@ -1,4 +1,4 @@
-import { app, auth, db } from './firebase-init';
+import { app, auth, db } from './config/firebase-init';
 import { AuthService } from "./auth/auth";
 import { ScoreService } from "./scores/scores";
 import { UserService } from "./services/user-service";
