@@ -1,6 +1,6 @@
 import { ScoreDisplay } from './score-display.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { manageSectionsVisibility } from '../js/utils/navigation';
+import { manageSectionsVisibility } from '../js/utils/navigation.js';
 
 export class AuthForms {
     constructor(authService, scoreService, userService, notificationManager, activityLogger) {
