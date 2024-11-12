@@ -1,3 +1,4 @@
+
 export class StatisticsDisplay {
     constructor(scoreService) {
         this.scoreService = scoreService;
@@ -8,17 +9,21 @@ export class StatisticsDisplay {
         };
     }
 
-    async init() {
-        try {
-            const scores = await this.scoreService.loadScores();
-            this.displayAverages(scores);
-            this.createProgressChart(scores);
-            this.createExerciseDistributionChart(scores);
-            this.createMaxWeightChart(scores);
-        } catch (error) {
-            console.error('Error loading statistics:', error);
+async init() {
+    try {
+        const scores = await this.scoreService.loadScores();
+        if (!scores.length) {
+            console.log('No scores available');
+            return;
         }
+        this.displayAverages(scores);
+        this.createProgressChart(scores);
+        this.createExerciseDistributionChart(scores);
+        this.createMaxWeightChart(scores);
+    } catch (error) {
+        console.error('Error loading statistics:', error);
     }
+}
 
     displayAverages(scores) {
         const averagesContainer = document.getElementById('averages');
