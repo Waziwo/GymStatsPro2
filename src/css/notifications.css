@@ -11,6 +11,9 @@
     border-radius: 4px;
     background-color: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .notification {
@@ -28,6 +31,8 @@
     transition: opacity 0.5s ease-out;
     box-sizing: border-box;
     border: 1px solid #ddd;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .notification.success {
@@ -53,6 +58,11 @@
     font-size: 20px;
     padding: 0;
     margin-left: 10px;
+    transition: color 0.2s ease-out;
+}
+
+.notification-close:hover {
+    color: #666;
 }
 
 .notification-hide {
@@ -78,4 +88,30 @@
     to {
         opacity: 0;
     }
+}
+
+.notification-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    z-index: -1;
+    border-radius: 4px;
+}
+
+.notification-container::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    z-index: -1;
+    border-radius: 4px;
 }
