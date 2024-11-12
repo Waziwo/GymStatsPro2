@@ -213,24 +213,25 @@ export class AuthForms {
         const email = this.registerForm['register-email'].value;
         const password = this.registerForm['register-password'].value;
         const nickname = this.registerForm['register-nickname'].value;
-
+    
         try {
             const nicknameExists = await this.userService.checkNicknameExists(nickname);
-
+            
             if (nicknameExists) {
-                this.handleError({ code: 'auth/nickname-already-in-use' }, 'register');
+                this.notificationManager.show('Ten nickname jest już zajęty. Wybierz inny.', 'error');
                 return;
             }
-
+    
             const userCredential = await this.authService.register(email, password);
             await this.userService.createUser(userCredential.user.uid, email, nickname);
-
+            
             this.registerForm.reset();
             this.notificationManager.show('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.', 'success');
             this.activityLogger.logActivity('register', { email: email, nickname: nickname });
             this.showLoginForm(e);
         } catch (error) {
-            this.handleError(error, 'register');
+            console.error("Registration error:", error);
+            this.notificationManager.show(error.message, 'error');
             this.activityLogger.logActivity('register_error', { error: error.message });
         }
     }
