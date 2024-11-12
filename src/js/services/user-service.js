@@ -1,19 +1,12 @@
-import { 
-    collection,
-    doc, 
-    setDoc, 
-    getDoc,
-    query,
-    where,
-    getDocs
-}  from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
-import { db } from '../config/FirebaseInit.js';
+// src/js/services/user-service.js
+import { getFirestore, doc, setDoc, getDoc, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 export class UserService {
     constructor() {
-        this.db = db;
+        this.db = getFirestore();
         this.usersCollection = collection(this.db, 'users');
     }
+
 
     async createUser(uid, email, nickname) {
         try {
@@ -45,18 +38,16 @@ export class UserService {
         }
     }
 
-    async getUserData(uid) {
+    async getUserData(userId) {
         try {
-            const userDoc = await db.collection('users').doc(uid).get();
-            if (userDoc.exists) {
+            const userDoc = await getDoc(doc(this.db, "users", userId));
+            if (userDoc.exists()) {
                 return userDoc.data();
-            } else {
-                throw new Error('Nie znaleziono użytkownika');
             }
-        }
-        catch (error) {
-            console.error('Error fetching user data:', error);
-            throw error; // Rzuć błąd dalej
+            return null;
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+            throw error;
         }
     }
 }

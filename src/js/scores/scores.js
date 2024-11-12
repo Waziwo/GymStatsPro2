@@ -1,19 +1,10 @@
-import { 
-    collection, 
-    addDoc, 
-    query, 
-    where, 
-    getDocs, 
-    deleteDoc,
-    doc,
-    getFirestore 
-} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js'
-import { getAuth } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js';
+import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 class ScoreCache {
-    constructor(maxAge = 5 * 60 * 1000) { // 5 minut domyślnie
+    constructor() {
         this.cache = new Map();
-        this.maxAge = maxAge;
+        this.maxAge = 5 * 60 * 1000; // 5 minut
     }
 
     set(key, value) {
@@ -42,23 +33,17 @@ class ScoreCache {
 
 export class ScoreService {
     constructor() {
-        this.initialized = false;
         this.db = getFirestore();
         this.scoresCollection = collection(this.db, 'scores');
         this.auth = getAuth();
         this.cache = new ScoreCache();
-        this.pendingAdd = false; 
     }
-
+    
     async addScore(exerciseType, weight, reps) {
-        if (this.pendingAdd) return; // Zabezpieczenie przed wielokrotnym dodaniem
-        this.pendingAdd = true;
-        
         try {
-            console.log("[ScoreService] Rozpoczęcie dodawania wyniku", { exerciseType, weight, reps });
             const user = this.auth.currentUser;
             if (!user) throw new Error('Użytkownik nie jest zalogowany');
-    
+
             await addDoc(this.scoresCollection, {
                 userId: user.uid,
                 userEmail: user.email,
@@ -67,25 +52,27 @@ export class ScoreService {
                 reps,
                 timestamp: Date.now(),
             });
-            console.log("[ScoreService] Wynik dodany pomyślnie");
             this.clearCache();
-            return true;
         } catch (error) {
-            console.error("[ScoreService] Błąd podczas dodawania wyniku:", error);
             throw error;
-        } finally {
-            this.pendingAdd = false;
         }
     }
+
     async loadScores() {
         try {
             const user = this.auth.currentUser;
             if (!user) {
-                console.log("LoadScores - Brak zalogowanego użytkownika");
+                console.log("ScoreService: Brak zalogowanego użytkownika");
                 return [];
             }
-
-            console.log("LoadScores - Rozpoczęcie ładowania wyników");
+    
+            const cacheKey = `scores_${user.uid}`;
+            const cachedScores = this.cache.get(cacheKey);
+            if (cachedScores) {
+                console.log("ScoreService: Zwracam wyniki z cache'a");
+                return cachedScores;
+            }
+    
             const q = query(
                 this.scoresCollection,
                 where("userId", "==", user.uid)
@@ -96,14 +83,16 @@ export class ScoreService {
                 id: doc.id,
                 ...doc.data()
             }));
+            console.log("ScoreService: Załadowane wyniki z bazy:", scores);
             
-            console.log("LoadScores - Załadowano wyniki:", scores);
+            this.cache.set(cacheKey, scores);
             return scores;
         } catch (error) {
-            console.error("LoadScores - Błąd:", error);
-            throw error;
+            console.error("ScoreService: Błąd podczas ładowania wyników:", error);
+            return [];
         }
     }
+
     async deleteScore(scoreId) {
         try {
             const user = this.auth.currentUser;
@@ -111,8 +100,8 @@ export class ScoreService {
 
             const scoreRef = doc(this.db, 'scores', scoreId);
             await deleteDoc(scoreRef);
-            this.clearCache();
-            return true;
+            this.clearCache(); // Czyścimy cache po usunięciu wyniku
+            return true; // Zwracamy true, jeśli usunięcie się powiodło
         } catch (error) {
             console.error("Błąd podczas usuwania wyniku:", error);
             throw error;
@@ -151,31 +140,20 @@ export class ScoreService {
             link.click();
         }
     }
-
     async getFilteredScores(filters) {
-        try {
-            let scores = await this.loadScores();
-            
-            if (filters.exerciseType) {
-                scores = scores.filter(score => score.exerciseType === filters.exerciseType);
-            }
-            
-            if (filters.dateFrom) {
-                const fromDate = new Date(filters.dateFrom);
-                scores = scores.filter(score => new Date(score.timestamp) >= fromDate);
-            }
-            
-            if (filters.dateTo) {
-                const toDate = new Date(filters.dateTo);
-                toDate.setHours(23, 59, 59, 999); // Ustawia koniec dnia
-                scores = scores.filter(score => new Date(score.timestamp) <= toDate);
-            }
-            
-            return scores;
-        } catch (error) {
-            console.error('Error filtering scores:', error);
-            throw error;
+        let scores = await this.loadScores();
+        
+        if (filters.exerciseType) {
+            scores = scores.filter(score => score.exerciseType === filters.exerciseType);
         }
+        if (filters.dateFrom) {
+            scores = scores.filter(score => score.timestamp >= new Date(filters.dateFrom).getTime());
+        }
+        if (filters.dateTo) {
+            scores = scores.filter(score => score.timestamp <= new Date(filters.dateTo).getTime());
+        }
+        
+        return scores;
     }
 
     sortScores(scores, sortBy, sortOrder) {

@@ -1,33 +1,40 @@
-import { app, auth, db } from './config/FirebaseInit.js';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { firebaseConfig } from "./config/firebase-config.js";
 import { AuthService } from "./auth/auth.js";
 import { ScoreService } from "./scores/scores.js";
-import { UserService } from "./services/UserServices.js";
-import { AuthForms } from '../components/AuthForms.js';
-import { ScoreDisplay } from '../components/ScoreDisplay.js';
-import { NotificationManager } from './notifications/Notifications.js';
-import { ActivityLogger } from './utils/ActivityLogger.js';
+import { UserService } from "./services/user-service.js";
+import { AuthForms } from '../components/auth-forms.js';
+import { ScoreDisplay } from '../components/score-display.js';
+import { NotificationManager } from './notifications.js';
+import { ActivityLogger } from './utils/activity-logger.js';
 import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
-import { initNavigation, manageSectionsVisibility } from './Navigation/Navigation.js';
+import { initNavigation, manageSectionsVisibility } from './utils/navigation.js';
 
-// src/js/app.js
 class App {
     constructor() {
-        this.scoreService = new ScoreService();
-        this.authService = new AuthService();
-        this.notificationManager = new NotificationManager();
-        this.scoreDisplay = new ScoreDisplay(
-            this.scoreService, 
-            this.authService, 
-            this.notificationManager
-        );
-    }
-
-    async init() {
         try {
-            await this.authService.init();
-            if (this.authService.isLoggedIn()) {
-                await this.scoreDisplay.init();
+            // Initialize Firebase (if not already initialized)
+            if (!window.firebaseApp) {
+                this.app = initializeApp(firebaseConfig);
+            } else {
+                this.app = window.firebaseApp;
             }
+            
+            const auth = getAuth(this.app);
+
+            // Initialize services
+            this.initializeServices();
+            
+            // Initialize components
+            this.initializeComponents();
+
+            // Setup event listeners and auth state
+            this.initializeElements();
+            this.setupEventListeners();
+            this.setupAuthStateListener();
+            this.setupDashboardNavigation(); // Dodana nowa metoda
+
         } catch (error) {
             console.error("Błąd podczas inicjalizacji aplikacji:", error);
         }
@@ -42,8 +49,8 @@ class App {
     }
 
     initializeComponents() {
-        console.log("[App] Inicjalizacja komponentów");
         this.statisticsDisplay = new StatisticsDisplay(this.scoreService);
+        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager); // Dodaj notificationManager
         this.authForms = new AuthForms(
             this.authService, 
             this.scoreService, 
@@ -51,16 +58,6 @@ class App {
             this.notificationManager,
             this.activityLogger
         );
-        
-        // Dodaj sprawdzenie
-        if (this.scoreDisplay) {
-            console.log("[App] ScoreDisplay już istnieje - pomijam inicjalizację");
-            return;
-        }
-        
-        console.log("[App] Tworzenie nowej instancji ScoreDisplay");
-        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
-        this.scoreDisplay.init();
     }
 
     initializeElements() {
@@ -172,24 +169,26 @@ class App {
                 try {
                     const userData = await this.userService.getUserData(user.uid);
                     if (userData) {
-                        manageSectionsVisibility(true, false);
+                        this.updateNavigation(true);
+                        this.statisticsDisplay.init();
                         this.updateUserInfo(userData, user.email);
-                        
-                        if (!this.scoreDisplay) {
-                            this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
-                        }
-                        this.scoreDisplay.init();
+                        // Pokaż dashboard po zalogowaniu
+                        this.landingPage.classList.add('hidden');
+                        this.userDashboard.classList.remove('hidden');
+                        this.authSection.classList.add('hidden');
+                        manageSectionsVisibility(true, false); // Dodaj false jako drugi argument
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                     this.notificationManager.show('Wystąpił błąd podczas pobierania danych użytkownika', 'error');
                 }
             } else {
-                manageSectionsVisibility(false);
-                this.scoreDisplay = null;
+                this.updateNavigation(false);
+                manageSectionsVisibility(false, true); // Dodaj true jako drugi argument
             }
         });
     }
+
     updateUserInfo(userData, email) {
         const userNicknameElement = document.getElementById('user-nickname');
         const userEmailElement = document.getElementById('user-email');
@@ -203,8 +202,6 @@ class App {
 
     updateNavigation(isLoggedIn) {
         if (isLoggedIn) {
-            if (this.loginButton) this.loginButton.classList.add('hidden');
-            if (this.dashboardLink) this.dashboardLink.classList.remove('hidden');
             this.loginButton.classList.add('hidden');
             this.dashboardLink.classList.add('hidden');
             this.landingPage.classList.add('hidden');
@@ -213,8 +210,6 @@ class App {
             this.aboutSection.classList.add('hidden');
             this.authSection.classList.add('hidden');
         } else {
-            if (this.loginButton) this.loginButton.classList.remove('hidden');
-            if (this.dashboardLink) this.dashboardLink.classList.add('hidden');
             this.loginButton.classList.remove('hidden');
             this.dashboardLink.classList.add('hidden');
             this.userDashboard.classList.add('hidden');
@@ -235,17 +230,8 @@ class App {
     }
 }
 
-// Poczekaj na załadowanie DOM przed inicjalizacją aplikacji
+// Inicjalizacja aplikacji
 document.addEventListener('DOMContentLoaded', () => {
-    if (!app) {
-        console.error('Firebase nie został zainicjalizowany');
-        return;
-    }
-    
-    try {
-        window.app = new App();
-        initNavigation();
-    } catch (error) {
-        console.error("Błąd podczas uruchamiania aplikacji:", error);
-    }
+    new App();
+    initNavigation();
 });

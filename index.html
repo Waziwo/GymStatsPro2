@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GymStats Pro</title>
-    <link rel="stylesheet" href="src/css/style.css">
-    <link rel="stylesheet" href="src/css/notifications.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="src/css/notifications.css">
+    <!-- Dodaj Chart.js przed innymi skryptami -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
 <body>
     <header class="nav-header">
@@ -231,7 +234,7 @@
                     <!-- Sekcja Dodaj wynik -->
                     <div id="add-score" class="dashboard-section">
                         <h2>Dodaj nowy wynik</h2>
-                        <form id="score-form" data-initialized="false">
+                        <form id="score-form">
                             <div class="form-group">
                                 <label for="exercise-type">Ćwiczenie</label>
                                 <select id="exercise-type" required>
@@ -258,36 +261,24 @@
                         <h2>Twoje wyniki</h2>
                         <div class="filtering-section">
                             <form id="filter-form">
-                                <div class="form-group">
-                                    <label for="filter-exercise">Ćwiczenie</label>
-                                    <select id="filter-exercise">
-                                        <option value="">Wszystkie ćwiczenia</option>
-                                        <option value="bench-press">Wyciskanie sztangi</option>
-                                        <option value="squat">Przysiad</option>
-                                        <option value="deadlift">Martwy ciąg</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="filter-date-from">Od daty</label>
-                                    <input type="date" id="filter-date-from">
-                                </div>
-                                <div class="form-group">
-                                    <label for="filter-date-to">Do daty</label>
-                                    <input type="date" id="filter-date-to">
-                                </div>
+                                <select id="filter-exercise">
+                                    <option value="">Wszystkie ćwiczenia</option>
+                                    <option value="bench-press">Wyciskanie sztangi</option>
+                                    <option value="squat">Przysiad</option>
+                                    <option value="deadlift">Martwy ciąg</option>
+                                </select>
+                                <input type="date" id="filter-date-from" placeholder="Od">
+                                <input type="date" id="filter-date-to" placeholder="Do">
                                 <button type="submit" class="btn-primary">Filtruj</button>
                             </form>
-                            <div class="sort-container">
-                                <label for="sort-select">Sortuj według:</label>
-                                <select id="sort-select">
-                                    <option value="date-desc">Data (od najnowszych)</option>
-                                    <option value="date-asc">Data (od najstarszych)</option>
-                                    <option value="weight-desc">Ciężar (od największego)</option>
-                                    <option value="weight-asc">Ciężar (od najmniejszego)</option>
-                                </select>
-                            </div>
+                            <select id="sort-select">
+                                <option value="date-desc">Data (najnowsze)</option>
+                                <option value="date-asc">Data (najstarsze)</option>
+                                <option value="weight-desc">Ciężar (największy)</option>
+                                <option value="weight-asc">Ciężar (najmniejszy)</option>
+                            </select>
                         </div>
-                        <ul class="scores-list-container"></ul> <!-- Zmień ID na klasę -->
+                        <ul class="scores-list"></ul>
                     </div>
         
                     <!-- Sekcja Statystyki -->
@@ -340,10 +331,19 @@
             </div>
         </div>
     </div>
-    <script type="module" src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js"></script>
-    <script type="module" src="src/js/config/FirebaseInit.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { firebaseConfig } from "./src/js/config/firebase-config.js";
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            window.firebaseApp = app; // Opcjonalnie, jeśli potrzebujesz dostępu w innych miejscach
+        } catch (error) {
+            console.error("Błąd inicjalizacji Firebase:", error);
+        }
+    </script>
     <script type="module" src="src/js/app.js"></script>
 </body>
 </html>

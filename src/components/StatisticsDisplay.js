@@ -1,5 +1,3 @@
-import { Chart } from 'https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.esm.js';
-
 export class StatisticsDisplay {
     constructor(scoreService) {
         this.scoreService = scoreService;
@@ -13,14 +11,10 @@ export class StatisticsDisplay {
     async init() {
         try {
             const scores = await this.scoreService.loadScores();
-            if (scores && scores.length > 0) {
-                this.displayAverages(scores);
-                this.createProgressChart(scores);
-                this.createExerciseDistributionChart(scores);
-                this.createMaxWeightChart(scores);
-            } else {
-                console.log('Brak wyników do wyświetlenia w statystykach');
-            }
+            this.displayAverages(scores);
+            this.createProgressChart(scores);
+            this.createExerciseDistributionChart(scores);
+            this.createMaxWeightChart(scores);
         } catch (error) {
             console.error('Error loading statistics:', error);
         }

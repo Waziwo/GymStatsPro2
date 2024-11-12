@@ -1,9 +1,9 @@
-import { ScoreDisplay } from './ScoreDisplay.js';
-import { getAuth } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js';
-import { manageSectionsVisibility } from '../js/Navigation/Navigation.js';
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { ScoreDisplay } from './score-display.js';
 
 export class AuthForms {
     constructor(authService, scoreService, userService, notificationManager, activityLogger) {
+        console.log("Inicjalizacja AuthForms");
         this.authService = authService;
         this.scoreService = scoreService;
         this.userService = userService;
@@ -11,39 +11,18 @@ export class AuthForms {
         this.activityLogger = activityLogger;
         this.auth = getAuth();
         this.scoreDisplay = null;
-
+        
+        console.log("Rozpoczęcie inicjalizacji formularzy");
         this.initializeForms();
-        this.setupAuthStateListener(); // Dodaj to wywołanie
+        console.log("Rozpoczęcie konfiguracji nasłuchiwania stanu autoryzacji");
+        this.setupAuthStateListener();
         this.hamburgerMenu = document.querySelector('.hamburger-menu');
         this.navLinks = document.querySelectorAll('.nav-link');
         this.setupMobileMenu();
-    }
-
-    setupAuthStateListener() {
-        this.authService.onAuthStateChanged(async (user) => {
-            if (user) {
-                try {
-                    const userData = await this.userService.getUserData(user.uid); // Poprawka: getUser Data zamiast getUser  Data
-                    this.showUserInfo(user.email, userData); // Poprawka: showUser Info zamiast showUser  Info
-                    this.hideLoginButton();
-                    
-                    // Inicjalizuj i ładuj wyniki po zalogowaniu
-                    if (!this.scoreDisplay) {
-                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
-                    }
-                    await this.scoreDisplay.init();  // Dodaj to wywołanie
-                    await this.scoreDisplay.loadScores(); // Załaduj wyniki po zalogowaniu
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                    this.showUserInfo(user.email);
-                    this.hideLoginButton();
-                }
-            } else {
-                this.hideUserInfo();
-                this.showLoginButton();
-                this.scoreDisplay = null;  // Resetuj scoreDisplay przy wylogowaniu
-            }
-        });
+        console.log("Inicjalizacja formularzy logowania");
+        console.log("Login button:", this.loginButton);
+        console.log("Auth section:", this.authSection);
+        console.log("Login form container:", this.loginFormContainer);
     }
     setupMobileMenu() {
         if (this.hamburgerMenu && this.navLinks) {
@@ -52,6 +31,7 @@ export class AuthForms {
             });
         }
     }
+
     initializeForms() {
         this.registerForm = document.getElementById('register-form');
         this.loginForm = document.getElementById('login-form');
@@ -81,13 +61,7 @@ export class AuthForms {
 
         this.setupEventListeners();
     }
-    initializeScoreDisplay() {
-        console.log("Inicjalizacja ScoreDisplay");
-        if (!this.scoreDisplay) {
-            this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
-        }
-        this.scoreDisplay.init();
-    }
+
     setupFormToggle() {
         if (this.showRegisterLink) {
             this.showRegisterLink.addEventListener('click', (e) => {
@@ -143,6 +117,32 @@ export class AuthForms {
         if (this.backToLoginLink) {
             this.backToLoginLink.addEventListener('click', this.showLoginForm.bind(this));
         }
+    }
+
+    setupAuthStateListener() {
+        this.authService.onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    const userData = await this.userService.getUserData(user.uid);
+                    this.showUserInfo(user.email, userData);
+                    this.hideLoginButton();
+                    
+                    // Inicjalizuj i ładuj wyniki po zalogowaniu
+                    if (!this.scoreDisplay) {
+                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+                    }
+                    this.scoreDisplay.init();  // Dodaj to wywołanie
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    this.showUserInfo(user.email);
+                    this.hideLoginButton();
+                }
+            } else {
+                this.hideUserInfo();
+                this.showLoginButton();
+                this.scoreDisplay = null;  // Resetuj scoreDisplay przy wylogowaniu
+            }
+        });
     }
 
     showResetPasswordForm(e) {
@@ -279,7 +279,14 @@ export class AuthForms {
         }
         if (this.userDashboard) {
             this.userDashboard.classList.remove('hidden');
-            this.initializeScoreDisplay();
+            
+            // Dodaj to opóźnienie dla inicjalizacji ScoreDisplay
+            setTimeout(() => {
+                if (!this.scoreDisplay) {
+                    this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+                }
+                this.scoreDisplay.init();  // To wywołanie zainicjuje wszystko, w tym filtrowanie
+            }, 0);
         }
         
         // Zawsze ukrywaj linki Features i About gdy użytkownik jest zalogowany
@@ -296,9 +303,6 @@ export class AuthForms {
         }
         if (this.aboutSection) {
             this.aboutSection.classList.add('hidden');
-        }
-        if (this.userDashboard) {
-            this.userDashboard.classList.remove('hidden');
         }
     }
     hideUserInfo() {
@@ -332,29 +336,36 @@ export class AuthForms {
     }
     
     setupAuthStateListener() {
+        console.log("Ustawianie nasłuchiwania na zmiany stanu autoryzacji");
         this.authService.onAuthStateChanged(async (user) => {
-            try {
-                if (user) {
+            console.log("Stan autoryzacji zmieniony:", user);
+            if (user) {
+                try {
+                    console.log("Próba pobrania danych użytkownika:", user.uid);
                     const userData = await this.userService.getUserData(user.uid);
+                    console.log("Pobrane dane użytkownika:", userData);
                     this.showUserInfo(user.email, userData);
-                    manageSectionsVisibility(true, false);
+                    this.hideLoginButton();
                     
+                    console.log("Inicjalizacja wyświetlania wyników");
                     if (!this.scoreDisplay) {
+                        console.log("Tworzenie nowej instancji ScoreDisplay");
                         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
                     }
                     this.scoreDisplay.init();
-                } else {
-                    this.hideUserInfo();
-                    manageSectionsVisibility(false);
-                    this.scoreDisplay = null;
+                } catch (error) {
+                    console.error('Błąd podczas pobierania danych użytkownika:', error);
+                    this.showUserInfo(user.email);
+                    this.hideLoginButton();
                 }
-            } catch (error) {
-                console.error('Error in auth state change:', error);
-                this.notificationManager.show('Wystąpił błąd podczas aktualizacji stanu użytkownika', 'error');
+            } else {
+                console.log("Użytkownik wylogowany - resetowanie widoku");
+                this.hideUserInfo();
+                this.showLoginButton();
+                this.scoreDisplay = null;
             }
         });
     }
-    
     
     showLoginButton() {
         console.log("Próba pokazania przycisku logowania");
