@@ -57,54 +57,61 @@ async init() {
         `).join('');
     }
     async updateStatistics() {
-        try {
-            console.log('Updating statistics...');
-            const scores = await this.scoreService.loadScores();
-            console.log('Scores loaded:', scores);
-            console.log('Number of scores:', scores.length);
-            console.log('First score:', scores[0]);
-            console.log('Last score:', scores[scores.length - 1]);
+    try {
+        console.log('Updating statistics...');
+        const scores = await this.scoreService.loadScores();
+        console.log('Scores loaded:', scores);
+        console.log('Number of scores:', scores.length);
+        console.log('First score:', scores[0]);
+        console.log('Last score:', scores[scores.length - 1]);
 
-            // Sprawdź, czy są dostępne wyniki
-            if (scores.length === 0) {
-                console.warn('No scores available to update statistics.');
-                return;
-            }
-
-            // Wyświetl średnie
-            this.displayAverages(scores);
-            console.log('Averages displayed');
-
-            // Zaktualizuj wykresy
-            setTimeout(() => {
-                this.updateCharts(scores);
-                console.log('Charts updated');
-            }, 100); // Opóźnienie 100 ms
-
-            // Uaktualnij statystyki w elementach DOM
-            const totalScoresElement = document.getElementById('total-scores');
-            const averageWeightElement = document.getElementById('average-weight');
-
-            if (totalScoresElement) {
-                totalScoresElement.textContent = scores.length; // Ustaw liczbę wyników
-                console.log('Updated total scores element');
-            } else {
-                console.warn('Element total-scores not found');
-            }
-
-            if (averageWeightElement) {
-                const totalWeight = scores.reduce((acc, score) => acc + score.weight, 0);
-                const averageWeight = scores.length > 0 ? (totalWeight / scores.length).toFixed(2) : 0;
-                averageWeightElement.textContent = averageWeight; // Ustaw średni ciężar
-                console.log('Updated average weight element');
-            } else {
-                console.warn('Element average-weight not found');
-            }
-
-        } catch (error) {
-            console.error('Error updating statistics:', error);
+        // Sprawdź, czy są dostępne wyniki
+        if (scores.length === 0) {
+            console.log('No scores available to update statistics.');
+            console.warn('No scores available to update statistics.');
+            return;
         }
+
+        // Wyświetl średnie
+        console.log('Displaying averages...');
+        this.displayAverages(scores);
+        console.log('Averages displayed');
+
+        // Uaktualnij statystyki w elementach DOM
+        console.log('Updating statistics in DOM elements...');
+        const totalScoresElement = document.getElementById('total-scores');
+        const averageWeightElement = document.getElementById('average-weight');
+
+        if (totalScoresElement) {
+            console.log('Updating total scores element...');
+            totalScoresElement.textContent = scores.length; // Ustaw liczbę wyników
+            console.log('Updated total scores element');
+        } else {
+            console.log('Element total-scores not found');
+            console.warn('Element total-scores not found');
+        }
+
+        if (averageWeightElement) {
+            console.log('Updating average weight element...');
+            const totalWeight = scores.reduce((acc, score) => acc + score.weight, 0);
+            const averageWeight = scores.length > 0 ? (totalWeight / scores.length).toFixed(2) : 0;
+            averageWeightElement.textContent = averageWeight; // Ustaw średni ciężar
+            console.log('Updated average weight element');
+        } else {
+            console.log('Element average-weight not found');
+            console.warn('Element average-weight not found');
+        }
+        // Zaktualizuj wykresy
+        console.log('Updating charts...');
+        setTimeout(() => {
+            console.log('Updating charts with delay...');
+            this.updateCharts(scores);
+            console.log('Charts updated');
+        }, 100); // Opóźnienie 100 ms
+    } catch (error) {
+        console.error('Error updating statistics:', error);
     }
+}
 
     updateCharts(scores) {
         console.log('Updating charts...');
@@ -116,7 +123,7 @@ async init() {
 
     updateProgressChart(scores) {
         console.log('Updating progress chart...');
-        console.log('Before destroying progress chart:', this.charts.progressChart);
+    
         // Sprawdź, czy wykres już istnieje i zniszcz go, jeśli tak
         if (this.charts.progressChart) {
             console.log('Destroying existing progress chart...');
@@ -138,7 +145,6 @@ async init() {
         });
         console.log('Progress chart updated');
     }
-
     updateExerciseDistributionChart(scores) {
         console.log('Updating exercise distribution chart...');
         if (this.charts.distributionChart) {
