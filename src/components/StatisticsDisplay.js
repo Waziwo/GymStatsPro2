@@ -115,7 +115,7 @@ async init() {
 
     updateCharts(scores) {
         console.log('Updating charts...');
-        this.updateProgressChart(scores);
+        //this.updateProgressChart(scores);
         this.updateExerciseDistributionChart(scores);
         this.updateMaxWeightChart(scores);
         console.log('Charts updated');
@@ -191,6 +191,7 @@ async init() {
         });
         console.log('Max weight chart updated');
     }
+    
     calculateAverages(scores) {
         if (!scores.length) return { avgWeight: 0, avgReps: 0, totalSets: 0 };
 
