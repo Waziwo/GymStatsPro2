@@ -44,7 +44,7 @@ async init() {
 
         const stats = this.calculateAverages(scores);
         const averageCards = [
-            { title: 'Średni ciężar', value: `${stats.avgWeight.toFixed(1)} kg`, unit: 'kg' },
+            { title: 'Średni ciężar', value: `${stats.avgWeight.toFixed(1)}`, unit: 'kg' },
             { title: 'Średnia liczba powtórzeń', value: stats.avgReps.toFixed(1), unit: '' },
             { title: 'Całkowita liczba serii', value: stats.totalSets, unit: '' }
         ];
@@ -101,15 +101,6 @@ async init() {
             console.log('Element average-weight not found');
             console.warn('Element average-weight not found');
         }
-        console.log('Creating progress chart...');
-        this.createProgressChart(scores);
-        console.log('Progress chart created');
-        console.log('Creating exercise distribution chart...');
-        this.createExerciseDistributionChart(scores);
-        console.log('Exercise distribution chart created');
-        console.log('Creating max weight chart...');
-        this.createMaxWeightChart(scores);
-        console.log('Max weight chart created');
     } catch (error) {
         console.error('Error updating statistics:', error);
     }

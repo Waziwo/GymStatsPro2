@@ -11,6 +11,7 @@ import { NotificationManager } from './notifications.js'; // Importuj Notificati
 import { ActivityLogger } from './utils/activity-logger.js';
 import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
 import { initNavigation, manageSectionsVisibility } from './utils/navigation.js';
+import { ExerciseService } from './exercises/ExerciseService.js';
 
 class App {
     constructor() {
@@ -47,6 +48,7 @@ class App {
         this.scoreService = new ScoreService(this.notificationManager); // Przekazywanie NotificationManager
         this.userService = new UserService();
         this.activityLogger = new ActivityLogger();
+        this.exerciseService = new ExerciseService();
     }
 
     initializeComponents() {
@@ -75,7 +77,17 @@ class App {
         this.dashboardNavLinks = document.querySelectorAll('.dashboard-nav a');
         this.dashboardSections = document.querySelectorAll('.dashboard-section');
     }
-
+    loadExercises() {
+        const exercisesList = document.getElementById('exercises-list');
+        if (exercisesList) {
+            const exercises = this.exerciseService.getExercises();
+            exercisesList.innerHTML = exercises.map(exercise => `
+                <li>
+                    <strong>${exercise.name}</strong>: ${exercise.description}
+                </li>
+            `).join('');
+        }
+    }
     // Nowa metoda do obsługi nawigacji w dashboardzie
     setupDashboardNavigation() {
         this.dashboardNavLinks.forEach(link => {
@@ -178,6 +190,7 @@ class App {
                         this.userDashboard.classList.remove('hidden');
                         this.authSection.classList.add('hidden');
                         manageSectionsVisibility(true, false); // Dodaj false jako drugi argument
+                        this.loadExercises();
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);

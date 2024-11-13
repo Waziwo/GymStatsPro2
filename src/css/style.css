@@ -1555,6 +1555,19 @@ canvas {
     width: 100% !important; /* Umożliwia responsywność */
     height: auto !important; /* Umożliwia responsywność */
 }
+/* ===== DOSTEPNE CWICZENIA ===== */
+#exercises-list {
+    list-style-type: none; /* Usunięcie punktów listy */
+    padding: 0;
+}
+
+#exercises-list li {
+    background: var(--card-background);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 /* ===== POWIADOMIENIE O USUWANIU ===== */
 .custom-dialog {
     position: fixed;
