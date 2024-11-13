@@ -114,12 +114,6 @@ async init() {
 
     updateProgressChart(scores) {
         console.log('Updating progress chart...');
-        
-        // Sprawdź, czy wykres już istnieje i zniszcz go, jeśli tak
-        if (this.charts.progressChart) {
-            this.charts.progressChart.destroy();
-            this.charts.progressChart = null; // Ustaw na null, aby uniknąć problemów
-        }
     
         const groupedScores = this.groupScoresByExercise(scores);
         console.log('Scores grouped by exercise:', groupedScores);
@@ -127,12 +121,20 @@ async init() {
         console.log('Datasets created:', datasets);
     
         const ctx = document.getElementById('progressChart');
-        this.charts.progressChart = new Chart(ctx, {
-            type: 'line',
-            data: { datasets },
-            options: this.getProgressChartOptions()
-        });
-        console.log('Progress chart updated');
+        if (this.charts.progressChart) {
+            // Aktualizuj dane istniejącego wykresu
+            this.charts.progressChart.data.datasets = datasets;
+            this.charts.progressChart.update();
+            console.log('Progress chart updated with new data.');
+        } else {
+            // Twórz nowy wykres, jeśli nie istnieje
+            this.charts.progressChart = new Chart(ctx, {
+                type: 'line',
+                data: { datasets },
+                options: this.getProgressChartOptions()
+            });
+            console.log('Progress chart created.');
+        }
     }
 
     updateExerciseDistributionChart(scores) {
