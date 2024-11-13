@@ -232,7 +232,7 @@ class App {
         });
     }
 
-    setupAuthStateListener() {
+    async setupAuthStateListener() {
         this.authService.onAuthStateChanged(async (user) => {
             if (user) {
                 try {
@@ -241,12 +241,18 @@ class App {
                         this.updateNavigation(true);
                         this.statisticsDisplay.init();
                         this.updateUserInfo(userData, user.email);
+    
+                        // Wczytaj ćwiczenia po zalogowaniu
+                        const exercises = await this.exerciseService.getExercises(user.uid);
+                        this.displayExercises(exercises); // Wywołaj metodę do wyświetlania ćwiczeń
+    
                         // Pokaż dashboard po zalogowaniu
                         this.landingPage.classList.add('hidden');
                         this.userDashboard.classList.remove('hidden');
                         this.authSection.classList.add('hidden');
                         manageSectionsVisibility(true, false); // Dodaj false jako drugi argument
                         this.loadExercises();
+
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);
@@ -257,6 +263,18 @@ class App {
                 manageSectionsVisibility(false, true); // Dodaj true jako drugi argument
             }
         });
+    }
+    
+    // Dodaj nową metodę do wyświetlania ćwiczeń
+    displayExercises(exercises) {
+        const exercisesList = document.getElementById('exercises-list');
+        if (exercisesList) {
+            exercisesList.innerHTML = exercises.map(exercise => `
+                <li>
+                    <strong>${exercise.name}</strong>: ${exercise.description}
+                </li>
+            `).join('');
+        }
     }
 
     updateUserInfo(userData, email) {
