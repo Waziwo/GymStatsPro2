@@ -1,10 +1,12 @@
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { StatisticsDisplay } from './StatisticsDisplay.js'; // Upewnij się, że importujesz tę klasę
 
 export class ScoreDisplay {
     constructor(scoreService, authService, notificationManager) {
         this.scoreService = scoreService;
         this.authService = authService;
-        this.notificationManager = notificationManager; // Dodaj to
+        this.notificationManager = notificationManager; 
+        this.statisticsDisplay = new StatisticsDisplay(scoreService)
         this.scoreForm = null;
         this.scoresList = null;
         this.auth = getAuth();
@@ -17,7 +19,7 @@ export class ScoreDisplay {
             this.loadScores();
             this.setupFilteringAndSorting();
             this.updateOverview();
-            this.initializeFiltering(); // Dodaj to wywołanie
+            this.initializeFiltering(); 
         } catch (error) {
             console.error("Błąd podczas inicjalizacji ScoreDisplay:", error);
             this.notificationManager.show('Wystąpił błąd podczas ładowania danych.', 'error');
