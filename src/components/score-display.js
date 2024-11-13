@@ -84,6 +84,7 @@ export class ScoreDisplay {
     }
 
     async handleScoreSubmit(e) {
+        console.log('handleScoreSubmit: Rozpoczęto dodawanie wyniku');
         e.preventDefault();  // Zapobiega odświeżaniu strony
         if (this.isSubmitting) return; // Zablokuj ponowne wysyłanie
 
@@ -94,17 +95,26 @@ export class ScoreDisplay {
         const reps = parseInt(this.scoreForm['reps'].value);
 
         try {
+            console.log('handleScoreSubmit: Pobieranie danych użytkownika');
             const user = await this.authService.getCurrentUser ();
             if (!user) {
                 throw new Error('Musisz być zalogowany aby dodać wynik');
             }
+            console.log('handleScoreSubmit: Dodawanie wyniku');
             await this.scoreService.addScore(exerciseType, weight, reps);
+            console.log('handleScoreSubmit: Wynik dodany');
             this.scoreForm.reset();
-            await this.loadScores();  // Załaduj i wyświetl wyniki od razu po dodaniu
-            this.updateOverview(); // Zaktualizuj przegląd po dodaniu wyniku
+            console.log('handleScoreSubmit: Załaduj i wyświetl wyniki od razu po dodaniu');
+            await this.loadScores();  
+            console.log('handleScoreSubmit: Zaktualizuj przegląd po dodaniu wyniku');
+            this.updateOverview(); 
+            console.log('handleScoreSubmit: Zaktualizuj statystyki po dodaniu wyniku');
+            this.updateStatistics(); 
         } catch (error) {
+            console.error('handleScoreSubmit: Błąd podczas dodawania wyniku:', error);
             alert(error.message);
         } finally {
+            console.log('handleScoreSubmit: Zakończono dodawanie wyniku');
             this.isSubmitting = false; // Zresetuj flagę po zakończeniu
         }
     }
@@ -122,23 +132,27 @@ export class ScoreDisplay {
     }
 
     async handleDeleteScore(scoreId) {
+        console.log('handleDeleteScore: Rozpoczęto usuwanie wyniku');
         const dialog = document.getElementById('custom-confirm-dialog');
         const confirmBtn = document.getElementById('confirm-delete');
         const cancelBtn = document.getElementById('cancel-delete');
-    
+
         dialog.classList.remove('hidden');
-    
+
         return new Promise((resolve) => {
             const handleConfirm = async () => {
+                console.log('handleDeleteScore: Potwierdzono usunięcie wyniku');
                 dialog.classList.add('hidden');
                 try {
                     await this.scoreService.deleteScore(scoreId);
+                    console.log('handleDeleteScore: Wynik został usunięty');
                     await this.loadScores();
+                    console.log('handleDeleteScore: Załadowano wyniki po usunięciu');
                     if (this.notificationManager) {
                         this.notificationManager.show('Wynik został pomyślnie usunięty.', 'success');
                     }
                 } catch (error) {
-                    console.error('Error deleting score:', error);
+                    console.error('handleDeleteScore: Błąd podczas usuwania wyniku:', error);
                     if (this.notificationManager) {
                         this.notificationManager.show('Wystąpił błąd podczas usuwania wyniku.', 'error');
                     }
@@ -146,24 +160,26 @@ export class ScoreDisplay {
                 cleanup();
                 resolve();
             };
-    
+
             const handleCancel = () => {
+                console.log('handleDeleteScore: Anulowano usunięcie wyniku');
                 dialog.classList.add('hidden');
                 cleanup();
                 resolve();
             };
-    
+
             const cleanup = () => {
                 confirmBtn.removeEventListener('click', handleConfirm);
                 cancelBtn.removeEventListener('click', handleCancel);
             };
-    
+
             confirmBtn.addEventListener('click', handleConfirm);
             cancelBtn.addEventListener('click', handleCancel);
         });
     }
 
     displayScores(scores) {
+        console.log('displayScores: Rozpoczęto wyświetlanie wyników');
         if (!this.scoresList) return;
         this.scoresList.innerHTML = '';
         
@@ -172,30 +188,33 @@ export class ScoreDisplay {
             const date = new Date(score.timestamp);
             const dateString = date.toLocaleDateString();
             const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    
+        
             if (!acc[dateString]) {
                 acc[dateString] = [];
             }
             acc[dateString].push({ ...score, time: timeString });
             return acc;
         }, {});
-    
+        console.log('displayScores: Zgrupowane wyniki:', groupedScores);
+        
         // Sortuj daty od najnowszej do najstarszej
         const sortedDates = Object.keys(groupedScores).sort((a, b) => {
             return new Date(b) - new Date(a);
         });
-    
+        console.log('displayScores: Posortowane daty:', sortedDates);
+        
         // Wyświetl wyniki zgrupowane według daty
         for (const date of sortedDates) {
             const dateHeader = document.createElement('h3');
             dateHeader.textContent = date;
             this.scoresList.appendChild(dateHeader);
-    
+        
             // Sortuj wyniki według godziny (od najnowszej do najstarszej)
             const sortedScores = groupedScores[date].sort((a, b) => {
                 return b.timestamp - a.timestamp;
             });
-    
+            console.log('displayScores: Posortowane wyniki:', sortedScores);
+        
             sortedScores.forEach(score => {
                 const li = document.createElement('li');
                 
@@ -203,44 +222,73 @@ export class ScoreDisplay {
                 const scoreContent = document.createElement('span');
                 scoreContent.textContent = `${score.exerciseType}: ${score.weight}kg x ${score.reps} reps (dodano o ${score.time})`;
                 li.appendChild(scoreContent);
-    
+        
                 // Przycisk usuwania
                 const deleteButton = document.createElement('button');
                 deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> Usuń';
                 deleteButton.classList.add('delete-button');
                 deleteButton.addEventListener('click', () => this.handleDeleteScore(score.id));
                 li.appendChild(deleteButton);
-    
+        
                 this.scoresList.appendChild(li);
             });
         }
+        console.log('displayScores: Zakończono wyświetlanie wyników');
+    }
+    updateStatistics() {
+        console.log('updateStatistics: Rozpoczęto aktualizację statystyk');
+        this.scoreService.loadScores().then(scores => {
+            console.log('updateStatistics: Załadowane wyniki:', scores);
+            // Oblicz statystyki
+            const totalScores = scores.length;
+            const totalWeight = scores.reduce((acc, score) => acc + score.weight, 0);
+            const averageWeight = totalScores > 0 ? (totalWeight / totalScores).toFixed(2) : 0;
+
+            console.log('updateStatistics: Obliczone statystyki:', totalScores, totalWeight, averageWeight);
+
+            // Zaktualizuj elementy w sekcji statystyk
+            document.getElementById('total-scores').textContent = totalScores;
+            document.getElementById('average-weight').textContent = averageWeight;
+            console.log('updateStatistics: Zaktualizowano elementy w sekcji statystyk');
+            // Możesz dodać więcej statystyk, jeśli to konieczne
+        }).catch(error => {
+            console.error('updateStatistics: Błąd podczas aktualizacji statystyk:', error);
+        });
     }
     updateOverview() {
+        console.log('updateOverview: Rozpoczęto aktualizację przeglądu');
         this.scoreService.loadScores().then(scores => {
+            console.log('updateOverview: Załadowane wyniki:', scores);
             // Sortuj wyniki od najnowszego do najstarszego
             const sortedScores = scores.sort((a, b) => b.timestamp - a.timestamp);
-    
+            console.log('updateOverview: Posortowane wyniki:', sortedScores);
+
             // Ostatni trening
             if (sortedScores.length > 0) {
                 const lastWorkout = sortedScores[0];
+                console.log('updateOverview: Ostatni trening:', lastWorkout);
                 document.getElementById('last-workout-date').textContent = new Date(lastWorkout.timestamp).toLocaleDateString();
                 document.getElementById('last-workout-details').textContent = `${lastWorkout.exerciseType}: ${lastWorkout.weight}kg x ${lastWorkout.reps}`;
             } else {
+                console.log('updateOverview: Brak treningów');
                 document.getElementById('last-workout-date').textContent = 'Brak treningów';
                 document.getElementById('last-workout-details').textContent = '';
             }
-    
+
             // Liczba treningów
+            console.log('updateOverview: Liczba treningów:', sortedScores.length);
             document.getElementById('total-workouts').textContent = sortedScores.length;
-    
+
             // Ulubione ćwiczenie
             const exerciseCounts = {};
             sortedScores.forEach(score => {
                 exerciseCounts[score.exerciseType] = (exerciseCounts[score.exerciseType] || 0) + 1;
             });
+            console.log('updateOverview: Liczba ćwiczeń:', exerciseCounts);
             const favoriteExercise = Object.entries(exerciseCounts).sort((a, b) => b[1] - a[1])[0];
+            console.log('updateOverview: Ulubione ćwiczenie:', favoriteExercise);
             document.getElementById('favorite-exercise').textContent = favoriteExercise ? favoriteExercise[0] : 'Brak danych';
-    
+
             // Ostatnie treningi - tylko 5 ostatnich
             const recentWorkoutsList = document.getElementById('recent-workouts-list');
             recentWorkoutsList.innerHTML = '';
@@ -249,6 +297,9 @@ export class ScoreDisplay {
                 li.textContent = `${new Date(score.timestamp).toLocaleDateString()} - ${score.exerciseType}: ${score.weight}kg x ${score.reps}`;
                 recentWorkoutsList.appendChild(li);
             });
+            console.log('updateOverview: Zaktualizowano przegląd');
+        }).catch(error => {
+            console.error('updateOverview: Błąd podczas aktualizacji przeglądu:', error);
         });
     }
 }
