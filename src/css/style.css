@@ -1836,3 +1836,31 @@ main {
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
 }
+@media (min-width: 768px) {
+    .dashboard-header {
+        flex-direction: row; /* Ustawienie wiersza dla większych ekranów */
+        justify-content: space-between; 
+    }
+
+    .user-info {
+        flex-direction: row; /* Ustawienie wiersza dla większych ekranów */
+    }
+
+    .dashboard-nav {
+        display: flex; 
+        flex-direction: row; /* Ustawienie wiersza dla większych ekranów */
+    }
+}
+
+/* Przyciski */
+.btn-primary, .btn-secondary {
+    padding: 0.7rem 1.5rem; 
+    font-size: 1rem; /* Zwiększ rozmiar czcionki dla większych ekranów */
+}
+
+/* Dostosowanie wykresów */
+.charts-container {
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Dostosowanie do większych wykresów */
+    gap: 1.5rem; 
+}
