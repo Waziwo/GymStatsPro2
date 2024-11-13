@@ -239,18 +239,30 @@ export class ScoreDisplay {
         console.log('updateStatistics: Rozpoczęto aktualizację statystyk');
         this.scoreService.loadScores().then(scores => {
             console.log('updateStatistics: Załadowane wyniki:', scores);
-            // Oblicz statystyki
             const totalScores = scores.length;
             const totalWeight = scores.reduce((acc, score) => acc + score.weight, 0);
             const averageWeight = totalScores > 0 ? (totalWeight / totalScores).toFixed(2) : 0;
-
-            console.log('updateStatistics: Obliczone statystyki:', totalScores, totalWeight, averageWeight);
-
-            // Zaktualizuj elementy w sekcji statystyk
-            document.getElementById('total-scores').textContent = totalScores;
-            document.getElementById('average-weight').textContent = averageWeight;
-            console.log('updateStatistics: Zaktualizowano elementy w sekcji statystyk');
-            // Możesz dodać więcej statystyk, jeśli to konieczne
+            
+            console.log('updateStatistics: Obliczono statystyki:', totalScores, totalWeight, averageWeight);
+            
+            // Sprawdź, czy elementy istnieją przed próbą ustawienia ich wartości
+            const totalScoresElement = document.getElementById('total-scores');
+            const averageWeightElement = document.getElementById('average-weight');
+            
+            if (totalScoresElement) {
+                totalScoresElement.textContent = totalScores;
+                console.log('updateStatistics: Ustawiono liczbę wyników:', totalScores);
+            } else {
+                console.warn('updateStatistics: Element total-scores nie został znaleziony');
+            }
+            
+            if (averageWeightElement) {
+                averageWeightElement.textContent = averageWeight;
+                console.log('updateStatistics: Ustawiono średnią wagę:', averageWeight);
+            } else {
+                console.warn('updateStatistics: Element average-weight nie został znaleziony');
+            }
+            console.log('updateStatistics: Zakończono aktualizację statystyk');
         }).catch(error => {
             console.error('updateStatistics: Błąd podczas aktualizacji statystyk:', error);
         });
