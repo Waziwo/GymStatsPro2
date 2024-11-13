@@ -311,33 +311,22 @@ main::before {
     flex-direction: column;
     padding: 2rem;
     background-color: var(--background-color);
-    gap: 1rem;
-    max-width: 1200px;
-    margin: 0 auto;
 }
-
 .dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     padding: 1rem;
     background: var(--card-background);
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
 }
 
 .user-info {
     display: flex;
     align-items: center;
     gap: 1rem;
-    flex: 1;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 1rem;
 }
 
 #user-nickname {
@@ -345,12 +334,10 @@ main::before {
     font-size: 1.2rem;
     color: var(--text-color);
 }
-
 #user-email {
     color: #666;
     font-size: 0.9rem;
 }
-
 .hidden {
     display: none !important;
 }
@@ -358,17 +345,14 @@ main::before {
 .dashboard-content {
     display: flex;
     gap: 2rem;
-    flex: 1;
-    flex-direction: column;
 }
 
 .dashboard-nav {
-    width: 100%;
+    width: 250px;
     background: var(--card-background);
     padding: 1rem;
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 1rem;
 }
 
 .dashboard-nav ul {
@@ -402,19 +386,17 @@ main::before {
 }
 
 .dashboard-sections {
-    display: flex;
+    display: flex; /* Zmień na flex */
     flex: 1;
     background: var(--card-background);
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 1rem;
 }
 
 .dashboard-section {
     display: none;
     width: 100%;
-    padding: 1rem;
 }
 
 .dashboard-section.active {
@@ -1835,32 +1817,4 @@ main {
         opacity: 1;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
-}
-@media (min-width: 768px) {
-    .dashboard-header {
-        flex-direction: row; /* Ustawienie wiersza dla większych ekranów */
-        justify-content: space-between; 
-    }
-
-    .user-info {
-        flex-direction: row; /* Ustawienie wiersza dla większych ekranów */
-    }
-
-    .dashboard-nav {
-        display: flex; 
-        flex-direction: row; /* Ustawienie wiersza dla większych ekranów */
-    }
-}
-
-/* Przyciski */
-.btn-primary, .btn-secondary {
-    padding: 0.7rem 1.5rem; 
-    font-size: 1rem; /* Zwiększ rozmiar czcionki dla większych ekranów */
-}
-
-/* Dostosowanie wykresów */
-.charts-container {
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Dostosowanie do większych wykresów */
-    gap: 1.5rem; 
 }
