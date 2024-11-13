@@ -101,96 +101,10 @@ async init() {
             console.log('Element average-weight not found');
             console.warn('Element average-weight not found');
         }
-        // Zaktualizuj wykresy
-        console.log('Updating charts...');
-        setTimeout(() => {
-            console.log('Updating charts with delay...');
-            this.updateCharts(scores);
-            console.log('Charts updated');
-        }, 100); // Opóźnienie 100 ms
     } catch (error) {
         console.error('Error updating statistics:', error);
     }
 }
-
-    updateCharts(scores) {
-        console.log('Updating charts...');
-        //this.updateProgressChart(scores);
-        this.updateExerciseDistributionChart(scores);
-        this.updateMaxWeightChart(scores);
-        console.log('Charts updated');
-    }
-
-    updateProgressChart(scores) {
-        console.log('Updating progress chart...');
-    
-        // Sprawdź, czy wykres już istnieje i zniszcz go, jeśli tak
-        if (this.charts.progressChart) {
-            console.log('Destroying existing progress chart...');
-            this.charts.progressChart.destroy();
-            this.charts.progressChart = null; // Ustaw na null
-            console.log('Progress chart destroyed.');
-        }
-    
-        const groupedScores = this.groupScoresByExercise(scores);
-        console.log('Scores grouped by exercise:', groupedScores);
-        const datasets = this.createDatasets(groupedScores);
-        console.log('Datasets created:', datasets);
-    
-        const ctx = document.getElementById('progressChart');
-        this.charts.progressChart = new Chart(ctx, {
-            type: 'line',
-            data: { datasets },
-            options: this.getProgressChartOptions()
-        });
-        console.log('Progress chart updated');
-    }
-    updateExerciseDistributionChart(scores) {
-        console.log('Updating exercise distribution chart...');
-        if (this.charts.distributionChart) {
-            this.charts.distributionChart.destroy();
-            this.charts.distributionChart = null; // Ustaw na null
-        }
-        const exerciseCounts = this.countExercises(scores);
-        console.log('Exercise counts:', exerciseCounts);
-        const ctx = document.getElementById('exerciseDistributionChart');
-        this.charts.distributionChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: Object.keys(exerciseCounts),
-                datasets: [{
-                    data: Object.values(exerciseCounts),
-                    backgroundColor: Object.keys(exerciseCounts).map(() => this.getRandomColor())
-                }]
-            },
-            options: this.getDistributionChartOptions()
-        });
-        console.log('Exercise distribution chart updated');
-    }
-    
-    updateMaxWeightChart(scores) {
-        console.log('Updating max weight chart...');
-        if (this.charts.maxWeightChart) {
-            this.charts.maxWeightChart.destroy();
-            this.charts.maxWeightChart = null; // Ustaw na null
-        }
-        const maxWeights = this.findMaxWeights(scores);
-        console.log('Max weights:', maxWeights);
-        const ctx = document.getElementById('maxWeightChart');
-        this.charts.maxWeightChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: Object.keys(maxWeights),
-                datasets: [{
-                    label: 'Maksymalny ciężar',
-                    data: Object.values(maxWeights),
-                    backgroundColor: Object.keys(maxWeights).map(() => this.getRandomColor())
-                }]
-            },
-            options: this.getMaxWeightChartOptions()
-        });
-        console.log('Max weight chart updated');
-    }
     
     calculateAverages(scores) {
         if (!scores.length) return { avgWeight: 0, avgReps: 0, totalSets: 0 };
