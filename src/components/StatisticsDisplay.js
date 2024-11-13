@@ -76,8 +76,10 @@ async init() {
             console.log('Averages displayed');
 
             // Zaktualizuj wykresy
-            this.updateCharts(scores);
-            console.log('Charts updated');
+            setTimeout(() => {
+                this.updateCharts(scores);
+                console.log('Charts updated');
+            }, 100); // Opóźnienie 100 ms
 
             // Uaktualnij statystyki w elementach DOM
             const totalScoresElement = document.getElementById('total-scores');
@@ -114,6 +116,14 @@ async init() {
 
     updateProgressChart(scores) {
         console.log('Updating progress chart...');
+        console.log('Before destroying progress chart:', this.charts.progressChart);
+        // Sprawdź, czy wykres już istnieje i zniszcz go, jeśli tak
+        if (this.charts.progressChart) {
+            console.log('Destroying existing progress chart...');
+            this.charts.progressChart.destroy();
+            this.charts.progressChart = null; // Ustaw na null
+            console.log('Progress chart destroyed.');
+        }
     
         const groupedScores = this.groupScoresByExercise(scores);
         console.log('Scores grouped by exercise:', groupedScores);
@@ -121,20 +131,12 @@ async init() {
         console.log('Datasets created:', datasets);
     
         const ctx = document.getElementById('progressChart');
-        if (this.charts.progressChart) {
-            // Aktualizuj dane istniejącego wykresu
-            this.charts.progressChart.data.datasets = datasets;
-            this.charts.progressChart.update();
-            console.log('Progress chart updated with new data.');
-        } else {
-            // Twórz nowy wykres, jeśli nie istnieje
-            this.charts.progressChart = new Chart(ctx, {
-                type: 'line',
-                data: { datasets },
-                options: this.getProgressChartOptions()
-            });
-            console.log('Progress chart created.');
-        }
+        this.charts.progressChart = new Chart(ctx, {
+            type: 'line',
+            data: { datasets },
+            options: this.getProgressChartOptions()
+        });
+        console.log('Progress chart updated');
     }
 
     updateExerciseDistributionChart(scores) {
