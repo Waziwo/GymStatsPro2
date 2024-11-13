@@ -41,9 +41,22 @@ export class ScoreService {
     
     async addScore(exerciseType, weight, reps) {
         try {
-            const user = this.auth.currentUser;
+            const user = this.auth.currentUser ;
             if (!user) throw new Error('Użytkownik nie jest zalogowany');
-
+    
+            // Sprawdzenie, czy wynik już istnieje
+            const existingScores = await this.loadScores();
+            const duplicateScore = existingScores.find(score => 
+                score.exerciseType === exerciseType &&
+                score.weight === weight &&
+                score.reps === reps &&
+                new Date(score.timestamp).toDateString() === new Date().toDateString() // Sprawdzenie, czy to ten sam dzień
+            );
+    
+            if (duplicateScore) {
+                throw new Error('Ten wynik już istnieje w dzisiejszym dniu.');
+            }
+    
             await addDoc(this.scoresCollection, {
                 userId: user.uid,
                 userEmail: user.email,
