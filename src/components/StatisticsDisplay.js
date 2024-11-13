@@ -124,6 +124,7 @@ async init() {
     }
 
     createProgressChart(scores) {
+        console.log('Creating progress chart...');
         const ctx = document.getElementById('progressChart');
         if (!ctx || !scores.length) {
             console.warn('Element "progressChart" nie został znaleziony lub brak danych');
@@ -131,17 +132,21 @@ async init() {
         }
 
         if (this.charts.progressChart) {
+            console.log('Destroying existing progress chart...');
             this.charts.progressChart.destroy();
         }
 
         const groupedScores = this.groupScoresByExercise(scores);
+        console.log('Grouped scores:', groupedScores);
         const datasets = this.createDatasets(groupedScores);
+        console.log('Datasets:', datasets);
 
         this.charts.progressChart = new Chart(ctx, {
             type: 'line',
             data: { datasets },
             options: this.getProgressChartOptions()
         });
+        console.log('Progress chart created');
     }
 
     createExerciseDistributionChart(scores) {
