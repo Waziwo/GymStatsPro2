@@ -1,5 +1,6 @@
 import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { NotificationManager } from '../notifications.js'; // Upewnij się, że importujesz NotificationManager
 
 class ScoreCache {
     constructor() {
@@ -37,42 +38,36 @@ export class ScoreService {
         this.scoresCollection = collection(this.db, 'scores');
         this.auth = getAuth();
         this.cache = new ScoreCache();
+        this.notificationManager = notificationManager; // Przechowuj instancję NotificationManager
     }
     
     async addScore(exerciseType, weight, reps) {
         try {
+            console.log('Dodawanie wyniku...');
             const user = this.auth.currentUser ;
             if (!user) throw new Error('Użytkownik nie jest zalogowany');
-    
-            // Sprawdzenie, czy wynik już istnieje
-            const existingScores = await this.loadScores();
-            const duplicateScore = existingScores.find(score => 
-                score.exerciseType === exerciseType &&
-                score.weight === weight &&
-                score.reps === reps &&
-                new Date(score.timestamp).toDateString() === new Date().toDateString() // Sprawdzenie, czy to ten sam dzień
-            );
-    
-            if (duplicateScore) {
-                console.log('Znaleziono duplikat:', duplicateScore); // Log duplikatu
-                throw new Error('Ten wynik już istnieje w dzisiejszym dniu.');
-            }
-    
-            await addDoc(this.scoresCollection, {
+
+            const scoreData = {
                 userId: user.uid,
                 userEmail: user.email,
                 exerciseType,
                 weight,
                 reps,
                 timestamp: Date.now(),
-            });
-            this.clearCache();
+            };
+
+            console.log('Dane wyniku:', scoreData);
+            const docRef = await addDoc(this.scoresCollection, scoreData);
+            console.log('Wynik dodany pomyślnie! ID dokumentu:', docRef.id);
+            this.cache.clear();
+            this.notificationManager.show('Wynik dodany pomyślnie!', 'success'); // Powiadomienie o sukcesie
         } catch (error) {
-            console.error('Błąd podczas dodawania wyniku:', error); // Log błędu
+            console.error('Błąd podczas dodawania wyniku:', error);
+            this.notificationManager.show('Błąd podczas dodawania wyniku: ' + error.message, 'error'); // Powiadomienie o błędzie
             throw error;
         }
     }
-
+    
     async loadScores() {
         try {
             const user = this.auth.currentUser;

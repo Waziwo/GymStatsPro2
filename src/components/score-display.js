@@ -84,12 +84,14 @@ export class ScoreDisplay {
     }
 
     async handleScoreSubmit(e) {
-        e.preventDefault();  // Dodaj to, aby zapobiec odświeżaniu strony
+        e.preventDefault();  // Zapobiega odświeżaniu strony
+        if (this.isSubmitting) return; // Zablokuj ponowne wysyłanie
+    
+        this.isSubmitting = true; // Ustaw flagę na true
+    
         const exerciseType = this.scoreForm['exercise-type'].value;
         const weight = parseFloat(this.scoreForm['weight'].value);
         const reps = parseInt(this.scoreForm['reps'].value);
-    
-        console.log("Dodawanie wyniku:", { exerciseType, weight, reps }); // Log danych
     
         try {
             const user = await this.authService.getCurrentUser ();
@@ -101,6 +103,8 @@ export class ScoreDisplay {
             await this.loadScores();  // Załaduj i wyświetl wyniki od razu po dodaniu
         } catch (error) {
             alert(error.message);
+        } finally {
+            this.isSubmitting = false; // Zresetuj flagę po zakończeniu
         }
     }
 
