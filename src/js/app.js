@@ -133,12 +133,19 @@ class App {
             }
         });
     }
-    loadExercises() {
+    async loadExercises() {
         const exercisesList = document.getElementById('exercises-list');
         if (exercisesList) {
-            // Upewnij się, że wywołujesz getExercises z poprawnym userId
-            this.exerciseService.getExercises(user.uid).then(exercises => {
-                // Sprawdź, czy exercises jest tablicą
+            try {
+                const user = await this.authService.getCurrentUser (); // Użyj getCurrentUser  do pobrania aktualnego użytkownika
+                if (!user) {
+                    console.error('Użytkownik nie jest zalogowany.');
+                    exercisesList.innerHTML = '<li>Musisz być zalogowany, aby zobaczyć ćwiczenia.</li>';
+                    return;
+                }
+    
+                // Upewnij się, że wywołujesz getExercises z poprawnym userId
+                const exercises = await this.exerciseService.getExercises(user.uid);
                 if (Array.isArray(exercises)) {
                     exercisesList.innerHTML = exercises.map(exercise => `
                         <li>
@@ -149,9 +156,10 @@ class App {
                     console.error('Oczekiwano tablicy ćwiczeń, ale otrzymano:', exercises);
                     exercisesList.innerHTML = '<li>Brak ćwiczeń do wyświetlenia.</li>';
                 }
-            }).catch(error => {
+            } catch (error) {
                 console.error('Błąd podczas ładowania ćwiczeń:', error);
-            });
+                exercisesList.innerHTML = '<li>Wystąpił błąd podczas ładowania ćwiczeń.</li>';
+            }
         }
     }
     // Nowa metoda do obsługi nawigacji w dashboardzie
