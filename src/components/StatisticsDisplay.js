@@ -61,10 +61,44 @@ async init() {
             console.log('Updating statistics...');
             const scores = await this.scoreService.loadScores();
             console.log('Scores loaded:', scores);
+            console.log('Number of scores:', scores.length);
+            console.log('First score:', scores[0]);
+            console.log('Last score:', scores[scores.length - 1]);
+
+            // Sprawdź, czy są dostępne wyniki
+            if (scores.length === 0) {
+                console.warn('No scores available to update statistics.');
+                return;
+            }
+
+            // Wyświetl średnie
             this.displayAverages(scores);
             console.log('Averages displayed');
+
+            // Zaktualizuj wykresy
             this.updateCharts(scores);
             console.log('Charts updated');
+
+            // Uaktualnij statystyki w elementach DOM
+            const totalScoresElement = document.getElementById('total-scores');
+            const averageWeightElement = document.getElementById('average-weight');
+
+            if (totalScoresElement) {
+                totalScoresElement.textContent = scores.length; // Ustaw liczbę wyników
+                console.log('Updated total scores element');
+            } else {
+                console.warn('Element total-scores not found');
+            }
+
+            if (averageWeightElement) {
+                const totalWeight = scores.reduce((acc, score) => acc + score.weight, 0);
+                const averageWeight = scores.length > 0 ? (totalWeight / scores.length).toFixed(2) : 0;
+                averageWeightElement.textContent = averageWeight; // Ustaw średni ciężar
+                console.log('Updated average weight element');
+            } else {
+                console.warn('Element average-weight not found');
+            }
+
         } catch (error) {
             console.error('Error updating statistics:', error);
         }

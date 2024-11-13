@@ -109,7 +109,7 @@ export class ScoreDisplay {
             console.log('handleScoreSubmit: Zaktualizuj przegląd po dodaniu wyniku');
             this.updateOverview(); 
             console.log('handleScoreSubmit: Zaktualizuj statystyki po dodaniu wyniku');
-            this.updateStatistics(); 
+            await this.statisticsDisplay.updateStatistics(); // Zaktualizuj statystyki po dodaniu wyniku
         } catch (error) {
             console.error('handleScoreSubmit: Błąd podczas dodawania wyniku:', error);
             alert(error.message);
