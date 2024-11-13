@@ -72,10 +72,66 @@ class App {
         this.aboutSection = document.getElementById('about');
         this.getStartedBtn = document.getElementById('get-started-btn');
         this.dashboardLink = document.getElementById('dashboard-link');
-        
+    
         // Dodane nowe elementy
         this.dashboardNavLinks = document.querySelectorAll('.dashboard-nav a');
         this.dashboardSections = document.querySelectorAll('.dashboard-section');
+    
+        // Elementy do dodawania ćwiczeń
+        this.addExerciseButton = document.getElementById('add-exercise-button');
+        this.addExerciseDialog = document.getElementById('add-exercise-dialog');
+        this.addExerciseForm = document.getElementById('add-exercise-form');
+        this.cancelAddExerciseButton = document.getElementById('cancel-add-exercise');
+    
+        // Inicjalizacja nasłuchiwaczy zdarzeń
+        this.setupAddExerciseListeners();
+    }
+    setupAddExerciseListeners() {
+        this.addExerciseButton.addEventListener('click', () => {
+            this.addExerciseDialog.classList.remove('hidden');
+        });
+    
+        this.cancelAddExerciseButton.addEventListener('click', () => {
+            this.addExerciseDialog.classList.add('hidden');
+        });
+    
+        this.addExerciseForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const exerciseName = document.getElementById('exercise-name').value;
+            const exerciseDescription = document.getElementById('exercise-description').value;
+            const hasWeight = document.getElementById('weight-checkbox').checked;
+            const hasReps = document.getElementById('reps-checkbox').checked;
+            const hasTime = document.getElementById('time-checkbox').checked;
+    
+            // Zapisz ćwiczenie w Firebase
+            try {
+                const user = await this.authService.getCurrentUser (); // Upewnij się, że masz metodę do pobrania aktualnego użytkownika
+                if (!user) throw new Error('Musisz być zalogowany, aby dodać ćwiczenie');
+    
+                const exerciseData = {
+                    userId: user.uid,
+                    name: exerciseName,
+                    description: exerciseDescription,
+                    options: {
+                        weight: hasWeight,
+                        reps: hasReps,
+                        time: hasTime
+                    },
+                    timestamp: Date.now()
+                };
+    
+                await this.exerciseService.addExercise(exerciseData); // Upewnij się, że masz metodę do dodawania ćwiczeń w ExerciseService
+    
+                // Resetuj formularz i ukryj dialog
+                this.addExerciseForm.reset();
+                this.addExerciseDialog.classList.add('hidden');
+                this.notificationManager.show('Ćwiczenie dodane pomyślnie!', 'success'); // Pokaż powiadomienie
+            } catch (error) {
+                console.error('Błąd podczas dodawania ćwiczenia:', error);
+                this.notificationManager.show('Błąd podczas dodawania ćwiczenia: ' + error.message, 'error');
+            }
+        });
     }
     loadExercises() {
         const exercisesList = document.getElementById('exercises-list');

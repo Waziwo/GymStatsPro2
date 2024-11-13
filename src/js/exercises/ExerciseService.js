@@ -1,17 +1,18 @@
-// src/js/exercises/ExerciseService.js
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
 export class ExerciseService {
     constructor() {
-        this.exercises = [
-            { name: 'Wyciskanie sztangi', description: 'Ćwiczenie na klatkę piersiową' },
-            { name: 'Przysiad', description: 'Ćwiczenie na nogi' },
-            { name: 'Martwy ciąg', description: 'Ćwiczenie na plecy' },
-            { name: 'Wyciskanie na barki', description: 'Ćwiczenie na barki' },
-            { name: 'Podciąganie', description: 'Ćwiczenie na plecy i ramiona' },
-            // Dodaj więcej ćwiczeń według potrzeby
-        ];
+        this.db = getFirestore();
+        this.exercisesCollection = collection(this.db, 'exercises');
     }
 
-    getExercises() {
-        return this.exercises;
+    async addExercise(exerciseData) {
+        try {
+            await addDoc(this.exercisesCollection, exerciseData);
+            console.log('Ćwiczenie dodane pomyślnie:', exerciseData);
+        } catch (error) {
+            console.error('Błąd podczas dodawania ćwiczenia:', error);
+            throw error;
+        }
     }
 }

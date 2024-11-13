@@ -311,9 +311,40 @@
                     <!-- Sekcja Ćwiczenia -->
                     <div id="exercises" class="dashboard-section">
                         <h2>Dostępne ćwiczenia</h2>
+                        <button id="add-exercise-button" class="btn-primary">
+                            Dodaj ćwiczenie
+                        </button>
                         <ul id="exercises-list">
                             <!-- Lista ćwiczeń będzie generowana dynamicznie -->
                         </ul>
+                        <div id="add-exercise-dialog" class="custom-dialog hidden">
+                            <div class="dialog-content">
+                                <h3>Dodaj nowe ćwiczenie</h3>
+                                <form id="add-exercise-form">
+                                    <div class="form-group">
+                                        <label for="exercise-name">Nazwa ćwiczenia</label>
+                                        <input type="text" id="exercise-name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exercise-description">Opis ćwiczenia (opcjonalny)</label>
+                                        <input type="text" id="exercise-description">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="weight-checkbox"> Ciężar (kg)</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="reps-checkbox"> Powtórzenia</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="time-checkbox"> Czas (min)</label>
+                                    </div>
+                                    <div class="dialog-buttons">
+                                        <button type="button" id="cancel-add-exercise" class="btn-secondary">Anuluj</button>
+                                        <button type="submit" class="btn-primary">Dodaj ćwiczenie</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <!-- Sekcja Historia aktywności -->
                     <div id="activity" class="dashboard-section">
