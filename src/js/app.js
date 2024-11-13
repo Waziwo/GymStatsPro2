@@ -72,18 +72,21 @@ class App {
         this.aboutSection = document.getElementById('about');
         this.getStartedBtn = document.getElementById('get-started-btn');
         this.dashboardLink = document.getElementById('dashboard-link');
-        
-        // Dodane nowe elementy
+        this.addExerciseButton = document.getElementById('add-exercise-button');
+        this.addExerciseDialog = document.getElementById('add-exercise-dialog');
+        this.addExerciseForm = document.getElementById('add-exercise-form');
+        this.cancelAddExerciseButton = document.getElementById('cancel-add-exercise');
         this.dashboardNavLinks = document.querySelectorAll('.dashboard-nav a');
         this.dashboardSections = document.querySelectorAll('.dashboard-section');
     }
-    loadExercises() {
+    async loadExercises() {
         const exercisesList = document.getElementById('exercises-list');
-        if (exercisesList) {
-            const exercises = this.exerciseService.getExercises();
+        const user = this.authService.getCurrentUser ();
+        if (exercisesList && user) {
+            const exercises = await this.exerciseService.getExercises(user.uid);
             exercisesList.innerHTML = exercises.map(exercise => `
-                <li>
-                    <strong>${exercise.name}</strong>: ${exercise.description}
+                <li style="color: ${exercise.color};">
+                    <strong>${exercise.name}</strong>: ${exercise.weight} kg, ${exercise.reps} powtórzeń, ${exercise.time} min
                 </li>
             `).join('');
         }
@@ -143,9 +146,60 @@ class App {
             });
         }
 
+        if (this.addExerciseButton) {
+            this.addExerciseButton.addEventListener('click', () => this.openAddExerciseDialog());
+        }
+    
+        if (this.cancelAddExerciseButton) {
+            this.cancelAddExerciseButton.addEventListener('click', () => this.closeAddExerciseDialog());
+        }
+    
+        if (this.addExerciseForm) {
+            this.addExerciseForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleAddExercise();
+            });
+        }
+
         this.setupNavLinks();
     }
-
+    openAddExerciseDialog() {
+        this.addExerciseDialog.classList.remove('hidden');
+    }
+    
+    closeAddExerciseDialog() {
+        this.addExerciseDialog.classList.add('hidden');
+    }
+    async handleAddExercise() {
+        const name = document.getElementById('exercise-name').value;
+        const weight = parseFloat(document.getElementById('exercise-weight').value);
+        const reps = parseInt(document.getElementById('exercise-reps').value);
+        const time = parseInt(document.getElementById('exercise-time').value);
+        const color = document.getElementById('exercise-color').value;
+    
+        try {
+            const user = this.authService.getCurrentUser ();
+            if (!user) {
+                throw new Error('Musisz być zalogowany, aby dodać ćwiczenie.');
+            }
+    
+            // Zapisz ćwiczenie do Firebase
+            await this.exerciseService.addExercise({
+                userId: user.uid,
+                name,
+                weight,
+                reps,
+                time,
+                color
+            });
+    
+            this.closeAddExerciseDialog();
+            this.loadExercises(); // Odśwież listę ćwiczeń
+        } catch (error) {
+            console.error('Błąd podczas dodawania ćwiczenia:', error);
+            alert('Wystąpił błąd podczas dodawania ćwiczenia. Spróbuj ponownie.');
+        }
+    }
     showAuthSection() {
         this.landingPage.classList.add('hidden');
         this.authSection.classList.remove('hidden');
