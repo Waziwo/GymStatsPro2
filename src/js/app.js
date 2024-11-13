@@ -72,11 +72,6 @@ class App {
         this.aboutSection = document.getElementById('about');
         this.getStartedBtn = document.getElementById('get-started-btn');
         this.dashboardLink = document.getElementById('dashboard-link');
-        this.addExerciseButton = document.getElementById('add-exercise-button');
-        this.addExerciseDialog = document.getElementById('add-exercise-dialog');
-        this.addExerciseForm = document.getElementById('add-exercise-form');
-        this.cancelAddExerciseButton = document.getElementById('cancel-add-exercise');
-        this.exerciseDetails = document.getElementById('exercise-details');
         this.dashboardNavLinks = document.querySelectorAll('.dashboard-nav a');
         this.dashboardSections = document.querySelectorAll('.dashboard-section');
     }
@@ -147,70 +142,7 @@ class App {
             });
         }
 
-        if (this.addExerciseButton) {
-            this.addExerciseButton.addEventListener('click', () => this.openAddExerciseDialog());
-        }
-    
-        if (this.cancelAddExerciseButton) {
-            this.cancelAddExerciseButton.addEventListener('click', () => this.closeAddExerciseDialog());
-        }
-    
-        if (this.addExerciseForm) {
-            this.addExerciseForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.handleAddExercise();
-            });
-        }
-        const exerciseCheckboxes = document.querySelectorAll('input[name="exercise"]');
-        exerciseCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', this.toggleExerciseDetails.bind(this));
-        });
         this.setupNavLinks();
-    }
-    toggleExerciseDetails() {
-        const exerciseCheckboxes = document.querySelectorAll('input[name="exercise"]');
-        const isAnyChecked = Array.from(exerciseCheckboxes).some(checkbox => checkbox.checked);
-        this.exerciseDetails.classList.toggle('hidden', !isAnyChecked);
-    }
-    openAddExerciseDialog() {
-        this.addExerciseDialog.classList.remove('hidden');
-    }
-    
-    closeAddExerciseDialog() {
-        this.addExerciseDialog.classList.add('hidden');
-    }
-    async handleAddExercise() {
-        const exerciseCheckboxes = document.querySelectorAll('input[name="exercise"]:checked');
-        const exercisesToAdd = [];
-    
-        exerciseCheckboxes.forEach(checkbox => {
-            const name = checkbox.value;
-            const weight = parseFloat(document.getElementById('exercise-weight').value);
-            const reps = parseInt(document.getElementById('exercise-reps').value);
-            const time = parseInt(document.getElementById('exercise-time').value);
-            const color = document.getElementById('exercise-color').value;
-    
-            exercisesToAdd.push({
-                userId: this.authService.getCurrentUser ().uid,
-                name,
-                weight,
-                reps,
-                time,
-                color
-            });
-        });
-    
-        try {
-            for (const exercise of exercisesToAdd) {
-                await this.exerciseService.addExercise(exercise);
-            }
-    
-            this.closeAddExerciseDialog();
-            this.loadExercises(); // Odśwież listę ćwiczeń
-        } catch (error) {
-            console.error('Błąd podczas dodawania ćwiczeń:', error);
-            alert('Wystąpił błąd podczas dodawania ćwiczeń. Spróbuj ponownie.');
-        }
     }
     showAuthSection() {
         this.landingPage.classList.add('hidden');

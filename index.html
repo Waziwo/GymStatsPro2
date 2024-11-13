@@ -311,57 +311,9 @@
                     <!-- Sekcja Ćwiczenia -->
                     <div id="exercises" class="dashboard-section">
                         <h2>Dostępne ćwiczenia</h2>
-                        <button id="add-exercise-button" class="btn-primary">Dodaj własne ćwiczenie</button>
                         <ul id="exercises-list">
                             <!-- Lista ćwiczeń będzie generowana dynamicznie -->
                         </ul>
-                        <div id="add-exercise-dialog" class="custom-dialog hidden">
-                            <div class="dialog-content">
-                                <h3>Dodaj własne ćwiczenie</h3>
-                                <form id="add-exercise-form">
-                                    <div class="form-group">
-                                        <label for="exercise-type">Wybierz ćwiczenie</label>
-                                        <div>
-                                            <input type="checkbox" id="bench-press" name="exercise" value="Wyciskanie sztangi">
-                                            <label for="bench-press">Wyciskanie sztangi</label>
-                                        </div>
-                                        <div>
-                                            <input type="checkbox" id="squat" name="exercise" value="Przysiad">
-                                            <label for="squat">Przysiad</label>
-                                        </div>
-                                        <div>
-                                            <input type="checkbox" id="deadlift" name="exercise" value="Martwy ciąg">
-                                            <label for="deadlift">Martwy ciąg</label>
-                                        </div>
-                                        <!-- Dodaj więcej ćwiczeń w razie potrzeby -->
-                                    </div>
-                        
-                                    <div id="exercise-details" class="hidden">
-                                        <div class="form-group">
-                                            <label for="exercise-weight">Ciężar (kg)</label>
-                                            <input type="number" id="exercise-weight">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="exercise-reps">Powtórzenia</label>
-                                            <input type="number" id="exercise-reps">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="exercise-time">Czas (min)</label>
-                                            <input type="number" id="exercise-time">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="exercise-color">Kolor</label>
-                                            <input type="color" id="exercise-color" value="#3498db">
-                                        </div>
-                                    </div>
-                        
-                                    <div class="dialog-buttons">
-                                        <button type="button" id="cancel-add-exercise" class="btn-secondary">Anuluj</button>
-                                        <button type="submit" class="btn-primary">Dodaj ćwiczenie</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     </div>
                     <!-- Sekcja Historia aktywności -->
                     <div id="activity" class="dashboard-section">
