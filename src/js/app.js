@@ -72,17 +72,18 @@ class App {
         this.aboutSection = document.getElementById('about');
         this.getStartedBtn = document.getElementById('get-started-btn');
         this.dashboardLink = document.getElementById('dashboard-link');
+        
+        // Dodane nowe elementy
         this.dashboardNavLinks = document.querySelectorAll('.dashboard-nav a');
         this.dashboardSections = document.querySelectorAll('.dashboard-section');
     }
-    async loadExercises() {
+    loadExercises() {
         const exercisesList = document.getElementById('exercises-list');
-        const user = this.authService.getCurrentUser ();
-        if (exercisesList && user) {
-            const exercises = await this.exerciseService.getExercises(user.uid);
+        if (exercisesList) {
+            const exercises = this.exerciseService.getExercises();
             exercisesList.innerHTML = exercises.map(exercise => `
-                <li style="color: ${exercise.color};">
-                    <strong>${exercise.name}</strong>: ${exercise.weight} kg, ${exercise.reps} powtórzeń, ${exercise.time} min
+                <li>
+                    <strong>${exercise.name}</strong>: ${exercise.description}
                 </li>
             `).join('');
         }
@@ -144,6 +145,7 @@ class App {
 
         this.setupNavLinks();
     }
+
     showAuthSection() {
         this.landingPage.classList.add('hidden');
         this.authSection.classList.remove('hidden');
