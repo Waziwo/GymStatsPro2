@@ -132,7 +132,27 @@ export class ScoreDisplay {
             this.notificationManager.show('Wystąpił błąd podczas ładowania wyników.', 'error');
         }
     }
-
+    async handleEditExercise(exerciseId) {
+        const exercise = await this.exerciseService.getExercise(exerciseId); // Pobierz dane ćwiczenia
+        const newName = prompt("Wprowadź nową nazwę ćwiczenia:", exercise.name);
+        const newDescription = prompt("Wprowadź nowy opis ćwiczenia:", exercise.description);
+    
+        if (newName && newDescription) {
+            await this.exerciseService.updateExercise(exerciseId, {
+                name: newName,
+                description: newDescription,
+                options: exercise.options // Zachowaj oryginalne opcje
+            });
+            this.loadExercises(); // Odśwież listę ćwiczeń
+        }
+    }
+    async handleDeleteExercise(exerciseId) {
+        const confirmation = confirm("Czy na pewno chcesz usunąć to ćwiczenie?");
+        if (confirmation) {
+            await this.exerciseService.deleteExercise(exerciseId);
+            this.loadExercises(); // Odśwież listę ćwiczeń
+        }
+    }
     async handleDeleteScore(scoreId) {
         console.log('handleDeleteScore: Rozpoczęto usuwanie wyniku');
         const dialog = document.getElementById('custom-confirm-dialog');

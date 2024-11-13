@@ -137,19 +137,20 @@ class App {
         const exercisesList = document.getElementById('exercises-list');
         if (exercisesList) {
             try {
-                const user = await this.authService.getCurrentUser (); // Użyj getCurrentUser  do pobrania aktualnego użytkownika
+                const user = await this.authService.getCurrentUser ();
                 if (!user) {
                     console.error('Użytkownik nie jest zalogowany.');
                     exercisesList.innerHTML = '<li>Musisz być zalogowany, aby zobaczyć ćwiczenia.</li>';
                     return;
                 }
     
-                // Upewnij się, że wywołujesz getExercises z poprawnym userId
                 const exercises = await this.exerciseService.getExercises(user.uid);
                 if (Array.isArray(exercises)) {
                     exercisesList.innerHTML = exercises.map(exercise => `
                         <li>
                             <strong>${exercise.name}</strong>: ${exercise.description}
+                            <button class="edit-button" onclick="handleEditExercise('${exercise.id}')">Edytuj</button>
+                            <button class="delete-button" onclick="handleDeleteExercise('${exercise.id}')">Usuń</button>
                         </li>
                     `).join('');
                 } else {
