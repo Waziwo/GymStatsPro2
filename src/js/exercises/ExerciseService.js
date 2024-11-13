@@ -20,14 +20,15 @@ export class ExerciseService {
 
     async getExercises(userId) {
         try {
-            console.log('Getting exercises for user:', userId);
             const exercisesSnapshot = await getDocs(this.exercisesCollection);
             const exercises = exercisesSnapshot.docs
                 .map(doc => ({ id: doc.id, ...doc.data() }))
-                .filter(exercise => exercise.userId === userId); // Filtruj ćwiczenia dla konkretnego użytkownika
-            return exercises;
+                .filter(exercise => exercise.userId === userId);
+    
+            // Upewnij się, że zawsze zwracasz tablicę
+            return exercises || [];
         } catch (error) {
-            console.error('Error getting exercises:', error);
+            console.error('Błąd podczas wczytywania ćwiczeń:', error);
             throw error;
         }
     }

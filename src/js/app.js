@@ -136,12 +136,22 @@ class App {
     loadExercises() {
         const exercisesList = document.getElementById('exercises-list');
         if (exercisesList) {
-            const exercises = this.exerciseService.getExercises();
-            exercisesList.innerHTML = exercises.map(exercise => `
-                <li>
-                    <strong>${exercise.name}</strong>: ${exercise.description}
-                </li>
-            `).join('');
+            // Upewnij się, że wywołujesz getExercises z poprawnym userId
+            this.exerciseService.getExercises(user.uid).then(exercises => {
+                // Sprawdź, czy exercises jest tablicą
+                if (Array.isArray(exercises)) {
+                    exercisesList.innerHTML = exercises.map(exercise => `
+                        <li>
+                            <strong>${exercise.name}</strong>: ${exercise.description}
+                        </li>
+                    `).join('');
+                } else {
+                    console.error('Oczekiwano tablicy ćwiczeń, ale otrzymano:', exercises);
+                    exercisesList.innerHTML = '<li>Brak ćwiczeń do wyświetlenia.</li>';
+                }
+            }).catch(error => {
+                console.error('Błąd podczas ładowania ćwiczeń:', error);
+            });
         }
     }
     // Nowa metoda do obsługi nawigacji w dashboardzie
