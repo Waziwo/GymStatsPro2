@@ -520,8 +520,8 @@ main {
     margin-bottom: 2rem;
 }
 #progressChart {
-    height: 300px !important;
-    width: 500px !important;
+    height: 400px !important;
+    width: 600px !important;
 }
 
 .average-card {

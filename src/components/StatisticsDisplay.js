@@ -101,6 +101,15 @@ async init() {
             console.log('Element average-weight not found');
             console.warn('Element average-weight not found');
         }
+        console.log('Creating progress chart...');
+        this.createProgressChart(scores);
+        console.log('Progress chart created');
+        console.log('Creating exercise distribution chart...');
+        this.createExerciseDistributionChart(scores);
+        console.log('Exercise distribution chart created');
+        console.log('Creating max weight chart...');
+        this.createMaxWeightChart(scores);
+        console.log('Max weight chart created');
     } catch (error) {
         console.error('Error updating statistics:', error);
     }
