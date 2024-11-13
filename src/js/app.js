@@ -149,10 +149,19 @@ class App {
                     exercisesList.innerHTML = exercises.map(exercise => `
                         <li>
                             <strong>${exercise.name}</strong>: ${exercise.description}
-                            <button class="edit-button" onclick="handleEditExercise('${exercise.id}')">Edytuj</button>
-                            <button class="delete-button" onclick="handleDeleteExercise('${exercise.id}')">Usuń</button>
+                            <button class="edit-button" data-id="${exercise.id}">Edytuj</button>
+                            <button class="delete-button" data-id="${exercise.id}">Usuń</button>
                         </li>
                     `).join('');
+    
+                    // Dodaj nasłuchiwacze zdarzeń do przycisków
+                    exercisesList.querySelectorAll('.edit-button').forEach(button => {
+                        button.addEventListener('click', () => this.handleEditExercise(button.dataset.id));
+                    });
+    
+                    exercisesList.querySelectorAll('.delete-button').forEach(button => {
+                        button.addEventListener('click', () => this.handleDeleteExercise(button.dataset.id));
+                    });
                 } else {
                     console.error('Oczekiwano tablicy ćwiczeń, ale otrzymano:', exercises);
                     exercisesList.innerHTML = '<li>Brak ćwiczeń do wyświetlenia.</li>';
