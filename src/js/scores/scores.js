@@ -54,6 +54,7 @@ export class ScoreService {
             );
     
             if (duplicateScore) {
+                console.log('Znaleziono duplikat:', duplicateScore); // Log duplikatu
                 throw new Error('Ten wynik już istnieje w dzisiejszym dniu.');
             }
     
@@ -67,6 +68,7 @@ export class ScoreService {
             });
             this.clearCache();
         } catch (error) {
+            console.error('Błąd podczas dodawania wyniku:', error); // Log błędu
             throw error;
         }
     }

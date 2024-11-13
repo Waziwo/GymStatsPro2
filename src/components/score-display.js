@@ -89,8 +89,10 @@ export class ScoreDisplay {
         const weight = parseFloat(this.scoreForm['weight'].value);
         const reps = parseInt(this.scoreForm['reps'].value);
     
+        console.log("Dodawanie wyniku:", { exerciseType, weight, reps }); // Log danych
+    
         try {
-            const user = await this.authService.getCurrentUser();
+            const user = await this.authService.getCurrentUser ();
             if (!user) {
                 throw new Error('Musisz być zalogowany aby dodać wynik');
             }
