@@ -76,6 +76,7 @@ class App {
         this.addExerciseDialog = document.getElementById('add-exercise-dialog');
         this.addExerciseForm = document.getElementById('add-exercise-form');
         this.cancelAddExerciseButton = document.getElementById('cancel-add-exercise');
+        this.exerciseDetails = document.getElementById('exercise-details');
         this.dashboardNavLinks = document.querySelectorAll('.dashboard-nav a');
         this.dashboardSections = document.querySelectorAll('.dashboard-section');
     }
@@ -160,8 +161,16 @@ class App {
                 this.handleAddExercise();
             });
         }
-
+        const exerciseCheckboxes = document.querySelectorAll('input[name="exercise"]');
+        exerciseCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', this.toggleExerciseDetails.bind(this));
+        });
         this.setupNavLinks();
+    }
+    toggleExerciseDetails() {
+        const exerciseCheckboxes = document.querySelectorAll('input[name="exercise"]');
+        const isAnyChecked = Array.from(exerciseCheckboxes).some(checkbox => checkbox.checked);
+        this.exerciseDetails.classList.toggle('hidden', !isAnyChecked);
     }
     openAddExerciseDialog() {
         this.addExerciseDialog.classList.remove('hidden');
@@ -171,33 +180,36 @@ class App {
         this.addExerciseDialog.classList.add('hidden');
     }
     async handleAddExercise() {
-        const name = document.getElementById('exercise-name').value;
-        const weight = parseFloat(document.getElementById('exercise-weight').value);
-        const reps = parseInt(document.getElementById('exercise-reps').value);
-        const time = parseInt(document.getElementById('exercise-time').value);
-        const color = document.getElementById('exercise-color').value;
+        const exerciseCheckboxes = document.querySelectorAll('input[name="exercise"]:checked');
+        const exercisesToAdd = [];
     
-        try {
-            const user = this.authService.getCurrentUser ();
-            if (!user) {
-                throw new Error('Musisz być zalogowany, aby dodać ćwiczenie.');
-            }
+        exerciseCheckboxes.forEach(checkbox => {
+            const name = checkbox.value;
+            const weight = parseFloat(document.getElementById('exercise-weight').value);
+            const reps = parseInt(document.getElementById('exercise-reps').value);
+            const time = parseInt(document.getElementById('exercise-time').value);
+            const color = document.getElementById('exercise-color').value;
     
-            // Zapisz ćwiczenie do Firebase
-            await this.exerciseService.addExercise({
-                userId: user.uid,
+            exercisesToAdd.push({
+                userId: this.authService.getCurrentUser ().uid,
                 name,
                 weight,
                 reps,
                 time,
                 color
             });
+        });
+    
+        try {
+            for (const exercise of exercisesToAdd) {
+                await this.exerciseService.addExercise(exercise);
+            }
     
             this.closeAddExerciseDialog();
             this.loadExercises(); // Odśwież listę ćwiczeń
         } catch (error) {
-            console.error('Błąd podczas dodawania ćwiczenia:', error);
-            alert('Wystąpił błąd podczas dodawania ćwiczenia. Spróbuj ponownie.');
+            console.error('Błąd podczas dodawania ćwiczeń:', error);
+            alert('Wystąpił błąd podczas dodawania ćwiczeń. Spróbuj ponownie.');
         }
     }
     showAuthSection() {

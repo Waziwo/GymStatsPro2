@@ -320,25 +320,41 @@
                                 <h3>Dodaj własne ćwiczenie</h3>
                                 <form id="add-exercise-form">
                                     <div class="form-group">
-                                        <label for="exercise-name">Nazwa ćwiczenia</label>
-                                        <input type="text" id="exercise-name" required>
+                                        <label for="exercise-type">Wybierz ćwiczenie</label>
+                                        <div>
+                                            <input type="checkbox" id="bench-press" name="exercise" value="Wyciskanie sztangi">
+                                            <label for="bench-press">Wyciskanie sztangi</label>
+                                        </div>
+                                        <div>
+                                            <input type="checkbox" id="squat" name="exercise" value="Przysiad">
+                                            <label for="squat">Przysiad</label>
+                                        </div>
+                                        <div>
+                                            <input type="checkbox" id="deadlift" name="exercise" value="Martwy ciąg">
+                                            <label for="deadlift">Martwy ciąg</label>
+                                        </div>
+                                        <!-- Dodaj więcej ćwiczeń w razie potrzeby -->
                                     </div>
-                                    <div class="form-group">
-                                        <label for="exercise-weight">Ciężar (kg)</label>
-                                        <input type="number" id="exercise-weight" required>
+                        
+                                    <div id="exercise-details" class="hidden">
+                                        <div class="form-group">
+                                            <label for="exercise-weight">Ciężar (kg)</label>
+                                            <input type="number" id="exercise-weight">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exercise-reps">Powtórzenia</label>
+                                            <input type="number" id="exercise-reps">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exercise-time">Czas (min)</label>
+                                            <input type="number" id="exercise-time">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exercise-color">Kolor</label>
+                                            <input type="color" id="exercise-color" value="#3498db">
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="exercise-reps">Powtórzenia</label>
-                                        <input type="number" id="exercise-reps" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="exercise-time">Czas (min)</label>
-                                        <input type="number" id="exercise-time" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="exercise-color">Kolor</label>
-                                        <input type="color" id="exercise-color" value="#3498db">
-                                    </div>
+                        
                                     <div class="dialog-buttons">
                                         <button type="button" id="cancel-add-exercise" class="btn-secondary">Anuluj</button>
                                         <button type="submit" class="btn-primary">Dodaj ćwiczenie</button>
