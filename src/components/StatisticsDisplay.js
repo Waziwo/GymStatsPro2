@@ -114,13 +114,18 @@ async init() {
 
     updateProgressChart(scores) {
         console.log('Updating progress chart...');
+        
+        // Sprawdź, czy wykres już istnieje i zniszcz go, jeśli tak
         if (this.charts.progressChart) {
             this.charts.progressChart.destroy();
+            this.charts.progressChart = null; // Ustaw na null, aby uniknąć problemów
         }
+    
         const groupedScores = this.groupScoresByExercise(scores);
         console.log('Scores grouped by exercise:', groupedScores);
         const datasets = this.createDatasets(groupedScores);
         console.log('Datasets created:', datasets);
+    
         const ctx = document.getElementById('progressChart');
         this.charts.progressChart = new Chart(ctx, {
             type: 'line',
@@ -134,6 +139,7 @@ async init() {
         console.log('Updating exercise distribution chart...');
         if (this.charts.distributionChart) {
             this.charts.distributionChart.destroy();
+            this.charts.distributionChart = null; // Ustaw na null
         }
         const exerciseCounts = this.countExercises(scores);
         console.log('Exercise counts:', exerciseCounts);
@@ -151,11 +157,12 @@ async init() {
         });
         console.log('Exercise distribution chart updated');
     }
-
+    
     updateMaxWeightChart(scores) {
         console.log('Updating max weight chart...');
         if (this.charts.maxWeightChart) {
             this.charts.maxWeightChart.destroy();
+            this.charts.maxWeightChart = null; // Ustaw na null
         }
         const maxWeights = this.findMaxWeights(scores);
         console.log('Max weights:', maxWeights);
