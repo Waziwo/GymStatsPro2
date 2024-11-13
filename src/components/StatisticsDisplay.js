@@ -11,15 +11,25 @@ export class StatisticsDisplay {
 
 async init() {
     try {
+        console.log('Initializing statistics...');
         const scores = await this.scoreService.loadScores();
+        console.log('Scores loaded:', scores);
         if (!scores.length) {
             console.log('No scores available');
             return;
         }
+        console.log('Displaying averages...');
         this.displayAverages(scores);
+        console.log('Averages displayed');
+        console.log('Creating progress chart...');
         this.createProgressChart(scores);
+        console.log('Progress chart created');
+        console.log('Creating exercise distribution chart...');
         this.createExerciseDistributionChart(scores);
+        console.log('Exercise distribution chart created');
+        console.log('Creating max weight chart...');
         this.createMaxWeightChart(scores);
+        console.log('Max weight chart created');
     } catch (error) {
         console.error('Error loading statistics:', error);
     }
@@ -33,22 +43,103 @@ async init() {
         }
 
         const stats = this.calculateAverages(scores);
-        averagesContainer.innerHTML = `
+        const averageCards = [
+            { title: 'Średni ciężar', value: `${stats.avgWeight.toFixed(1)} kg`, unit: 'kg' },
+            { title: 'Średnia liczba powtórzeń', value: stats.avgReps.toFixed(1), unit: '' },
+            { title: 'Całkowita liczba serii', value: stats.totalSets, unit: '' }
+        ];
+
+        averagesContainer.innerHTML = averageCards.map((card) => `
             <div class="average-card">
-                <h3>Średni ciężar</h3>
-                <div class="average-value">${stats.avgWeight.toFixed(1)} kg</div>
+                <h3>${card.title}</h3>
+                <div class="average-value">${card.value} ${card.unit}</div>
             </div>
-            <div class="average-card">
-                <h3>Średnia liczba powtórzeń</h3>
-                <div class="average-value">${stats.avgReps.toFixed(1)}</div>
-            </div>
-            <div class="average-card">
-                <h3>Całkowita liczba serii</h3>
-                <div class="average-value">${stats.totalSets}</div>
-            </div>
-        `;
+        `).join('');
+    }
+    async updateStatistics() {
+        try {
+            console.log('Updating statistics...');
+            const scores = await this.scoreService.loadScores();
+            console.log('Scores loaded:', scores);
+            this.displayAverages(scores);
+            console.log('Averages displayed');
+            this.updateCharts(scores);
+            console.log('Charts updated');
+        } catch (error) {
+            console.error('Error updating statistics:', error);
+        }
     }
 
+    updateCharts(scores) {
+        console.log('Updating charts...');
+        this.updateProgressChart(scores);
+        this.updateExerciseDistributionChart(scores);
+        this.updateMaxWeightChart(scores);
+        console.log('Charts updated');
+    }
+
+    updateProgressChart(scores) {
+        console.log('Updating progress chart...');
+        if (this.charts.progressChart) {
+            this.charts.progressChart.destroy();
+        }
+        const groupedScores = this.groupScoresByExercise(scores);
+        console.log('Scores grouped by exercise:', groupedScores);
+        const datasets = this.createDatasets(groupedScores);
+        console.log('Datasets created:', datasets);
+        const ctx = document.getElementById('progressChart');
+        this.charts.progressChart = new Chart(ctx, {
+            type: 'line',
+            data: { datasets },
+            options: this.getProgressChartOptions()
+        });
+        console.log('Progress chart updated');
+    }
+
+    updateExerciseDistributionChart(scores) {
+        console.log('Updating exercise distribution chart...');
+        if (this.charts.distributionChart) {
+            this.charts.distributionChart.destroy();
+        }
+        const exerciseCounts = this.countExercises(scores);
+        console.log('Exercise counts:', exerciseCounts);
+        const ctx = document.getElementById('exerciseDistributionChart');
+        this.charts.distributionChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(exerciseCounts),
+                datasets: [{
+                    data: Object.values(exerciseCounts),
+                    backgroundColor: Object.keys(exerciseCounts).map(() => this.getRandomColor())
+                }]
+            },
+            options: this.getDistributionChartOptions()
+        });
+        console.log('Exercise distribution chart updated');
+    }
+
+    updateMaxWeightChart(scores) {
+        console.log('Updating max weight chart...');
+        if (this.charts.maxWeightChart) {
+            this.charts.maxWeightChart.destroy();
+        }
+        const maxWeights = this.findMaxWeights(scores);
+        console.log('Max weights:', maxWeights);
+        const ctx = document.getElementById('maxWeightChart');
+        this.charts.maxWeightChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(maxWeights),
+                datasets: [{
+                    label: 'Maksymalny ciężar',
+                    data: Object.values(maxWeights),
+                    backgroundColor: Object.keys(maxWeights).map(() => this.getRandomColor())
+                }]
+            },
+            options: this.getMaxWeightChartOptions()
+        });
+        console.log('Max weight chart updated');
+    }
     calculateAverages(scores) {
         if (!scores.length) return { avgWeight: 0, avgReps: 0, totalSets: 0 };
 
