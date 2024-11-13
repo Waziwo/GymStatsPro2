@@ -153,6 +153,8 @@ export class ScoreDisplay {
                     if (this.notificationManager) {
                         this.notificationManager.show('Wynik został pomyślnie usunięty.', 'success');
                     }
+                    this.updateOverview(); 
+                    await this.statisticsDisplay.updateStatistics(); // Zaktualizuj statystyki po dodaniu wyniku
                 } catch (error) {
                     console.error('handleDeleteScore: Błąd podczas usuwania wyniku:', error);
                     if (this.notificationManager) {

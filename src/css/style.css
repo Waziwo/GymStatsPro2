@@ -519,6 +519,10 @@ main {
     gap: 1rem;
     margin-bottom: 2rem;
 }
+#progressChart {
+    height: 300px;
+    width: 100%;
+}
 
 .average-card {
     background: var(--background-color);
