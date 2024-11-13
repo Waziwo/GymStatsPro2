@@ -86,13 +86,13 @@ export class ScoreDisplay {
     async handleScoreSubmit(e) {
         e.preventDefault();  // Zapobiega odświeżaniu strony
         if (this.isSubmitting) return; // Zablokuj ponowne wysyłanie
-    
+
         this.isSubmitting = true; // Ustaw flagę na true
-    
+
         const exerciseType = this.scoreForm['exercise-type'].value;
         const weight = parseFloat(this.scoreForm['weight'].value);
         const reps = parseInt(this.scoreForm['reps'].value);
-    
+
         try {
             const user = await this.authService.getCurrentUser ();
             if (!user) {
@@ -101,6 +101,7 @@ export class ScoreDisplay {
             await this.scoreService.addScore(exerciseType, weight, reps);
             this.scoreForm.reset();
             await this.loadScores();  // Załaduj i wyświetl wyniki od razu po dodaniu
+            this.updateOverview(); // Zaktualizuj przegląd po dodaniu wyniku
         } catch (error) {
             alert(error.message);
         } finally {
@@ -215,10 +216,9 @@ export class ScoreDisplay {
         }
     }
     updateOverview() {
-        const scores = this.scoreService.loadScores();
-        scores.then(data => {
+        this.scoreService.loadScores().then(scores => {
             // Sortuj wyniki od najnowszego do najstarszego
-            const sortedScores = data.sort((a, b) => b.timestamp - a.timestamp);
+            const sortedScores = scores.sort((a, b) => b.timestamp - a.timestamp);
     
             // Ostatni trening
             if (sortedScores.length > 0) {
@@ -244,7 +244,6 @@ export class ScoreDisplay {
             // Ostatnie treningi - tylko 5 ostatnich
             const recentWorkoutsList = document.getElementById('recent-workouts-list');
             recentWorkoutsList.innerHTML = '';
-            // Używamy slice(0, 5) aby pobrać tylko pierwsze 5 elementów
             sortedScores.slice(0, 5).forEach(score => {
                 const li = document.createElement('li');
                 li.textContent = `${new Date(score.timestamp).toLocaleDateString()} - ${score.exerciseType}: ${score.weight}kg x ${score.reps}`;
