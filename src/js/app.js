@@ -41,8 +41,9 @@ class App {
     }
 
     initializeServices() {
+        this.notificationManager = new NotificationManager(); // Tworzenie instancji NotificationManager
         this.authService = new AuthService();
-        this.scoreService = new ScoreService();
+        this.scoreService = new ScoreService(this.notificationManager); // Przekazywanie do ScoreService
         this.userService = new UserService();
         this.notificationManager = new NotificationManager();
         this.activityLogger = new ActivityLogger();
@@ -51,7 +52,6 @@ class App {
     initializeComponents() {
         this.statisticsDisplay = new StatisticsDisplay(this.scoreService);
         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager); // Dodaj notificationManager
-        this.scoreService = new ScoreService(this.notificationManager); // Przekazywanie do ScoreService
         this.authForms = new AuthForms(
             this.authService, 
             this.scoreService, 
