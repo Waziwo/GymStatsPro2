@@ -1,3 +1,4 @@
+// src/js/app.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { firebaseConfig } from "./config/firebase-config.js";
@@ -6,7 +7,7 @@ import { ScoreService } from "./scores/scores.js";
 import { UserService } from "./services/user-service.js";
 import { AuthForms } from '../components/auth-forms.js';
 import { ScoreDisplay } from '../components/score-display.js';
-import { NotificationManager } from './notifications.js';
+import { NotificationManager } from './notifications.js'; // Importuj NotificationManager
 import { ActivityLogger } from './utils/activity-logger.js';
 import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
 import { initNavigation, manageSectionsVisibility } from './utils/navigation.js';
@@ -26,7 +27,7 @@ class App {
             // Initialize services
             this.initializeServices();
             
-            // Initialize components
+            // // Initialize components
             this.initializeComponents();
 
             // Setup event listeners and auth state
@@ -43,9 +44,8 @@ class App {
     initializeServices() {
         this.notificationManager = new NotificationManager(); // Tworzenie instancji NotificationManager
         this.authService = new AuthService();
-        this.scoreService = new ScoreService(this.notificationManager); // Przekazywanie do ScoreService
+        this.scoreService = new ScoreService(this.notificationManager); // Przekazywanie NotificationManager
         this.userService = new UserService();
-        this.notificationManager = new NotificationManager();
         this.activityLogger = new ActivityLogger();
     }
 

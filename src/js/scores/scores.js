@@ -1,6 +1,7 @@
+// src/js/scores/scores.js
 import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-import { NotificationManager } from '../notifications.js'; // Upewnij się, że importujesz NotificationManager
+import { NotificationManager } from '../notifications.js'; // Importuj NotificationManager
 
 class ScoreCache {
     constructor() {
@@ -33,7 +34,7 @@ class ScoreCache {
 }
 
 export class ScoreService {
-    constructor() {
+    constructor(notificationManager) {
         this.db = getFirestore();
         this.scoresCollection = collection(this.db, 'scores');
         this.auth = getAuth();
