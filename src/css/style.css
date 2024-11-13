@@ -519,10 +519,6 @@ main {
     gap: 1rem;
     margin-bottom: 2rem;
 }
-#progressChart {
-    height: 100% !important;
-    width: 100% !important;
-}
 
 .average-card {
     background: var(--background-color);
@@ -1542,17 +1538,22 @@ main {
 
 /* ===== WYKRESY ===== */
 .charts-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
     margin-top: 2rem;
 }
 
 .chart-wrapper {
+    width: 100%; /* Umożliwia responsywność */
+    max-width: 800px; /* Maksymalna szerokość wykresu */
+    margin: 0 auto; /* Wyśrodkowanie wykresu */
+    padding: 20px; /* Odstęp wewnętrzny */
     background: var(--card-background);
-    padding: 1.5rem;
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+canvas {
+    width: 100% !important; /* Umożliwia responsywność */
+    height: auto !important; /* Umożliwia responsywność */
 }
 /* ===== POWIADOMIENIE O USUWANIU ===== */
 .custom-dialog {
