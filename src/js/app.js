@@ -150,11 +150,14 @@ class App {
     
                 const exercises = await this.exerciseService.getExercises(user.uid);
                 if (Array.isArray(exercises)) {
+                    // Sortuj ćwiczenia alfabetycznie od A do Z
+                    exercises.sort((a, b) => a.name.localeCompare(b.name));
+    
                     exercisesList.innerHTML = exercises.map(exercise => `
                         <li>
                             <div class="exercise-content">
                                 <strong>${exercise.name}</strong>
-                                <span>${exercise.description}</span> <!-- Opis ćwiczenia -->
+                                <span>${exercise.description}</span>
                             </div>
                             <div class="button-group">
                                 <button class="edit-button" data-id="${exercise.id}">Edytuj</button>

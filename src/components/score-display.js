@@ -96,6 +96,10 @@ export class ScoreDisplay {
             const user = await this.authService.getCurrentUser ();
             if (!user) throw new Error('Musisz być zalogowany, aby wczytać ćwiczenia');
             const exercises = await this.exerciseService.getExercises(user.uid);
+            
+            // Sortuj ćwiczenia alfabetycznie od A do Z
+            exercises.sort((a, b) => a.name.localeCompare(b.name));
+    
             const exerciseSelect = this.scoreForm['exercise-type'];
             exerciseSelect.innerHTML = ''; // Wyczyść istniejące opcje
     
