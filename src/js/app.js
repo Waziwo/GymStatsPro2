@@ -188,11 +188,34 @@ class App {
         }
     }
     async handleDeleteExercise(exerciseId) {
-        const confirmation = confirm("Czy na pewno chcesz usunąć to ćwiczenie?");
+        const confirmation = await this.showDeleteConfirmationDialog();
         if (confirmation) {
             await this.exerciseService.deleteExercise(exerciseId);
             this.loadExercises(); // Odśwież listę ćwiczeń
         }
+    }
+    
+    showDeleteConfirmationDialog() {
+        return new Promise((resolve) => {
+            const dialog = document.getElementById('custom-confirm-dialog');
+            const confirmBtn = document.getElementById('confirm-delete');
+            const cancelBtn = document.getElementById('cancel-delete');
+    
+            dialog.classList.remove('hidden');
+    
+            const handleConfirm = () => {
+                dialog.classList.add('hidden');
+                resolve(true);
+            };
+    
+            const handleCancel = () => {
+                dialog.classList.add('hidden');
+                resolve(false);
+            };
+    
+            confirmBtn.addEventListener('click', handleConfirm, { once: true });
+            cancelBtn.addEventListener('click', handleCancel, { once: true });
+        });
     }
     // Nowa metoda do obsługi nawigacji w dashboardzie
     setupDashboardNavigation() {

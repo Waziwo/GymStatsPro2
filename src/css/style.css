@@ -1559,15 +1559,22 @@ canvas {
 #exercises-list {
     list-style-type: none; /* Usunięcie punktów listy */
     padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 #exercises-list li {
     background: var(--card-background);
     padding: 1rem;
-    margin-bottom: 1rem;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
 .edit-button {
     background-color: var(--primary-color);
     color: white;
@@ -1576,6 +1583,14 @@ canvas {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.edit-button:hover {
+    background-color: #2980b9;
 }
 
 .delete-button {
@@ -1583,18 +1598,25 @@ canvas {
     color: white;
     border: none;
     padding: 0.5rem 1rem;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.edit-button:hover {
-    background-color: #2980b9;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .delete-button:hover {
     background-color: #c0392b;
+    transform: translateY(-2px);
 }
+
+.delete-button:active {
+    transform: translateY(0);
+}
+
+
 /* ===== POWIADOMIENIE O USUWANIU ===== */
 .custom-dialog {
     position: fixed;
