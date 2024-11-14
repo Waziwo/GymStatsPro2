@@ -81,12 +81,6 @@ export class ScoreDisplay {
         }
     }
 
-    setupEventListeners() {
-        this.scoreForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            await this.handleScoreSubmit(e);
-        });
-    }
     async loadExercises() {
         if (!this.exerciseService) {
             console.error('ExerciseService is not initialized');
@@ -114,8 +108,14 @@ export class ScoreDisplay {
             this.notificationManager.show('Błąd podczas ładowania ćwiczeń: ' + error.message, 'error');
         }
     }
+    setupEventListeners() {
+        if (this.scoreForm) {
+            this.scoreForm.removeEventListener('submit', this.handleScoreSubmit.bind(this)); // Usuwamy poprzednie zdarzenie
+            this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this)); // Rejestrujemy zdarzenie
+        }
+    }
+    
     async handleScoreSubmit(e) {
-        console.log('handleScoreSubmit: Rozpoczęto dodawanie wyniku');
         e.preventDefault();  // Zapobiega odświeżaniu strony
         if (this.isSubmitting) return; // Zablokuj ponowne wysyłanie
     
@@ -126,26 +126,18 @@ export class ScoreDisplay {
         const reps = parseInt(this.scoreForm['reps'].value);
     
         try {
-            console.log('handleScoreSubmit: Pobieranie danych użytkownika');
             const user = await this.authService.getCurrentUser ();
             if (!user) {
                 throw new Error('Musisz być zalogowany aby dodać wynik');
             }
-            console.log('handleScoreSubmit: Dodawanie wyniku');
             await this.scoreService.addScore(exerciseType, weight, reps);
-            console.log('handleScoreSubmit: Wynik dodany');
             this.scoreForm.reset();
-            console.log('handleScoreSubmit: Załaduj i wyświetl wyniki od razu po dodaniu');
             await this.loadScores();  
-            console.log('handleScoreSubmit: Zaktualizuj przegląd po dodaniu wyniku');
             this.updateOverview(); 
-            console.log('handleScoreSubmit: Zaktualizuj statystyki po dodaniu wyniku');
-            await this.statisticsDisplay.updateStatistics(); // Zaktualizuj statystyki po dodaniu wyniku
+            await this.statisticsDisplay.updateStatistics();
         } catch (error) {
-            console.error('handleScoreSubmit: Błąd podczas dodawania wyniku:', error);
             alert(error.message);
         } finally {
-            console.log('handleScoreSubmit: Zakończono dodawanie wyniku');
             this.isSubmitting = false; // Zresetuj flagę po zakończeniu
         }
     }
