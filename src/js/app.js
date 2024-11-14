@@ -44,18 +44,20 @@ class App {
     }
 
     initializeServices() {
-        this.notificationManager = new NotificationManager(); // Tworzenie instancji NotificationManager
+        this.notificationManager = new NotificationManager();
         this.authService = new AuthService();
-        this.scoreService = new ScoreService(this.notificationManager); // Przekazywanie NotificationManager
+        this.scoreService = new ScoreService(this.notificationManager);
         this.userService = new UserService();
         this.activityLogger = new ActivityLogger();
-        this.exerciseService = new ExerciseService(this.notificationManager);
-        console.log('ExerciseService initialized:', this.exerciseService); // Dodaj ten log
+        this.exerciseService = new ExerciseService(this.notificationManager); // Inicjalizacja ExerciseService
+        
+        // Teraz możesz utworzyć ScoreDisplay
+        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
+        console.log('ExerciseService initialized:', this.exerciseService);
     }
 
     initializeComponents() {
         this.statisticsDisplay = new StatisticsDisplay(this.scoreService);
-        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
         this.authForms = new AuthForms(
             this.authService, 
             this.scoreService, 
