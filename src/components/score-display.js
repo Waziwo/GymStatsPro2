@@ -6,9 +6,8 @@ export class ScoreDisplay {
         this.scoreService = scoreService;
         this.authService = authService;
         this.exerciseService = exerciseService; // Upewnij się, że to jest poprawnie przypisane
-        console.log('ExerciseService:', this.exerciseService);
         this.notificationManager = notificationManager; 
-        this.statisticsDisplay = new StatisticsDisplay(scoreService)
+        this.statisticsDisplay = new StatisticsDisplay(scoreService);
         this.scoreForm = null;
         this.scoresList = null;
         this.auth = getAuth();

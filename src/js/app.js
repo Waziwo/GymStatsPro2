@@ -53,7 +53,6 @@ class App {
         
         // Teraz możesz utworzyć ScoreDisplay
         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
-        console.log('ExerciseService initialized:', this.exerciseService);
     }
 
     initializeComponents() {
@@ -347,6 +346,8 @@ class App {
                 try {
                     const userData = await this.userService.getUserData(user.uid);
                     if (userData) {
+                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
+                        await this.scoreDisplay.init(); // Upewnij się, że to jest wywoływane
                         this.updateNavigation(true);
                         this.statisticsDisplay.init();
                         this.updateUserInfo(userData, user.email);
