@@ -197,9 +197,9 @@ class App {
     
     showDeleteConfirmationDialog() {
         return new Promise((resolve) => {
-            const dialog = document.getElementById('custom-confirm-dialog');
-            const confirmBtn = document.getElementById('confirm-delete');
-            const cancelBtn = document.getElementById('cancel-delete');
+            const dialog = document.getElementById('custom-confirm-dialog-exercise');
+            const confirmBtn = document.getElementById('confirm-delete-exercise');
+            const cancelBtn = document.getElementById('cancel-delete-exercise');
     
             dialog.classList.remove('hidden');
     
