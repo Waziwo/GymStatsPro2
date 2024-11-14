@@ -981,16 +981,13 @@ footer {
 
     /* Stylizacja hamburger menu */
     .hamburger-menu {
-        display: block; /* Upewnij się, że hamburger menu jest widoczne na urządzeniach mobilnych */
-        cursor: pointer;
-        z-index: 1001; /* Upewnij się, że menu jest nad innymi elementami */
+        display: block; /* Pokaż hamburger menu na mniejszych ekranach */
     }
 
-    /* Stylizacja kontenera na linki nawigacyjne */
     .nav-links {
-        display: none; /* Domyślnie ukryj menu */
+        display: none; /* Domyślnie ukryj linki */
         flex-direction: column; /* Ustaw linki w kolumnie */
-        position: absolute; /* Ustaw pozycję na absolute, aby menu nie wpływało na inne elementy */
+        position: absolute; /* Ustaw pozycję na absolute */
         top: 60px; /* Ustaw górną pozycję menu */
         left: 0;
         right: 0;
@@ -999,12 +996,10 @@ footer {
         box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Cień dla menu */
     }
 
-    /* Aktywacja menu */
     .nav-links.active {
         display: flex; /* Wyświetl menu, gdy jest aktywne */
     }
 
-    /* Stylizacja linków w menu */
     .nav-link {
         padding: 1rem; /* Padding dla linków */
         text-align: center; /* Wyśrodkowanie tekstu */

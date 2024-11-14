@@ -436,3 +436,13 @@ document.addEventListener('DOMContentLoaded', () => {
     new App();
     initNavigation();
 });
+// Po załadowaniu DOM
+document.addEventListener('DOMContentLoaded', () => {
+    const hamburgerMenu = document.querySelector('.hamburger-menu');
+    const navLinks = document.querySelector('.nav-links');
+
+    // Obsługa kliknięcia w hamburger menu
+    hamburgerMenu.addEventListener('click', () => {
+        navLinks.classList.toggle('active'); // Przełącz klasę active
+    });
+});
