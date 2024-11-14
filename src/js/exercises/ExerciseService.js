@@ -3,6 +3,7 @@ import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, setDoc } fro
 export class ExerciseService {
     constructor() {
         this.db = getFirestore();
+        this.notificationManager = notificationManager; 
         this.exercisesCollection = collection(this.db, 'exercises');
         console.log('ExerciseService initialized');
     }
