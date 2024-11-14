@@ -310,12 +310,25 @@
                     </div>
                     <!-- Sekcja Ćwiczenia -->
                     <div id="exercises" class="dashboard-section">
-                        <h2>Dostępne ćwiczenia</h2>
-                        <button id="add-exercise-button" class="btn-primary">
-                            Dodaj ćwiczenie
+                        <h2>Ćwiczenia</h2>
+                        <button id="add-exercise-button" class="btn-primary" title="Dodaj nowe ćwiczenie">
+                            <i class="fas fa-plus-circle"></i> Dodaj ćwiczenie
                         </button>
                         <ul id="exercises-list">
-                            <!-- Lista ćwiczeń będzie generowana dynamicznie -->
+                            <li>
+                                <div class="exercise-content">
+                                    <strong>Nazwa ćwiczenia</strong>
+                                    <p>Opis ćwiczenia</p>
+                                </div>
+                                <div class="button-group">
+                                    <button class="edit-button">
+                                        <i class="fas fa-edit"></i> Edytuj
+                                    </button>
+                                    <button class="delete-button">
+                                        <i class="fas fa-trash-alt"></i> Usuń
+                                    </button>
+                                </div>
+                            </li>
                         </ul>
                         <div id="add-exercise-dialog" class="custom-dialog hidden">
                             <div class="dialog-content">
