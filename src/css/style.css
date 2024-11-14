@@ -941,6 +941,17 @@ footer {
         background-color: var(--card-background); 
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     } 
+    .login-button { 
+        width: 100%; 
+        text-align: center; 
+        padding: 0.7rem; 
+        margin: 0.3rem 0;
+        border: none; 
+        background-color: var(--primary-color); 
+        color: white; 
+        border-radius: 4px; 
+        font-size: 1rem; 
+    } 
 
     .nav-container { 
         flex-direction: column; 
@@ -971,17 +982,7 @@ footer {
         display: flex; 
     } 
 
-    #login-button { 
-        width: 100%; 
-        text-align: center; 
-        padding: 0.7rem; 
-        margin: 0.3rem 0;
-        border: none; 
-        background-color: var(--primary-color); 
-        color: white; 
-        border-radius: 4px; 
-        font-size: 1rem; 
-    } 
+    
 
     /* Stylizacja hamburger menu */
     .hamburger-menu {
