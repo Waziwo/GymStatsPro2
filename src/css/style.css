@@ -979,12 +979,43 @@ footer {
         font-size: 1rem; 
     } 
 
-    .hamburger-menu { 
-        display: block; 
-        position: absolute;
-        right: 1rem;
-        top: 1rem;
-    } 
+    /* Stylizacja hamburger menu */
+    .hamburger-menu {
+        display: block; /* Upewnij się, że hamburger menu jest widoczne na urządzeniach mobilnych */
+        cursor: pointer;
+        z-index: 1001; /* Upewnij się, że menu jest nad innymi elementami */
+    }
+
+    /* Stylizacja kontenera na linki nawigacyjne */
+    .nav-links {
+        display: none; /* Domyślnie ukryj menu */
+        flex-direction: column; /* Ustaw linki w kolumnie */
+        position: absolute; /* Ustaw pozycję na absolute, aby menu nie wpływało na inne elementy */
+        top: 60px; /* Ustaw górną pozycję menu */
+        left: 0;
+        right: 0;
+        background-color: var(--card-background); /* Tło menu */
+        padding: 1rem; /* Padding dla menu */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Cień dla menu */
+    }
+
+    /* Aktywacja menu */
+    .nav-links.active {
+        display: flex; /* Wyświetl menu, gdy jest aktywne */
+    }
+
+    /* Stylizacja linków w menu */
+    .nav-link {
+        padding: 1rem; /* Padding dla linków */
+        text-align: center; /* Wyśrodkowanie tekstu */
+        border-radius: 4px; /* Zaokrąglenie krawędzi */
+        transition: background-color 0.3s; /* Płynna zmiana tła */
+    }
+
+    .nav-link:hover {
+        background-color: var(--primary-color); /* Zmiana koloru tła przy najechaniu */
+        color: white; /* Zmiana koloru tekstu przy najechaniu */
+    }
 
     .hero-content { 
         padding: 1rem 0.5rem; 
