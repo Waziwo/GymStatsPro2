@@ -150,7 +150,10 @@ class App {
                 if (Array.isArray(exercises)) {
                     exercisesList.innerHTML = exercises.map(exercise => `
                         <li>
-                            <strong>${exercise.name}</strong>: ${exercise.description}
+                            <div class="exercise-content">
+                                <strong>${exercise.name}</strong>
+                                <span>${exercise.description}</span> <!-- Opis ćwiczenia -->
+                            </div>
                             <div class="button-group">
                                 <button class="edit-button" data-id="${exercise.id}">Edytuj</button>
                                 <button class="delete-button" data-id="${exercise.id}">Usuń</button>

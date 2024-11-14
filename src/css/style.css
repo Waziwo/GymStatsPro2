@@ -1577,10 +1577,17 @@ canvas {
 
 /* ===== ZAWARTOŚĆ LISTY ===== */
 .exercise-content {
-    flex: 1; /* Pozwól, aby ta sekcja zajmowała dostępne miejsce */
-    flex-direction: column; /* Ustaw nazwę i opis w kolumnie */
+    display: flex; /* Umożliwia wyświetlanie obok siebie */
+    flex-direction: column; /* Ustawia nazwę i opis w kolumnie */
+    margin-right: 10px; /* Odstęp między treścią a przyciskami */
 }
-
+.exercise-content strong {
+    font-weight: bold; /* Wyróżnia nazwę ćwiczenia */
+}
+.exercise-content span {
+    font-size: 0.9rem; /* Mniejszy rozmiar czcionki dla opisu */
+    color: #666; /* Szary kolor dla opisu */
+}
 /* ===== PRZYCISKI ===== */
 .button-group {
     display: flex; /* Ustaw przyciski w wierszu */
