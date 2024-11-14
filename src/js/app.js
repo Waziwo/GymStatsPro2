@@ -217,7 +217,19 @@ class App {
             };
         }
     }
-    
+    async handleDeleteExercise(exerciseId) {
+        const confirmation = await this.showDeleteConfirmationDialog();
+        if (confirmation) {
+            try {
+                await this.exerciseService.deleteExercise(exerciseId); // Upewnij się, że masz tę metodę w ExerciseService
+                this.notificationManager.show('Ćwiczenie zostało pomyślnie usunięte.', 'success');
+                this.loadExercises(); // Odśwież listę ćwiczeń
+            } catch (error) {
+                console.error('Błąd podczas usuwania ćwiczenia:', error);
+                this.notificationManager.show('Błąd podczas usuwania ćwiczenia: ' + error.message, 'error');
+            }
+        }
+    }
     showDeleteConfirmationDialog() {
         return new Promise((resolve) => {
             const dialog = document.getElementById('custom-confirm-dialog-exercise');
