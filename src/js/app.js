@@ -49,7 +49,7 @@ class App {
         this.scoreService = new ScoreService(this.notificationManager); // Przekazywanie NotificationManager
         this.userService = new UserService();
         this.activityLogger = new ActivityLogger();
-        this.exerciseService = new ScoreService(this.notificationManager);
+        this.exerciseService = new ExerciseService(this.notificationManager);
     }
 
     initializeComponents() {
