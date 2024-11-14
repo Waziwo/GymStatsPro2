@@ -11,6 +11,7 @@ export class AuthForms {
         this.activityLogger = activityLogger;
         this.auth = getAuth();
         this.scoreDisplay = null;
+        this.navLinks = document.querySelectorAll('.nav-link'); // Zwróci NodeList
         
         console.log("Rozpoczęcie inicjalizacji formularzy");
         this.initializeForms();
@@ -25,9 +26,14 @@ export class AuthForms {
         console.log("Login form container:", this.loginFormContainer);
     }
     setupMobileMenu() {
+        this.hamburgerMenu = document.querySelector('.hamburger-menu');
+        this.navLinks = document.querySelectorAll('.nav-link');
+    
         if (this.hamburgerMenu && this.navLinks) {
             this.hamburgerMenu.addEventListener('click', () => {
-                this.navLinks.classList.toggle('active');
+                this.navLinks.forEach(link => {
+                    link.classList.toggle('active'); // Użyj toggle na każdym elemencie
+                });
             });
         }
     }
