@@ -1,7 +1,7 @@
 import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 export class ExerciseService {
-    constructor() {
+    constructor(notificationManager) {
         this.db = getFirestore();
         this.notificationManager = notificationManager; 
         this.exercisesCollection = collection(this.db, 'exercises');
