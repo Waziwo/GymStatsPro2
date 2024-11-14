@@ -695,8 +695,12 @@ footer {
 
 /* ===== HAMBURGER MENU ===== */
 .hamburger-menu {
-    display: none;
-    cursor: pointer;
+    display: none; /* Ukryj na większych ekranach */
+    background: transparent; /* Tło przezroczyste */
+    border: none; /* Bez obramowania */
+    cursor: pointer; /* Wskaźnik kursora */
+    font-size: 24px; /* Rozmiar ikony */
+    color: var(--text-color); /* Kolor ikony */
 }
 /* ===== WALIDACJA I ANIMACJE FORMULARZY ===== */
 .fade-transition {
@@ -1000,17 +1004,6 @@ footer {
         display: flex; /* Wyświetl menu, gdy jest aktywne */
     }
 
-    .nav-link {
-        padding: 1rem; /* Padding dla linków */
-        text-align: center; /* Wyśrodkowanie tekstu */
-        border-radius: 4px; /* Zaokrąglenie krawędzi */
-        transition: background-color 0.3s; /* Płynna zmiana tła */
-    }
-
-    .nav-link:hover {
-        background-color: var(--primary-color); /* Zmiana koloru tła przy najechaniu */
-        color: white; /* Zmiana koloru tekstu przy najechaniu */
-    }
 
     .hero-content { 
         padding: 1rem 0.5rem; 
@@ -1269,6 +1262,12 @@ footer {
         justify-content: center;
     }
 } 
+.nav-container {
+    display: flex;
+    justify-content: space-between; /* Ustaw elementy w wierszu z przestrzenią pomiędzy */
+    align-items: center; /* Wyśrodkowanie w pionie */
+}
+
 
 @media (max-width: 480px) {
     main {
