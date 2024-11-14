@@ -54,7 +54,7 @@ class App {
 
     initializeComponents() {
         this.statisticsDisplay = new StatisticsDisplay(this.scoreService);
-        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager); // Dodaj notificationManager
+        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
         this.authForms = new AuthForms(
             this.authService, 
             this.scoreService, 
