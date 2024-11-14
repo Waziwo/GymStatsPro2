@@ -88,6 +88,10 @@ export class ScoreDisplay {
         });
     }
     async loadExercises() {
+        if (!this.exerciseService) {
+            console.error('ExerciseService is not initialized');
+            return;
+        }
         try {
             const exercises = await this.exerciseService.getExercises(this.auth.currentUser .uid);
             const exerciseSelect = this.scoreForm['exercise-type'];

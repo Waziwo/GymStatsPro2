@@ -50,6 +50,7 @@ class App {
         this.userService = new UserService();
         this.activityLogger = new ActivityLogger();
         this.exerciseService = new ExerciseService(this.notificationManager);
+        console.log('ExerciseService initialized:', this.exerciseService); // Dodaj ten log
     }
 
     initializeComponents() {
