@@ -112,7 +112,7 @@ export class ScoreDisplay {
         if (this.scoreForm) {
             // Upewnij się, że nie rejestrujesz zdarzenia wielokrotnie
             this.scoreForm.removeEventListener('submit', this.handleScoreSubmit.bind(this)); // Usuwamy poprzednie zdarzenie
-            this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this)); // Rejestrujemy zdarzenie
+            this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this), { once: true }); // Rejestrujemy zdarzenie z opcją once
             console.log("Event listener for scoreForm added.");
         }
     }
