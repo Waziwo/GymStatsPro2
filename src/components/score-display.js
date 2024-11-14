@@ -16,6 +16,7 @@ export class ScoreDisplay {
     init() {
         try {
             this.initializeElements();
+            this.loadExercises(); // Dodaj to wywołanie
             this.loadScores();
             this.setupFilteringAndSorting();
             this.updateOverview();
@@ -84,7 +85,22 @@ export class ScoreDisplay {
             await this.handleScoreSubmit(e);
         });
     }
-
+    async loadExercises() {
+        try {
+            const exercises = await this.exerciseService.getExercises(this.auth.currentUser .uid);
+            const exerciseSelect = this.scoreForm['exercise-type'];
+            exerciseSelect.innerHTML = ''; // Wyczyść istniejące opcje
+    
+            exercises.forEach(exercise => {
+                const option = document.createElement('option');
+                option.value = exercise.name; // Zakładam, że masz pole 'name' w ćwiczeniach
+                option.textContent = exercise.name;
+                exerciseSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Błąd podczas ładowania ćwiczeń:', error);
+        }
+    }
     async handleScoreSubmit(e) {
         console.log('handleScoreSubmit: Rozpoczęto dodawanie wyniku');
         e.preventDefault();  // Zapobiega odświeżaniu strony

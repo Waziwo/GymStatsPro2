@@ -1598,6 +1598,7 @@ canvas {
     background-color: var(--primary-color);
     color: white;
     border: none;
+    height: 32px;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
@@ -1614,6 +1615,7 @@ canvas {
     background-color: var(--error-color);
     color: white;
     border: none;
+    height: 32px;
     padding: 0.5rem 1rem;
     border-radius: 8px;
     cursor: pointer;
