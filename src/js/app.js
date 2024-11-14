@@ -13,6 +13,7 @@ import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
 import { initNavigation, manageSectionsVisibility } from './utils/navigation.js';
 import { ExerciseService } from './exercises/ExerciseService.js';
 
+
 class App {
     constructor() {
         try {
