@@ -9,6 +9,7 @@ export class ScoreDisplay {
         this.notificationManager = notificationManager; 
         this.statisticsDisplay = new StatisticsDisplay(scoreService);
         this.scoreForm = null;
+        this.isSubmitting = false; // Dodaj tę linię
         this.scoresList = null;
         this.auth = getAuth();
         this.scoresList = document.querySelector('.scores-list');
@@ -113,13 +114,13 @@ export class ScoreDisplay {
         console.log('handleScoreSubmit: Rozpoczęto dodawanie wyniku');
         e.preventDefault();  // Zapobiega odświeżaniu strony
         if (this.isSubmitting) return; // Zablokuj ponowne wysyłanie
-
+    
         this.isSubmitting = true; // Ustaw flagę na true
-
+    
         const exerciseType = this.scoreForm['exercise-type'].value;
         const weight = parseFloat(this.scoreForm['weight'].value);
         const reps = parseInt(this.scoreForm['reps'].value);
-
+    
         try {
             console.log('handleScoreSubmit: Pobieranie danych użytkownika');
             const user = await this.authService.getCurrentUser ();
