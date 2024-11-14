@@ -1793,22 +1793,22 @@ canvas {
 }
 
 .dialog-buttons-exercise #confirm-delete {
-    background-color: var(--error-color);
+    background-color: var(--error-color) !important;
     color: white;
 }
 
 .dialog-buttons-exercise #confirm-delete:hover {
-    background-color: #c0392b;
+    background-color: #c0392b !important;
     transform: translateY(-2px);
 }
 
 .dialog-buttons-exercise #cancel-delete {
-    background-color: #95a5a6;
+    background-color: #95a5a6 !important;
     color: white;
 }
 
 .dialog-buttons-exercise #cancel-delete:hover {
-    background-color: #7f8c8d;
+    background-color: #7f8c8d !important;
     transform: translateY(-2px);
 }
 /* Efekt hover dla przycisków */
