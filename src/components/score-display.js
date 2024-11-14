@@ -1,5 +1,6 @@
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { StatisticsDisplay } from './StatisticsDisplay.js'; // Upewnij się, że importujesz tę klasę
+import { ExerciseService } from './exercises/ExerciseService.js';
 
 export class ScoreDisplay {
     constructor(scoreService, authService, notificationManager, exerciseService) {

@@ -129,7 +129,7 @@ export class AuthForms {
                     
                     // Inicjalizuj i ładuj wyniki po zalogowaniu
                     if (!this.scoreDisplay) {
-                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
                     }
                     this.scoreDisplay.init();  // Dodaj to wywołanie
                 } catch (error) {
@@ -283,7 +283,7 @@ export class AuthForms {
             // Dodaj to opóźnienie dla inicjalizacji ScoreDisplay
             setTimeout(() => {
                 if (!this.scoreDisplay) {
-                    this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+                    this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
                 }
                 this.scoreDisplay.init();  // To wywołanie zainicjuje wszystko, w tym filtrowanie
             }, 0);
@@ -350,7 +350,7 @@ export class AuthForms {
                     console.log("Inicjalizacja wyświetlania wyników");
                     if (!this.scoreDisplay) {
                         console.log("Tworzenie nowej instancji ScoreDisplay");
-                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager);
+                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
                     }
                     this.scoreDisplay.init();
                 } catch (error) {
