@@ -1752,7 +1752,7 @@ canvas {
     display: none;
 }
 
-.dialog-content-exercise {
+.dialog-content {
     background-color: var(--card-background);
     padding: 2rem;
     border-radius: 12px;
@@ -1762,27 +1762,27 @@ canvas {
     animation: dialogSlideIn 0.3s ease-out;
 }
 
-.dialog-content-exercise h3 {
+.dialog-content h3 {
     margin: 0 0 1rem 0;
     color: var(--text-color);
     font-size: 1.5rem;
     font-weight: 600;
 }
 
-.dialog-content-exercise p {
+.dialog-content p {
     color: var(--text-color);
     margin-bottom: 1.5rem;
     line-height: 1.5;
     font-size: 1.1rem;
 }
 
-.dialog-buttons-exercise {
+.dialog-buttons {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
 }
 
-.dialog-buttons-exercise button {
+.dialog-buttons button {
     padding: 0.7rem 1.5rem;
     border: none;
     border-radius: 8px;
@@ -1792,38 +1792,38 @@ canvas {
     font-size: 1rem;
 }
 
-.dialog-buttons-exercise #confirm-delete {
+.dialog-buttons #confirm-delete {
     background-color: var(--error-color) !important;
     color: white;
 }
 
-.dialog-buttons-exercise #confirm-delete:hover {
+.dialog-buttons #confirm-delete:hover {
     background-color: #c0392b !important;
     transform: translateY(-2px);
 }
 
-.dialog-buttons-exercise #cancel-delete {
+.dialog-buttons #cancel-delete {
     background-color: #95a5a6 !important;
     color: white;
 }
 
-.dialog-buttons-exercise #cancel-delete:hover {
+.dialog-buttons #cancel-delete:hover {
     background-color: #7f8c8d !important;
     transform: translateY(-2px);
 }
 /* Efekt hover dla przycisków */
-.dialog-buttons-exercise button:active {
+.dialog-buttons button:active {
     transform: translateY(0);
 }
 
 /* Dodaj efekt focus dla dostępności */
-.dialog-buttons-exercise button:focus {
+.dialog-buttons button:focus {
     outline: 3px solid var(--primary-color);
     outline-offset: 2px;
 }
 
 /* Dodaj transition dla płynnych animacji */
-.custom-dialog-exercise {
+.custom-dialog {
     transition: opacity 0.3s ease;
 }
 @keyframes dialogSlideIn {
