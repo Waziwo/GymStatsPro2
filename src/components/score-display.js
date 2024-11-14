@@ -119,6 +119,8 @@ export class ScoreDisplay {
     
     async handleScoreSubmit(e) {
         e.preventDefault();  // Zapobiega odświeżaniu strony
+        console.log("handleScoreSubmit called");
+    
         if (this.isSubmitting) {
             console.log("Form is already submitting, preventing double submission.");
             return; // Zablokuj ponowne wysyłanie

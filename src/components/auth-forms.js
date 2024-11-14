@@ -127,11 +127,11 @@ export class AuthForms {
                     this.showUserInfo(user.email, userData);
                     this.hideLoginButton();
                     
-                    // Inicjalizuj i ładuj wyniki po zalogowaniu
+                    // Inicjalizuj ScoreDisplay
                     if (!this.scoreDisplay) {
                         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
                     }
-                    this.scoreDisplay.init();  // Dodaj to wywołanie
+                    await this.scoreDisplay.init(); // Upewnij się, że to jest wywoływane
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                     this.showUserInfo(user.email);
@@ -140,7 +140,7 @@ export class AuthForms {
             } else {
                 this.hideUserInfo();
                 this.showLoginButton();
-                this.scoreDisplay = null;  // Resetuj scoreDisplay przy wylogowaniu
+                this.scoreDisplay = null; // Resetuj scoreDisplay przy wylogowaniu
             }
         });
     }
@@ -333,32 +333,6 @@ export class AuthForms {
         if (this.aboutSection) {
             this.aboutSection.classList.remove('hidden');
         }
-    }
-    
-    setupAuthStateListener() {
-        this.authService.onAuthStateChanged(async (user) => {
-            if (user) {
-                try {
-                    const userData = await this.userService.getUserData(user.uid);
-                    this.showUserInfo(user.email, userData);
-                    this.hideLoginButton();
-                    
-                    // Inicjalizuj ScoreDisplay
-                    if (!this.scoreDisplay) {
-                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
-                    }
-                    await this.scoreDisplay.init(); // Upewnij się, że to jest wywoływane
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                    this.showUserInfo(user.email);
-                    this.hideLoginButton();
-                }
-            } else {
-                this.hideUserInfo();
-                this.showLoginButton();
-                this.scoreDisplay = null; // Resetuj scoreDisplay przy wylogowaniu
-            }
-        });
     }
     
     showLoginButton() {
