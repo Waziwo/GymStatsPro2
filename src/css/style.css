@@ -1572,7 +1572,7 @@ canvas {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between; /* Umożliwia rozłożenie elementów */
-    align-items: center;
+    align-items: left;
 }
 
 /* ===== ZAWARTOŚĆ LISTY ===== */
@@ -1597,7 +1597,7 @@ canvas {
     cursor: pointer;
     transition: background-color 0.3s;
     display: flex;
-    align-items: center;
+    align-items: right;
     gap: 0.5rem;
     font-weight: 500;
 }
@@ -1616,7 +1616,7 @@ canvas {
     transition: all 0.3s ease;
     font-weight: 500;
     display: flex;
-    align-items: center;
+    align-items: right;
     gap: 0.5rem;
 }
 
