@@ -110,16 +110,22 @@ export class ScoreDisplay {
     }
     setupEventListeners() {
         if (this.scoreForm) {
+            // Upewnij się, że nie rejestrujesz zdarzenia wielokrotnie
             this.scoreForm.removeEventListener('submit', this.handleScoreSubmit.bind(this)); // Usuwamy poprzednie zdarzenie
             this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this)); // Rejestrujemy zdarzenie
+            console.log("Event listener for scoreForm added.");
         }
     }
     
     async handleScoreSubmit(e) {
         e.preventDefault();  // Zapobiega odświeżaniu strony
-        if (this.isSubmitting) return; // Zablokuj ponowne wysyłanie
+        if (this.isSubmitting) {
+            console.log("Form is already submitting, preventing double submission.");
+            return; // Zablokuj ponowne wysyłanie
+        }
     
         this.isSubmitting = true; // Ustaw flagę na true
+        console.log("Submitting score...");
     
         const exerciseType = this.scoreForm['exercise-type'].value;
         const weight = parseFloat(this.scoreForm['weight'].value);
@@ -136,12 +142,13 @@ export class ScoreDisplay {
             this.updateOverview(); 
             await this.statisticsDisplay.updateStatistics();
         } catch (error) {
+            console.error("Error adding score:", error);
             alert(error.message);
         } finally {
             this.isSubmitting = false; // Zresetuj flagę po zakończeniu
+            console.log("Score submission finished.");
         }
     }
-
     async loadScores() {
         console.log("ScoreDisplay: Rozpoczęto ładowanie wyników");
         try {
