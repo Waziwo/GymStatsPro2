@@ -1578,7 +1578,6 @@ canvas {
 /* ===== ZAWARTOŚĆ LISTY ===== */
 .exercise-content {
     flex: 1; /* Pozwól, aby ta sekcja zajmowała dostępne miejsce */
-    display: flex;
     flex-direction: column; /* Ustaw nazwę i opis w kolumnie */
 }
 
@@ -1596,8 +1595,6 @@ canvas {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
-    display: flex;
-    align-items: right;
     gap: 0.5rem;
     font-weight: 500;
 }
@@ -1615,8 +1612,6 @@ canvas {
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
-    display: flex;
-    align-items: right;
     gap: 0.5rem;
 }
 
