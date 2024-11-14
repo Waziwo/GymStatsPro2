@@ -336,33 +336,27 @@ export class AuthForms {
     }
     
     setupAuthStateListener() {
-        console.log("Ustawianie nasłuchiwania na zmiany stanu autoryzacji");
         this.authService.onAuthStateChanged(async (user) => {
-            console.log("Stan autoryzacji zmieniony:", user);
             if (user) {
                 try {
-                    console.log("Próba pobrania danych użytkownika:", user.uid);
                     const userData = await this.userService.getUserData(user.uid);
-                    console.log("Pobrane dane użytkownika:", userData);
                     this.showUserInfo(user.email, userData);
                     this.hideLoginButton();
                     
-                    console.log("Inicjalizacja wyświetlania wyników");
+                    // Inicjalizuj ScoreDisplay
                     if (!this.scoreDisplay) {
-                        console.log("Tworzenie nowej instancji ScoreDisplay");
                         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
                     }
-                    this.scoreDisplay.init();
+                    await this.scoreDisplay.init(); // Upewnij się, że to jest wywoływane
                 } catch (error) {
-                    console.error('Błąd podczas pobierania danych użytkownika:', error);
+                    console.error('Error fetching user data:', error);
                     this.showUserInfo(user.email);
                     this.hideLoginButton();
                 }
             } else {
-                console.log("Użytkownik wylogowany - resetowanie widoku");
                 this.hideUserInfo();
                 this.showLoginButton();
-                this.scoreDisplay = null;
+                this.scoreDisplay = null; // Resetuj scoreDisplay przy wylogowaniu
             }
         });
     }

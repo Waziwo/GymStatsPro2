@@ -90,10 +90,12 @@ export class ScoreDisplay {
     async loadExercises() {
         if (!this.exerciseService) {
             console.error('ExerciseService is not initialized');
-            return;
+            return; // Zatrzymaj wykonanie, jeśli exerciseService jest niezainicjalizowane
         }
         try {
-            const exercises = await this.exerciseService.getExercises(this.auth.currentUser .uid);
+            const user = await this.authService.getCurrentUser ();
+            if (!user) throw new Error('Musisz być zalogowany, aby wczytać ćwiczenia');
+            const exercises = await this.exerciseService.getExercises(user.uid);
             const exerciseSelect = this.scoreForm['exercise-type'];
             exerciseSelect.innerHTML = ''; // Wyczyść istniejące opcje
     
