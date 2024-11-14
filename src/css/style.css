@@ -971,7 +971,7 @@ footer {
         display: flex; 
     } 
 
-    .nav-link, #login-button { 
+    #login-button { 
         width: 100%; 
         text-align: center; 
         padding: 0.7rem; 
