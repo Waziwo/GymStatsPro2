@@ -128,6 +128,7 @@ class App {
                 this.addExerciseForm.reset();
                 this.addExerciseDialog.classList.add('hidden');
                 this.notificationManager.show('Ćwiczenie dodane pomyślnie!', 'success'); // Pokaż powiadomienie
+                this.loadExercises();
             } catch (error) {
                 console.error('Błąd podczas dodawania ćwiczenia:', error);
                 this.notificationManager.show('Błąd podczas dodawania ćwiczenia: ' + error.message, 'error');
@@ -150,12 +151,14 @@ class App {
                     exercisesList.innerHTML = exercises.map(exercise => `
                         <li>
                             <strong>${exercise.name}</strong>: ${exercise.description}
-                            <button class="edit-button" data-id="${exercise.id}">Edytuj</button>
-                            <button class="delete-button" data-id="${exercise.id}">Usuń</button>
+                            <div class="button-group">
+                                <button class="edit-button" data-id="${exercise.id}">Edytuj</button>
+                                <button class="delete-button" data-id="${exercise.id}">Usuń</button>
+                            </div>
                         </li>
                     `).join('');
     
-                    // Dodaj nasłuchiwacze zdarzeń do przycisków
+                    // Dodaj nasłuchiwacze zdarzeń do przycisków edycji
                     exercisesList.querySelectorAll('.edit-button').forEach(button => {
                         button.addEventListener('click', () => this.handleEditExercise(button.dataset.id));
                     });
@@ -173,25 +176,42 @@ class App {
             }
         }
     }
+
     async handleEditExercise(exerciseId) {
         const exercise = await this.exerciseService.getExercise(exerciseId); // Pobierz dane ćwiczenia
-        const newName = prompt("Wprowadź nową nazwę ćwiczenia:", exercise.name);
-        const newDescription = prompt("Wprowadź nowy opis ćwiczenia:", exercise.description);
-    
-        if (newName && newDescription) {
-            await this.exerciseService.updateExercise(exerciseId, {
-                name: newName,
-                description: newDescription,
-                options: exercise.options // Zachowaj oryginalne opcje
-            });
-            this.loadExercises(); // Odśwież listę ćwiczeń
-        }
-    }
-    async handleDeleteExercise(exerciseId) {
-        const confirmation = await this.showDeleteConfirmationDialog();
-        if (confirmation) {
-            await this.exerciseService.deleteExercise(exerciseId);
-            this.loadExercises(); // Odśwież listę ćwiczeń
+        if (exercise) {
+            // Wypełnij formularz danymi ćwiczenia
+            document.getElementById('edit-exercise-name').value = exercise.name;
+            document.getElementById('edit-exercise-description').value = exercise.description;
+            document.getElementById('edit-weight-checkbox').checked = exercise.options.weight;
+            document.getElementById('edit-reps-checkbox').checked = exercise.options.reps;
+            document.getElementById('edit-time-checkbox').checked = exercise.options.time;
+
+            // Pokaż dialog edytowania
+            document.getElementById('edit-exercise-dialog').classList.remove('hidden');
+
+            // Obsługa wysłania formularza
+            const editExerciseForm = document.getElementById('edit-exercise-form');
+            editExerciseForm.onsubmit = async (e) => {
+                e.preventDefault();
+                const updatedData = {
+                    name: document.getElementById('edit-exercise-name').value,
+                    description: document.getElementById('edit-exercise-description').value,
+                    options: {
+                        weight: document.getElementById('edit-weight-checkbox').checked,
+                        reps: document.getElementById('edit-reps-checkbox').checked,
+                        time: document.getElementById('edit-time-checkbox').checked
+                    }
+                };
+                await this.exerciseService.updateExercise(exerciseId, updatedData);
+                this.loadExercises(); // Odśwież listę ćwiczeń
+                document.getElementById('edit-exercise-dialog').classList.add('hidden'); // Ukryj dialog
+            };
+
+            // Obsługa anulowania
+            document.getElementById('cancel-edit-exercise').onclick = () => {
+                document.getElementById('edit-exercise-dialog').classList.add('hidden'); // Ukryj dialog
+            };
         }
     }
     

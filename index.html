@@ -330,6 +330,34 @@
                                 </div>
                             </li>
                         </ul>
+                        <div id="edit-exercise-dialog" class="custom-dialog hidden">
+                            <div class="dialog-content">
+                                <h3>Edytuj ćwiczenie</h3>
+                                <form id="edit-exercise-form">
+                                    <div class="form-group">
+                                        <label for="edit-exercise-name">Nazwa ćwiczenia</label>
+                                        <input type="text" id="edit-exercise-name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-exercise-description">Opis ćwiczenia (opcjonalny)</label>
+                                        <input type="text" id="edit-exercise-description">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="edit-weight-checkbox"> Ciężar (kg)</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="edit-reps-checkbox"> Powtórzenia</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="edit-time-checkbox"> Czas (min)</label>
+                                    </div>
+                                    <div class="dialog-buttons">
+                                        <button type="button" id="cancel-edit-exercise" class="btn-secondary">Anuluj</button>
+                                        <button type="submit" class="btn-primary">Zapisz zmiany</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                         <div id="add-exercise-dialog" class="custom-dialog hidden">
                             <div class="dialog-content">
                                 <h3>Dodaj nowe ćwiczenie</h3>
