@@ -13,12 +13,13 @@ export class ScoreDisplay {
         this.scoresList = null;
         this.auth = getAuth();
         this.scoresList = document.querySelector('.scores-list');
-        this.scoreFormListenerAdded = false; 
+        this.scoreFormListenerAdded = false;
     }
 
     init() {
         console.log("init called");
         try {
+            this.initializeForm();
             this.initializeScoreFormElements();
             this.loadExercises();
             this.loadScores();
@@ -81,6 +82,7 @@ export class ScoreDisplay {
         console.log("Score form:", this.scoreForm); // Sprawdź, czy element został znaleziony
     
         if (this.scoreForm) {
+            // Upewnij się, że nie rejestrujesz zdarzenia wielokrotnie
             if (!this.scoreFormListenerAdded) {
                 this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
                 this.scoreFormListenerAdded = true;
@@ -92,7 +94,15 @@ export class ScoreDisplay {
             console.error("Score form not found in DOM");
         }
     }
-
+    async initializeForm() {
+        const scoreForm = document.getElementById("score-form");
+    
+        // Sprawdzenie, czy zdarzenie zostało już przypisane
+        if (!window.scoreFormInitialized) {
+            scoreForm.addEventListener("submit", handleScoreSubmit);
+            window.scoreFormInitialized = true;
+        }
+    }
     async loadExercises() {
         if (!this.exerciseService) {
             console.error('ExerciseService is not initialized');
@@ -122,9 +132,10 @@ export class ScoreDisplay {
     }
     setupEventListeners() {
         if (this.scoreForm) {
-            // Upewnij się, że nie rejestrujesz zdarzenia wielokrotnie
-            this.scoreForm.removeEventListener('submit', this.handleScoreSubmit.bind(this)); // Usuwamy poprzednie zdarzenie
-            this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this), { once: true }); // Rejestrujemy zdarzenie z opcją once
+            const handleScoreSubmitBound = this.handleScoreSubmit.bind(this);
+            this.scoreForm.removeEventListener('submit', handleScoreSubmitBound);
+            this.scoreForm.addEventListener('submit', handleScoreSubmitBound);
+            
             console.log("Event listener for scoreForm added.");
         }
     }
