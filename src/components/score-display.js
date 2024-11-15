@@ -77,7 +77,7 @@ export class ScoreDisplay {
         this.scoreForm = document.getElementById('score-form');
         this.scoresList = document.getElementById('scores-list');
         if (this.scoreForm) {
-            this.setupEventListeners();
+            //this.setupEventListeners();
         }
     }
 
@@ -111,7 +111,7 @@ export class ScoreDisplay {
     setupEventListeners() {
         if (this.scoreForm) {
             // Upewnij się, że nie rejestrujesz zdarzenia wielokrotnie
-            //this.scoreForm.removeEventListener('submit', this.handleScoreSubmit.bind(this)); // Usuwamy poprzednie zdarzenie
+            this.scoreForm.removeEventListener('submit', this.handleScoreSubmit.bind(this)); // Usuwamy poprzednie zdarzenie
             this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this), { once: true }); // Rejestrujemy zdarzenie z opcją once
             console.log("Event listener for scoreForm added.");
         }
