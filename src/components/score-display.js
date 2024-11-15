@@ -84,7 +84,9 @@ export class ScoreDisplay {
         if (this.scoreForm) {
             // Upewnij się, że nie rejestrujesz zdarzenia wielokrotnie
             if (!this.scoreFormListenerAdded) {
-                this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
+                const handleScoreSubmitBound = this.handleScoreSubmit.bind(this);
+                this.scoreForm.removeEventListener('submit', handleScoreSubmitBound);
+                this.scoreForm.addEventListener('submit', handleScoreSubmitBound);
                 this.scoreFormListenerAdded = true;
                 console.log("Event listener added for scoreForm");
             } else {
@@ -128,15 +130,6 @@ export class ScoreDisplay {
         } catch (error) {
             console.error('Błąd podczas ładowania ćwiczeń:', error);
             this.notificationManager.show('Błąd podczas ładowania ćwiczeń: ' + error.message, 'error');
-        }
-    }
-    setupEventListeners() {
-        if (this.scoreForm) {
-            const handleScoreSubmitBound = this.handleScoreSubmit.bind(this);
-            this.scoreForm.removeEventListener('submit', handleScoreSubmitBound);
-            this.scoreForm.addEventListener('submit', handleScoreSubmitBound);
-            
-            console.log("Event listener for scoreForm added.");
         }
     }
     
