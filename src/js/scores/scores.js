@@ -64,9 +64,10 @@ export class ScoreService {
                 console.log('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.');
                 this.notificationManager.show('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.', 'error');
                 return; // Zablokuj dodawanie
+            }else{
+                await addDoc(this.scoresCollection, scoreData)
             }
-            const docRef = await addDoc(this.scoresCollection, scoreData); 
-            console.log('Wynik dodany pomyślnie! ID dokumentu:', docRef.id);
+            console.log('Wynik dodany pomyślnie! ID dokumentu:');
             
             this.cache.clear();
             this.notificationManager.show('Wynik dodany pomyślnie!', 'success'); // Powiadomienie o sukcesie
