@@ -81,12 +81,18 @@ export class ScoreDisplay {
     }
 
     setupEventListeners() {
+        this.scoreForm = document.getElementById('score-form');
+        this.scoresList = document.getElementById('scores-list');
         this.scoreForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             await this.handleScoreSubmit(e);
         });
     }
     async loadExercises() {
+        if (!this.exerciseService) {
+            console.error('exerciseService is not defined');
+            return;
+        }
         console.log('exerciseService:', this.exerciseService); // Debugowanie
         try {
             const exercises = await this.exerciseService.getExercises(this.auth.currentUser .uid);

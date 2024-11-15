@@ -60,7 +60,8 @@ class App {
             this.scoreService, 
             this.userService, 
             this.notificationManager,
-            this.activityLogger
+            this.activityLogger,
+            this.exerciseService
         );
     }
 

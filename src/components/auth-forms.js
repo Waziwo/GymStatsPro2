@@ -2,8 +2,9 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth
 import { ScoreDisplay } from './score-display.js';
 
 export class AuthForms {
-    constructor(authService, scoreService, userService, notificationManager, activityLogger) {
+    constructor(authService, scoreService, userService, notificationManager, activityLogger, exerciseService) {
         console.log("Inicjalizacja AuthForms");
+        this.exerciseService = exerciseService;
         this.authService = authService;
         this.scoreService = scoreService;
         this.userService = userService;
@@ -131,7 +132,7 @@ export class AuthForms {
                     if (!this.scoreDisplay) {
                         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
                     }
-                    this.scoreDisplay.init();  // Dodaj to wywołanie
+                    await this.scoreDisplay.init();
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                     this.showUserInfo(user.email);
@@ -349,10 +350,9 @@ export class AuthForms {
                     
                     console.log("Inicjalizacja wyświetlania wyników");
                     if (!this.scoreDisplay) {
-                        console.log("Tworzenie nowej instancji ScoreDisplay");
                         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
                     }
-                    this.scoreDisplay.init();
+                    await this.scoreDisplay.init();
                 } catch (error) {
                     console.error('Błąd podczas pobierania danych użytkownika:', error);
                     this.showUserInfo(user.email);
