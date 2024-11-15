@@ -170,7 +170,7 @@ export class ScoreDisplay {
             if (!user) throw new Error('Musisz być zalogowany aby dodać wynik');
             
             await this.addScore(exerciseType, weight, reps);
-            his.notificationManager.show('ADDSCORE', 'error');
+            his.notificationManager.show('ADDSCOREe', 'error');
             this.scoreForm.reset();
             await this.loadScores();
             this.updateOverview();
