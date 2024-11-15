@@ -118,6 +118,7 @@ export class ScoreDisplay {
     }
     
     async handleScoreSubmit(e) {
+        console.log("handleScoreSubmit was called by:", new Error().stack);
         e.preventDefault();
         if (this.isSubmitting) {
             console.log("Form is already submitting, preventing double submission.");
