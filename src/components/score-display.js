@@ -180,7 +180,7 @@ export class ScoreDisplay {
             this.isSubmitting = false; // Zresetuj flagę po zakończeniu
             console.log("Score submission finished.");
         }
-    }, 2000); // Ogranicz do jednego wywołania co 2 sekundy
+    }, 20000); // Ogranicz do jednego wywołania co 2 sekundy
     async loadScores() {
         console.log("ScoreDisplay: Rozpoczęto ładowanie wyników");
         try {
