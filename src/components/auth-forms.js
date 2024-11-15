@@ -65,7 +65,7 @@ export class AuthForms {
             this.setupFormToggle();
         }
 
-        this.setupEventListeners();
+        this.setupEventListenersLogin();
     }
 
     setupFormToggle() {
@@ -88,7 +88,7 @@ export class AuthForms {
         }
     }
 
-    setupEventListeners() {
+    setupEventListenersLogin() {
         if (this.registerForm) {
             this.registerForm.addEventListener('submit', this.handleRegister.bind(this));
         }

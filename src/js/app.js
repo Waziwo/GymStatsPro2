@@ -33,8 +33,8 @@ class App {
             this.initializeComponents();
 
             // Setup event listeners and auth state
-            this.initializeElements();
-            this.setupEventListeners();
+            this.initializeElementsApp();
+            this.setupEventListenersApp();
             this.setupAuthStateListener();
             this.setupDashboardNavigation(); // Dodana nowa metoda
 
@@ -66,7 +66,7 @@ class App {
         );
     }
 
-    initializeElements() {
+    initializeElementsApp() {
         this.loginButton = document.getElementById('login-button');
         this.landingPage = document.getElementById('landing-page');
         this.authSection = document.getElementById('auth-section');
@@ -294,7 +294,7 @@ class App {
         }
     }
 
-    setupEventListeners() {
+    setupEventListenersApp() {
         if (this.loginButton) {
             this.loginButton.addEventListener('click', () => this.showAuthSection());
         }

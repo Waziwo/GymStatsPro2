@@ -54,11 +54,11 @@ export class DashboardNavigation {
 
     init() {
         console.log("Initializing dashboard navigation");
-        this.setupEventListeners();
+        this.setupEventListenersDashboardNavigation();
         this.showSection('overview'); // Pokazuje domyślną sekcję
     }
 
-    setupEventListeners() {
+    setupEventListenersDashboardNavigation() {
         this.navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();

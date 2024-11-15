@@ -77,7 +77,7 @@ export class ScoreDisplay {
         this.scoreForm = document.getElementById('score-form');
         this.scoresList = document.getElementById('scores-list');
         if (this.scoreForm) {
-            //this.setupEventListeners();
+            this.setupEventListeners();
         }
     }
 
