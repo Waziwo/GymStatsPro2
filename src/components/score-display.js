@@ -168,7 +168,7 @@ export class ScoreDisplay {
             const user = await this.authService.getCurrentUser ();
             if (!user) throw new Error('Musisz być zalogowany aby dodać wynik');
             
-            await this.scoreService.addScore(exerciseType, weight, reps);
+            await this.addScore(exerciseType, weight, reps);
             this.scoreForm.reset();
             await this.loadScores();
             this.updateOverview();
@@ -181,6 +181,57 @@ export class ScoreDisplay {
             console.log("Score submission finished.");
         }
     }, 2000); // Ogranicz do jednego wywołania co 2 sekundy
+    async addScore(exerciseType, weight, reps) {
+        this.addScoreThrottled(exerciseType, weight, reps);
+    }
+    addScoreThrottled = throttle(async (exerciseType, weight, reps) => {
+        if (this.isScoreAddingLocked()) {
+            console.log('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.');
+            this.notificationManager.show('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.', 'error');
+            return;
+        }
+    
+        try {
+            console.log('Dodawanie wyniku...');
+            const user = this.auth.currentUser;
+            if (!user) throw new Error('Użytkownik nie jest zalogowany');
+    
+            const scoreData = {
+                userId: user.uid,
+                userEmail: user.email,
+                exerciseType,
+                weight,
+                reps,
+                timestamp: Date.now(),
+            };
+            if (this.isScoreAddingLocked()) {
+                console.log('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.');
+                this.notificationManager.show('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.', 'error');
+                return;
+            }else{
+            console.log('Dane wyniku:', scoreData);
+            const docRef = await addDoc(this.scoresCollection, scoreData);
+            console.log('Wynik dodany pomyślnie! ID dokumentu:', docRef.id);
+            this.cache.clear();
+            this.notificationManager.show('Wynik dodany pomyślnie!', 'success');
+            this.updateLastScoreAdded();
+            }
+        } catch (error) {
+            console.error('Błąd podczas dodawania wyniku:', error);
+            this.notificationManager.show(`Błąd podczas dodawania wyniku: ${error.message}`, 'error');
+            throw error;
+        } finally {
+            this.updateLastScoreAdded();
+        }
+    }, 2000);
+    
+    isScoreAddingLocked() {
+        return this.lastScoreAdded && (Date.now() - this.lastScoreAdded < 10000);
+    }
+    
+    updateLastScoreAdded() {
+        this.lastScoreAdded = Date.now();
+    }
     async loadScores() {
         console.log("ScoreDisplay: Rozpoczęto ładowanie wyników");
         try {
