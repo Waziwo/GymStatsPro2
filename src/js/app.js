@@ -13,6 +13,8 @@ import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
 import { initNavigation, manageSectionsVisibility } from './utils/navigation.js';
 import { ExerciseService } from './exercises/ExerciseService.js';
 
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 class App {
     constructor() {
@@ -46,7 +48,7 @@ class App {
     initializeServices() {
         this.notificationManager = new NotificationManager();
         this.authService = new AuthService();
-        this.scoreService = new ScoreService(this.notificationManager);
+        this.scoreService = new ScoreService(this.notificationManager, db); // Przekaż instancję Firestore
         this.userService = new UserService();
         this.activityLogger = new ActivityLogger();
         this.exerciseService = new ExerciseService(this.notificationManager); // Inicjalizacja ExerciseService

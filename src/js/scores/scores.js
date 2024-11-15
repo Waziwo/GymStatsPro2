@@ -34,8 +34,9 @@ class ScoreCache {
 }
 
 export class ScoreService {
-    constructor(notificationManager) {
-        this.db = getFirestore();
+    constructor(notificationManager, db) {
+        this.db = db; // Upewnij się, że to jest ustawione poprawnie
+        this.scoresCollection = collection(this.db, 'scores');
         this.scoresCollection = collection(this.db, 'scores');
         this.auth = getAuth();
         this.cache = new ScoreCache();
