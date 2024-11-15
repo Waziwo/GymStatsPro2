@@ -349,7 +349,7 @@ class App {
                         this.updateNavigation(true);
                         this.statisticsDisplay.init();
                         this.updateUserInfo(userData, user.email);
-    
+                        await this.loadExercises();
                         // Wczytaj ćwiczenia po zalogowaniu
                         const exercises = await this.exerciseService.getExercises(user.uid);
                         this.displayExercises(exercises); // Wywołaj metodę do wyświetlania ćwiczeń

@@ -100,6 +100,7 @@ export class ScoreDisplay {
             });
         } catch (error) {
             console.error('Błąd podczas ładowania ćwiczeń:', error);
+            this.notificationManager.show('Wystąpił błąd podczas ładowania ćwiczeń.', 'error');
         }
     }
     async handleScoreSubmit(e) {
