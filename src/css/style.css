@@ -183,11 +183,11 @@ main {
 }
 /* ===== SORTOWANIE ===== */
 .filtering-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    gap: 1rem;
+    display: flex; /* Umożliwia wyświetlanie w wierszu */
+    justify-content: space-between; /* Rozkłada elementy wzdłuż osi X */
+    align-items: center; /* Wyrównuje elementy w pionie */
+    margin-bottom: 1rem; /* Odstęp poniżej sekcji filtrów */
+    gap: 1rem; /* Odstęp między elementami */
 }
 
 #filter-form {

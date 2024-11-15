@@ -432,3 +432,9 @@ document.addEventListener('DOMContentLoaded', () => {
     new App();
     initNavigation();
 });
+document.addEventListener('DOMContentLoaded', () => {
+    const filteringSection = document.querySelector('.filtering-section');
+    if (filteringSection) {
+        filteringSection.style.display = 'flex'; // Ustaw widoczność na flex
+    }
+});
