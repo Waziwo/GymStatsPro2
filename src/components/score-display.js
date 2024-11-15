@@ -111,23 +111,20 @@ export class ScoreDisplay {
     setupEventListeners() {
         if (this.scoreForm) {
             // Upewnij się, że nie rejestrujesz zdarzenia wielokrotnie
-            this.scoreForm.removeEventListener('submit', this.handleScoreSubmit.bind(this)); // Usuwamy poprzednie zdarzenie
+            //this.scoreForm.removeEventListener('submit', this.handleScoreSubmit.bind(this)); // Usuwamy poprzednie zdarzenie
             this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this), { once: true }); // Rejestrujemy zdarzenie z opcją once
             console.log("Event listener for scoreForm added.");
         }
     }
     
     async handleScoreSubmit(e) {
-        e.preventDefault();  // Zapobiega odświeżaniu strony
-        console.log("handleScoreSubmit called");
-    
+        e.preventDefault();
         if (this.isSubmitting) {
             console.log("Form is already submitting, preventing double submission.");
             return; // Zablokuj ponowne wysyłanie
         }
-    
+        
         this.isSubmitting = true; // Ustaw flagę na true
-        console.log("Submitting score...");
     
         const exerciseType = this.scoreForm['exercise-type'].value;
         const weight = parseFloat(this.scoreForm['weight'].value);
@@ -135,13 +132,12 @@ export class ScoreDisplay {
     
         try {
             const user = await this.authService.getCurrentUser ();
-            if (!user) {
-                throw new Error('Musisz być zalogowany aby dodać wynik');
-            }
+            if (!user) throw new Error('Musisz być zalogowany aby dodać wynik');
+            
             await this.scoreService.addScore(exerciseType, weight, reps);
             this.scoreForm.reset();
-            await this.loadScores();  
-            this.updateOverview(); 
+            await this.loadScores();
+            this.updateOverview();
             await this.statisticsDisplay.updateStatistics();
         } catch (error) {
             console.error("Error adding score:", error);

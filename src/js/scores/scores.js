@@ -45,9 +45,9 @@ export class ScoreService {
     async addScore(exerciseType, weight, reps) {
         try {
             console.log('Dodawanie wyniku...');
-            const user = this.auth.currentUser ;
+            const user = this.auth.currentUser  ;
             if (!user) throw new Error('Użytkownik nie jest zalogowany');
-
+    
             const scoreData = {
                 userId: user.uid,
                 userEmail: user.email,
@@ -56,7 +56,7 @@ export class ScoreService {
                 reps,
                 timestamp: Date.now(),
             };
-
+    
             console.log('Dane wyniku:', scoreData);
             const docRef = await addDoc(this.scoresCollection, scoreData);
             console.log('Wynik dodany pomyślnie! ID dokumentu:', docRef.id);
