@@ -40,6 +40,7 @@ export class ScoreService {
         this.scoresCollection = collection(this.db, 'scores');
         this.auth = getAuth();
         this.cache = new ScoreCache();
+        this.scoresCollection = collection(this.db, 'scores'); // Użyj db do utworzenia kolekcji
         this.notificationManager = notificationManager; // Przechowuj instancję NotificationManager
     }
     

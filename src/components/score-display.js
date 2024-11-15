@@ -1,6 +1,6 @@
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { StatisticsDisplay } from './StatisticsDisplay.js'; // Upewnij się, że importujesz tę klasę
-import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
 function throttle(func, limit) {
     let lastFunc;
@@ -211,7 +211,7 @@ export class ScoreDisplay {
                 return;
             }else{
             console.log('Dane wyniku:', scoreData);
-            const docRef = await addDoc(this.scoresCollection, scoreData);
+            const docRef = await addDoc(collection(db, "scores"), scoreData);
             console.log('Wynik dodany pomyślnie! ID dokumentu:', docRef.id);
             this.cache.clear();
             this.notificationManager.show('Wynik dodany pomyślnie!', 'success');
