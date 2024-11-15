@@ -373,8 +373,10 @@ main {
 }
 
 #scores-list {
-    list-style: none;
-    padding: 0;
+    background-color: var(--card-background); /* Tło sekcji */
+    padding: 20px; /* Odstęp wewnętrzny */
+    border-radius: 10 px; /* Zaokrąglenie rogów */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Cień dla lepszego wyglądu */
 }
 
 #scores-list li {
@@ -471,8 +473,10 @@ main {
 }
 
 #scores-list {
-    list-style: none;
-    padding: 0;
+    background-color: var(--card-background); /* Tło sekcji */
+    padding: 20px; /* Odstęp wewnętrzny */
+    border-radius: 10 px; /* Zaokrąglenie rogów */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Cień dla lepszego wyglądu */
 }
 
 #scores-list li {
