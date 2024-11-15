@@ -42,44 +42,54 @@ export class ScoreService {
         this.notificationManager = notificationManager; // Przechowuj instancję NotificationManager
     }
     
-    async addScore(exerciseType, weight, reps) {
-        // Sprawdzenie, czy ostatnie dodanie wyniku miało miejsce w ciągu ostatnich 10 sekund
-    
-        try {
-            console.log('Dodawanie wyniku...');
-            const user = this.auth.currentUser ;
-            if (!user) throw new Error('Użytkownik nie jest zalogowany');
-    
-            const scoreData = {
-                userId: user.uid,
-                userEmail: user.email,
-                exerciseType,
-                weight,
-                reps,
-                timestamp: Date.now(),
-            };
-    
-            console.log('Dane wyniku:', scoreData);
-            if (this.lastScoreAdded && (Date.now() - this.lastScoreAdded < 10000)) {
-                console.log('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.');
-                this.notificationManager.show('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.', 'error');
-                return; // Zablokuj dodawanie
-            }else{
-                await addDoc(this.scoresCollection, scoreData)
-            }
-            console.log('Wynik dodany pomyślnie! ID dokumentu:');
-            
-            this.cache.clear();
-            this.notificationManager.show('Wynik dodany pomyślnie!', 'success'); // Powiadomienie o sukcesie
-            
-            // Zaktualizuj czas ostatniego dodania wyniku
-            this.lastScoreAdded = Date.now();
-        } catch (error) {
-            console.error('Błąd podczas dodawania wyniku:', error);
-            this.notificationManager.show('Błąd podczas dodawania wyniku: ' + error.message, 'error'); // Powiadomienie o błędzie
-            throw error;
-        }
+async addScore(exerciseType, weight, reps) {
+    if (this.isScoreAddingLocked()) {
+        console.log('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.');
+        this.notificationManager.show('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.', 'error');
+        return;
     }
+
+    try {
+        console.log('Dodawanie wyniku...');
+        const user = this.auth.currentUser;
+        if (!user) throw new Error('Użytkownik nie jest zalogowany');
+
+        const scoreData = {
+            userId: user.uid,
+            userEmail: user.email,
+            exerciseType,
+            weight,
+            reps,
+            timestamp: Date.now(),
+        };
+        if (this.isScoreAddingLocked()) {
+            console.log('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.');
+            this.notificationManager.show('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.', 'error');
+            return;
+        }else{
+        console.log('Dane wyniku:', scoreData);
+        const docRef = await addDoc(this.scoresCollection, scoreData);
+        console.log('Wynik dodany pomyślnie! ID dokumentu:', docRef.id);
+        this.cache.clear();
+        this.notificationManager.show('Wynik dodany pomyślnie!', 'success');
+        this.updateLastScoreAdded();
+        }
+    } catch (error) {
+        console.error('Błąd podczas dodawania wyniku:', error);
+        this.notificationManager.show(`Błąd podczas dodawania wyniku: ${error.message}`, 'error');
+        throw error;
+    } finally {
+        this.updateLastScoreAdded();
+    }
+}
+
+isScoreAddingLocked() {
+    return this.lastScoreAdded && (Date.now() - this.lastScoreAdded < 10000);
+}
+
+updateLastScoreAdded() {
+    this.lastScoreAdded = Date.now();
+}
 
     async loadScores() {
         try {
