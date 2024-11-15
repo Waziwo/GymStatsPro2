@@ -1,49 +1,23 @@
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { StatisticsDisplay } from './StatisticsDisplay.js'; // Upewnij się, że importujesz tę klasę
-import { collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-function throttle(func, limit) {
-    let lastFunc;
-    let lastRan;
-
-    return function() {
-        const context = this;
-        const args = arguments;
-
-        if (!lastRan) {
-            func.apply(context, args);
-            lastRan = Date.now();
-        } else {
-            clearTimeout(lastFunc);
-            lastFunc = setTimeout(() => {
-                if ((Date.now() - lastRan) >= limit) {
-                    func.apply(context, args);
-                    lastRan = Date.now();
-                }
-            }, limit - (Date.now() - lastRan));
-        }
-    };
-}
 export class ScoreDisplay {
     constructor(scoreService, authService, notificationManager, exerciseService) {
         this.scoreService = scoreService;
         this.authService = authService;
         this.exerciseService = exerciseService; // Upewnij się, że to jest poprawnie przypisane
         this.notificationManager = notificationManager; 
-        this.statisticsDisplay = new StatisticsDisplay(scoreService);
+        this.statisticsDisplay = new StatisticsDisplay(scoreService)
         this.scoreForm = null;
-        this.isSubmitting = false; // Dodaj tę linię
         this.scoresList = null;
         this.auth = getAuth();
         this.scoresList = document.querySelector('.scores-list');
-        this.scoreFormListenerAdded = false;
     }
 
     init() {
-        console.log("init called");
         try {
-            this.initializeScoreFormElements();
-            this.loadExercises();
+            this.initializeElements();
+            this.loadExercises(); // Dodaj to wywołanie
             this.loadScores();
             this.setupFilteringAndSorting();
             this.updateOverview();
@@ -98,39 +72,23 @@ export class ScoreDisplay {
         }
     }
 
-    initializeScoreFormElements() {
-        console.log("initializeElements called");
+    initializeElements() {
         this.scoreForm = document.getElementById('score-form');
-        console.log("Score form:", this.scoreForm); // Sprawdź, czy element został znaleziony
-    
+        this.scoresList = document.getElementById('scores-list');
         if (this.scoreForm) {
-            // Upewnij się, że nie rejestrujesz zdarzenia wielokrotnie
-            if (!this.scoreFormListenerAdded) {
-                const handleScoreSubmitBound = this.handleScoreSubmit.bind(this);
-                this.scoreForm.removeEventListener('submit', handleScoreSubmitBound);
-                this.scoreForm.addEventListener('submit', handleScoreSubmitBound);
-                this.scoreFormListenerAdded = true;
-                console.log("Event listener added for scoreForm");
-            } else {
-                console.log("Event listener already added for scoreForm");
-            }
-        } else {
-            console.error("Score form not found in DOM");
+            this.setupEventListeners();
         }
     }
+
+    setupEventListeners() {
+        this.scoreForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await this.handleScoreSubmit(e);
+        });
+    }
     async loadExercises() {
-        if (!this.exerciseService) {
-            console.error('ExerciseService is not initialized');
-            return; // Zatrzymaj wykonanie, jeśli exerciseService jest niezainicjalizowane
-        }
         try {
-            const user = await this.authService.getCurrentUser ();
-            if (!user) throw new Error('Musisz być zalogowany, aby wczytać ćwiczenia');
-            const exercises = await this.exerciseService.getExercises(user.uid);
-            
-            // Sortuj ćwiczenia alfabetycznie od A do Z
-            exercises.sort((a, b) => a.name.localeCompare(b.name));
-    
+            const exercises = await this.exerciseService.getExercises(this.auth.currentUser .uid);
             const exerciseSelect = this.scoreForm['exercise-type'];
             exerciseSelect.innerHTML = ''; // Wyczyść istniejące opcje
     
@@ -142,97 +100,44 @@ export class ScoreDisplay {
             });
         } catch (error) {
             console.error('Błąd podczas ładowania ćwiczeń:', error);
-            this.notificationManager.show('Błąd podczas ładowania ćwiczeń: ' + error.message, 'error');
         }
     }
-    
     async handleScoreSubmit(e) {
-        e.preventDefault();
-        this.handleScoreSubmitThrottled(e);
-    }
-    
-    handleScoreSubmitThrottled = throttle(async (e) => {
-        console.log("handleScoreSubmit called");
-        
-        if (this.isSubmitting) {
-            console.log("Form is already submitting, preventing double submission.");
-            return; // Zablokuj ponowne wysyłanie
-        }
-    
+        console.log('handleScoreSubmit: Rozpoczęto dodawanie wyniku');
+        e.preventDefault();  // Zapobiega odświeżaniu strony
+        if (this.isSubmitting) return; // Zablokuj ponowne wysyłanie
+
         this.isSubmitting = true; // Ustaw flagę na true
-    
+
         const exerciseType = this.scoreForm['exercise-type'].value;
         const weight = parseFloat(this.scoreForm['weight'].value);
         const reps = parseInt(this.scoreForm['reps'].value);
-    
+
         try {
+            console.log('handleScoreSubmit: Pobieranie danych użytkownika');
             const user = await this.authService.getCurrentUser ();
-            if (!user) throw new Error('Musisz być zalogowany aby dodać wynik');
-            
-            await this.addScore(exerciseType, weight, reps);
+            if (!user) {
+                throw new Error('Musisz być zalogowany aby dodać wynik');
+            }
+            console.log('handleScoreSubmit: Dodawanie wyniku');
+            await this.scoreService.addScore(exerciseType, weight, reps);
+            console.log('handleScoreSubmit: Wynik dodany');
             this.scoreForm.reset();
-            await this.loadScores();
-            this.updateOverview();
-            await this.statisticsDisplay.updateStatistics();
+            console.log('handleScoreSubmit: Załaduj i wyświetl wyniki od razu po dodaniu');
+            await this.loadScores();  
+            console.log('handleScoreSubmit: Zaktualizuj przegląd po dodaniu wyniku');
+            this.updateOverview(); 
+            console.log('handleScoreSubmit: Zaktualizuj statystyki po dodaniu wyniku');
+            await this.statisticsDisplay.updateStatistics(); // Zaktualizuj statystyki po dodaniu wyniku
         } catch (error) {
-            console.error("Error adding score:", error);
+            console.error('handleScoreSubmit: Błąd podczas dodawania wyniku:', error);
             alert(error.message);
         } finally {
+            console.log('handleScoreSubmit: Zakończono dodawanie wyniku');
             this.isSubmitting = false; // Zresetuj flagę po zakończeniu
-            console.log("Score submission finished.");
         }
-    }, 2000); // Ogranicz do jednego wywołania co 2 sekundy
-    async addScore(exerciseType, weight, reps) {
-        this.addScoreThrottled(exerciseType, weight, reps);
     }
-    addScoreThrottled = throttle(async (exerciseType, weight, reps) => {
-        if (this.isScoreAddingLocked()) {
-            console.log('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.');
-            this.notificationManager.show('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.', 'error');
-            return;
-        }
-    
-        try {
-            console.log('Dodawanie wyniku...');
-            const user = this.auth.currentUser;
-            if (!user) throw new Error('Użytkownik nie jest zalogowany');
-    
-            const scoreData = {
-                userId: user.uid,
-                userEmail: user.email,
-                exerciseType,
-                weight,
-                reps,
-                timestamp: Date.now(),
-            };
-            if (this.isScoreAddingLocked()) {
-                console.log('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.');
-                this.notificationManager.show('Musisz poczekać 10 sekund przed dodaniem kolejnego wyniku.', 'error');
-                return;
-            }else{
-            console.log('Dane wyniku:', scoreData);
-            const docRef = await addDoc(collection(db, "scores"), scoreData);
-            console.log('Wynik dodany pomyślnie! ID dokumentu:', docRef.id);
-            this.cache.clear();
-            this.notificationManager.show('Wynik dodany pomyślnie!', 'success');
-            this.updateLastScoreAdded();
-            }
-        } catch (error) {
-            console.error('Błąd podczas dodawania wyniku:', error);
-            this.notificationManager.show(`Błąd podczas dodawania wyniku: ${error.message}`, 'error');
-            throw error;
-        } finally {
-            this.updateLastScoreAdded();
-        }
-    }, 2000);
-    
-    isScoreAddingLocked() {
-        return this.lastScoreAdded && (Date.now() - this.lastScoreAdded < 10000);
-    }
-    
-    updateLastScoreAdded() {
-        this.lastScoreAdded = Date.now();
-    }
+
     async loadScores() {
         console.log("ScoreDisplay: Rozpoczęto ładowanie wyników");
         try {

@@ -695,12 +695,8 @@ footer {
 
 /* ===== HAMBURGER MENU ===== */
 .hamburger-menu {
-    display: none; /* Ukryj na większych ekranach */
-    background: transparent; /* Tło przezroczyste */
-    border: none; /* Bez obramowania */
-    cursor: pointer; /* Wskaźnik kursora */
-    font-size: 24px; /* Rozmiar ikony */
-    color: var(--text-color); /* Kolor ikony */
+    display: none;
+    cursor: pointer;
 }
 /* ===== WALIDACJA I ANIMACJE FORMULARZY ===== */
 .fade-transition {
@@ -941,17 +937,6 @@ footer {
         background-color: var(--card-background); 
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     } 
-    .login-button { 
-        width: 100%; 
-        text-align: center; 
-        padding: 0.7rem; 
-        margin: 0.3rem 0;
-        border: none; 
-        background-color: var(--primary-color); 
-        color: white; 
-        border-radius: 4px; 
-        font-size: 1rem; 
-    } 
 
     .nav-container { 
         flex-direction: column; 
@@ -982,29 +967,24 @@ footer {
         display: flex; 
     } 
 
-    
+    .nav-link, #login-button { 
+        width: 100%; 
+        text-align: center; 
+        padding: 0.7rem; 
+        margin: 0.3rem 0;
+        border: none; 
+        background-color: var(--primary-color); 
+        color: white; 
+        border-radius: 4px; 
+        font-size: 1rem; 
+    } 
 
-    /* Stylizacja hamburger menu */
-    .hamburger-menu {
-        display: block; /* Pokaż hamburger menu na mniejszych ekranach */
-    }
-
-    .nav-links {
-        display: none; /* Domyślnie ukryj linki */
-        flex-direction: column; /* Ustaw linki w kolumnie */
-        position: absolute; /* Ustaw pozycję na absolute */
-        top: 60px; /* Ustaw górną pozycję menu */
-        left: 0;
-        right: 0;
-        background-color: var(--card-background); /* Tło menu */
-        padding: 1rem; /* Padding dla menu */
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Cień dla menu */
-    }
-
-    .nav-links.active {
-        display: flex; /* Wyświetl menu, gdy jest aktywne */
-    }
-
+    .hamburger-menu { 
+        display: block; 
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+    } 
 
     .hero-content { 
         padding: 1rem 0.5rem; 
@@ -1263,12 +1243,6 @@ footer {
         justify-content: center;
     }
 } 
-.nav-container {
-    display: flex;
-    justify-content: space-between; /* Ustaw elementy w wierszu z przestrzenią pomiędzy */
-    align-items: center; /* Wyśrodkowanie w pionie */
-}
-
 
 @media (max-width: 480px) {
     main {

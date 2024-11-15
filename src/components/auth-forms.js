@@ -11,7 +11,6 @@ export class AuthForms {
         this.activityLogger = activityLogger;
         this.auth = getAuth();
         this.scoreDisplay = null;
-        this.navLinks = document.querySelectorAll('.nav-link'); // Zwróci NodeList
         
         console.log("Rozpoczęcie inicjalizacji formularzy");
         this.initializeForms();
@@ -26,14 +25,9 @@ export class AuthForms {
         console.log("Login form container:", this.loginFormContainer);
     }
     setupMobileMenu() {
-        this.hamburgerMenu = document.querySelector('.hamburger-menu');
-        this.navLinks = document.querySelectorAll('.nav-link');
-    
         if (this.hamburgerMenu && this.navLinks) {
             this.hamburgerMenu.addEventListener('click', () => {
-                this.navLinks.forEach(link => {
-                    link.classList.toggle('active'); // Użyj toggle na każdym elemencie
-                });
+                this.navLinks.classList.toggle('active');
             });
         }
     }
@@ -65,7 +59,7 @@ export class AuthForms {
             this.setupFormToggle();
         }
 
-        this.setupEventListenersLogin();
+        this.setupEventListeners();
     }
 
     setupFormToggle() {
@@ -88,7 +82,7 @@ export class AuthForms {
         }
     }
 
-    setupEventListenersLogin() {
+    setupEventListeners() {
         if (this.registerForm) {
             this.registerForm.addEventListener('submit', this.handleRegister.bind(this));
         }
@@ -133,11 +127,11 @@ export class AuthForms {
                     this.showUserInfo(user.email, userData);
                     this.hideLoginButton();
                     
-                    // Inicjalizuj ScoreDisplay
+                    // Inicjalizuj i ładuj wyniki po zalogowaniu
                     if (!this.scoreDisplay) {
                         this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
                     }
-                    await this.scoreDisplay.init(); // Upewnij się, że to jest wywoływane
+                    this.scoreDisplay.init();  // Dodaj to wywołanie
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                     this.showUserInfo(user.email);
@@ -146,7 +140,7 @@ export class AuthForms {
             } else {
                 this.hideUserInfo();
                 this.showLoginButton();
-                this.scoreDisplay = null; // Resetuj scoreDisplay przy wylogowaniu
+                this.scoreDisplay = null;  // Resetuj scoreDisplay przy wylogowaniu
             }
         });
     }
@@ -339,6 +333,38 @@ export class AuthForms {
         if (this.aboutSection) {
             this.aboutSection.classList.remove('hidden');
         }
+    }
+    
+    setupAuthStateListener() {
+        console.log("Ustawianie nasłuchiwania na zmiany stanu autoryzacji");
+        this.authService.onAuthStateChanged(async (user) => {
+            console.log("Stan autoryzacji zmieniony:", user);
+            if (user) {
+                try {
+                    console.log("Próba pobrania danych użytkownika:", user.uid);
+                    const userData = await this.userService.getUserData(user.uid);
+                    console.log("Pobrane dane użytkownika:", userData);
+                    this.showUserInfo(user.email, userData);
+                    this.hideLoginButton();
+                    
+                    console.log("Inicjalizacja wyświetlania wyników");
+                    if (!this.scoreDisplay) {
+                        console.log("Tworzenie nowej instancji ScoreDisplay");
+                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
+                    }
+                    this.scoreDisplay.init();
+                } catch (error) {
+                    console.error('Błąd podczas pobierania danych użytkownika:', error);
+                    this.showUserInfo(user.email);
+                    this.hideLoginButton();
+                }
+            } else {
+                console.log("Użytkownik wylogowany - resetowanie widoku");
+                this.hideUserInfo();
+                this.showLoginButton();
+                this.scoreDisplay = null;
+            }
+        });
     }
     
     showLoginButton() {

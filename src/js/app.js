@@ -1,7 +1,6 @@
 // src/js/app.js
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js"; 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { firebaseConfig } from "./config/firebase-config.js";
 import { AuthService } from "./auth/auth.js";
 import { ScoreService } from "./scores/scores.js";
@@ -14,8 +13,6 @@ import { StatisticsDisplay } from '../components/StatisticsDisplay.js';
 import { initNavigation, manageSectionsVisibility } from './utils/navigation.js';
 import { ExerciseService } from './exercises/ExerciseService.js';
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 class App {
     constructor() {
@@ -36,8 +33,8 @@ class App {
             this.initializeComponents();
 
             // Setup event listeners and auth state
-            this.initializeElementsApp();
-            this.setupEventListenersApp();
+            this.initializeElements();
+            this.setupEventListeners();
             this.setupAuthStateListener();
             this.setupDashboardNavigation(); // Dodana nowa metoda
 
@@ -47,19 +44,17 @@ class App {
     }
 
     initializeServices() {
-        this.notificationManager = new NotificationManager();
+        this.notificationManager = new NotificationManager(); // Tworzenie instancji NotificationManager
         this.authService = new AuthService();
-        this.scoreService = new ScoreService(this.notificationManager, db); // Przekaż instancję Firestore
+        this.scoreService = new ScoreService(this.notificationManager); // Przekazywanie NotificationManager
         this.userService = new UserService();
         this.activityLogger = new ActivityLogger();
-        this.exerciseService = new ExerciseService(this.notificationManager); // Inicjalizacja ExerciseService
-        
-        // Teraz możesz utworzyć ScoreDisplay
-        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
+        this.exerciseService = new ExerciseService(this.notificationManager);
     }
 
     initializeComponents() {
         this.statisticsDisplay = new StatisticsDisplay(this.scoreService);
+        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
         this.authForms = new AuthForms(
             this.authService, 
             this.scoreService, 
@@ -69,7 +64,7 @@ class App {
         );
     }
 
-    initializeElementsApp() {
+    initializeElements() {
         this.loginButton = document.getElementById('login-button');
         this.landingPage = document.getElementById('landing-page');
         this.authSection = document.getElementById('auth-section');
@@ -153,14 +148,11 @@ class App {
     
                 const exercises = await this.exerciseService.getExercises(user.uid);
                 if (Array.isArray(exercises)) {
-                    // Sortuj ćwiczenia alfabetycznie od A do Z
-                    exercises.sort((a, b) => a.name.localeCompare(b.name));
-    
                     exercisesList.innerHTML = exercises.map(exercise => `
                         <li>
                             <div class="exercise-content">
                                 <strong>${exercise.name}</strong>
-                                <span>${exercise.description}</span>
+                                <span>${exercise.description}</span> <!-- Opis ćwiczenia -->
                             </div>
                             <div class="button-group">
                                 <button class="edit-button" data-id="${exercise.id}">Edytuj</button>
@@ -230,9 +222,11 @@ class App {
         if (confirmation) {
             try {
                 await this.exerciseService.deleteExercise(exerciseId); // Upewnij się, że masz tę metodę w ExerciseService
+                this.notificationManager.show('Ćwiczenie zostało pomyślnie usunięte.', 'success');
                 this.loadExercises(); // Odśwież listę ćwiczeń
             } catch (error) {
                 console.error('Błąd podczas usuwania ćwiczenia:', error);
+                this.notificationManager.show('Błąd podczas usuwania ćwiczenia: ' + error.message, 'error');
             }
         }
     }
@@ -297,7 +291,7 @@ class App {
         }
     }
 
-    setupEventListenersApp() {
+    setupEventListeners() {
         if (this.loginButton) {
             this.loginButton.addEventListener('click', () => this.showAuthSection());
         }
@@ -352,12 +346,6 @@ class App {
                 try {
                     const userData = await this.userService.getUserData(user.uid);
                     if (userData) {
-                        if (!this.scoreDisplay) {
-                            this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
-                            await this.scoreDisplay.init();
-                        } else {
-                            console.log("ScoreDisplay already initialized");
-                        }
                         this.updateNavigation(true);
                         this.statisticsDisplay.init();
                         this.updateUserInfo(userData, user.email);
@@ -379,7 +367,6 @@ class App {
                     this.notificationManager.show('Wystąpił błąd podczas pobierania danych użytkownika', 'error');
                 }
             } else {
-                this.scoreDisplay = null;
                 this.updateNavigation(false);
                 manageSectionsVisibility(false, true); // Dodaj true jako drugi argument
             }
@@ -443,14 +430,4 @@ class App {
 document.addEventListener('DOMContentLoaded', () => {
     new App();
     initNavigation();
-});
-// Po załadowaniu DOM
-document.addEventListener('DOMContentLoaded', () => {
-    const hamburgerMenu = document.querySelector('.hamburger-menu');
-    const navLinks = document.querySelector('.nav-links');
-
-    // Obsługa kliknięcia w hamburger menu
-    hamburgerMenu.addEventListener('click', () => {
-        navLinks.classList.toggle('active'); // Przełącz klasę active
-    });
 });
