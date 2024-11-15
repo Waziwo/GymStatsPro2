@@ -19,7 +19,7 @@ export class ScoreDisplay {
     init() {
         console.log("init called");
         try {
-            this.initializeElements();
+            this.initializeScoreFormElements();
             this.loadExercises();
             this.loadScores();
             this.setupFilteringAndSorting();
