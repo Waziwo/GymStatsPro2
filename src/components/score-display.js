@@ -123,6 +123,10 @@ export class ScoreDisplay {
             console.log("Form is already submitting, preventing double submission.");
             return; // Zablokuj ponowne wysyłanie
         }
+        if (this.isSubmitting) {
+            console.log("Form is already submitting, preventing double submission.");
+            return; // Zablokuj ponowne wysyłanie
+        }
         
         this.isSubmitting = true; // Ustaw flagę na true
     
