@@ -78,6 +78,8 @@ export class ScoreDisplay {
     initializeScoreFormElements() {
         console.log("initializeElements called");
         this.scoreForm = document.getElementById('score-form');
+        console.log("Score form:", this.scoreForm); // Sprawdź, czy element został znaleziony
+    
         if (this.scoreForm) {
             if (!this.scoreFormListenerAdded) {
                 this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
@@ -86,6 +88,8 @@ export class ScoreDisplay {
             } else {
                 console.log("Event listener already added for scoreForm");
             }
+        } else {
+            console.error("Score form not found in DOM");
         }
     }
 
