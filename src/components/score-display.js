@@ -19,7 +19,6 @@ export class ScoreDisplay {
     init() {
         console.log("init called");
         try {
-            this.initializeForm();
             this.initializeScoreFormElements();
             this.loadExercises();
             this.loadScores();
@@ -94,15 +93,6 @@ export class ScoreDisplay {
             }
         } else {
             console.error("Score form not found in DOM");
-        }
-    }
-    async initializeForm() {
-        const scoreForm = document.getElementById("score-form");
-    
-        // Sprawdzenie, czy zdarzenie zostało już przypisane
-        if (!window.scoreFormInitialized) {
-            scoreForm.addEventListener("submit", handleScoreSubmit);
-            window.scoreFormInitialized = true;
         }
     }
     async loadExercises() {
