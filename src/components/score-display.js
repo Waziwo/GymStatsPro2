@@ -87,6 +87,7 @@ export class ScoreDisplay {
         });
     }
     async loadExercises() {
+        console.log('exerciseService:', this.exerciseService); // Debugowanie
         try {
             const exercises = await this.exerciseService.getExercises(this.auth.currentUser .uid);
             const exerciseSelect = this.scoreForm['exercise-type'];
