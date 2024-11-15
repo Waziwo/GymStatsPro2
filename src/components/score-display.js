@@ -1,6 +1,28 @@
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { StatisticsDisplay } from './StatisticsDisplay.js'; // Upewnij się, że importujesz tę klasę
 
+function throttle(func, limit) {
+    let lastFunc;
+    let lastRan;
+
+    return function() {
+        const context = this;
+        const args = arguments;
+
+        if (!lastRan) {
+            func.apply(context, args);
+            lastRan = Date.now();
+        } else {
+            clearTimeout(lastFunc);
+            lastFunc = setTimeout(() => {
+                if ((Date.now() - lastRan) >= limit) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                }
+            }, limit - (Date.now() - lastRan));
+        }
+    };
+}
 export class ScoreDisplay {
     constructor(scoreService, authService, notificationManager, exerciseService) {
         this.scoreService = scoreService;
@@ -124,13 +146,18 @@ export class ScoreDisplay {
     }
     
     async handleScoreSubmit(e) {
-        console.log("handleScoreSubmit called");
         e.preventDefault();
+        this.handleScoreSubmitThrottled(e);
+    }
+    
+    handleScoreSubmitThrottled = throttle(async (e) => {
+        console.log("handleScoreSubmit called");
+        
         if (this.isSubmitting) {
             console.log("Form is already submitting, preventing double submission.");
             return; // Zablokuj ponowne wysyłanie
         }
-        
+    
         this.isSubmitting = true; // Ustaw flagę na true
     
         const exerciseType = this.scoreForm['exercise-type'].value;
@@ -146,7 +173,6 @@ export class ScoreDisplay {
             await this.loadScores();
             this.updateOverview();
             await this.statisticsDisplay.updateStatistics();
-            this.isSubmitting = false; // Zresetuj flagę po zakończeniu
         } catch (error) {
             console.error("Error adding score:", error);
             alert(error.message);
@@ -154,7 +180,7 @@ export class ScoreDisplay {
             this.isSubmitting = false; // Zresetuj flagę po zakończeniu
             console.log("Score submission finished.");
         }
-    }
+    }, 2000); // Ogranicz do jednego wywołania co 2 sekundy
     async loadScores() {
         console.log("ScoreDisplay: Rozpoczęto ładowanie wyników");
         try {
