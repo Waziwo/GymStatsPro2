@@ -75,10 +75,15 @@ export class ScoreDisplay {
     }
 
     initializeScoreFormElements() {
-        if (!scoreFormListenerAdded) {
-            this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
-            scoreFormListenerAdded = true;
-            console.log("Event listener added for scoreForm");
+        console.log("Initializing elements");
+        this.scoreForm = document.getElementById('score-form');
+        if (this.scoreForm) {
+            // Użyj flagi, aby sprawdzić, czy nasłuchiwacz został już dodany
+            if (!this.scoreFormListenerAdded) {
+                this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
+                this.scoreFormListenerAdded = true; // Ustaw flagę na true
+                console.log("Event listener added for scoreForm");
+            }
         }
     }
 
