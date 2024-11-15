@@ -349,8 +349,12 @@ class App {
                 try {
                     const userData = await this.userService.getUserData(user.uid);
                     if (userData) {
-                        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
-                        await this.scoreDisplay.init(); // Upewnij się, że to jest wywoływane
+                        if (!this.scoreDisplay) {
+                            this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
+                            await this.scoreDisplay.init();
+                        } else {
+                            console.log("ScoreDisplay already initialized");
+                        }
                         this.updateNavigation(true);
                         this.statisticsDisplay.init();
                         this.updateUserInfo(userData, user.email);
@@ -372,6 +376,7 @@ class App {
                     this.notificationManager.show('Wystąpił błąd podczas pobierania danych użytkownika', 'error');
                 }
             } else {
+                this.scoreDisplay = null;
                 this.updateNavigation(false);
                 manageSectionsVisibility(false, true); // Dodaj true jako drugi argument
             }

@@ -17,8 +17,9 @@ export class ScoreDisplay {
     }
 
     init() {
+        console.log("init called");
         try {
-            this.initializeScoreFormElements();
+            this.initializeElements();
             this.loadExercises();
             this.loadScores();
             this.setupFilteringAndSorting();
@@ -75,14 +76,15 @@ export class ScoreDisplay {
     }
 
     initializeScoreFormElements() {
-        console.log("Initializing elements");
+        console.log("initializeElements called");
         this.scoreForm = document.getElementById('score-form');
         if (this.scoreForm) {
-            // Użyj flagi, aby sprawdzić, czy nasłuchiwacz został już dodany
             if (!this.scoreFormListenerAdded) {
                 this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
-                this.scoreFormListenerAdded = true; // Ustaw flagę na true
+                this.scoreFormListenerAdded = true;
                 console.log("Event listener added for scoreForm");
+            } else {
+                console.log("Event listener already added for scoreForm");
             }
         }
     }
@@ -146,6 +148,7 @@ export class ScoreDisplay {
             await this.loadScores();
             this.updateOverview();
             await this.statisticsDisplay.updateStatistics();
+            this.isSubmitting = false; // Zresetuj flagę po zakończeniu
         } catch (error) {
             console.error("Error adding score:", error);
             alert(error.message);
