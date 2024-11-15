@@ -13,12 +13,13 @@ export class ScoreDisplay {
         this.scoresList = null;
         this.auth = getAuth();
         this.scoresList = document.querySelector('.scores-list');
+        this.scoreFormListenerAdded = false; 
     }
 
     init() {
         try {
-            this.initializeElements();
-            this.loadExercises(); // Dodaj to wywołanie
+            this.initializeScoreFormElements();
+            this.loadExercises();
             this.loadScores();
             this.setupFilteringAndSorting();
             this.updateOverview();
@@ -73,11 +74,11 @@ export class ScoreDisplay {
         }
     }
 
-    initializeElements() {
-        this.scoreForm = document.getElementById('score-form');
-        this.scoresList = document.getElementById('scores-list');
-        if (this.scoreForm) {
-            this.setupEventListeners();
+    initializeScoreFormElements() {
+        if (!scoreFormListenerAdded) {
+            this.scoreForm.addEventListener('submit', this.handleScoreSubmit.bind(this));
+            scoreFormListenerAdded = true;
+            console.log("Event listener added for scoreForm");
         }
     }
 
@@ -118,12 +119,8 @@ export class ScoreDisplay {
     }
     
     async handleScoreSubmit(e) {
-        console.log("handleScoreSubmit was called by:", new Error().stack);
+        console.log("handleScoreSubmit called");
         e.preventDefault();
-        if (this.isSubmitting) {
-            console.log("Form is already submitting, preventing double submission.");
-            return; // Zablokuj ponowne wysyłanie
-        }
         if (this.isSubmitting) {
             console.log("Form is already submitting, preventing double submission.");
             return; // Zablokuj ponowne wysyłanie
